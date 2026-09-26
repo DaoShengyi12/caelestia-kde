@@ -316,7 +316,7 @@ Scope {
     CustomShortcut {
         name: "nemo"
         description: qsTr("Launch File Manager")
-        onPressed: Launch.exec(["nemo"])
+        onPressed: Launch.exec([...GlobalConfig.general.apps.explorer, Paths.home])
     }
     CustomShortcut {
         name: "kcolorpicker"
