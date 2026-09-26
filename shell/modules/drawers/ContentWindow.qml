@@ -92,7 +92,10 @@ StyledWindow {
     anchors.left: true
     anchors.right: true
     WlrLayershell.exclusionMode: ExclusionMode.Ignore
-    WlrLayershell.layer: hasOpenOverlay || (actualFullscreen && fsTransitionProg < 1) || (fsTransitionProg > 0 && Config.general.showOverFullscreen) || (panels.notifications.visible && panels.notifications.height > 0 && GlobalConfig.notifs.fullscreen === "on") || (((monitor?.lastIpcObject?.specialWorkspace?.name?.length ?? 0) > 0) && (monitor?.activeWorkspace?.toplevels?.values?.some(t => (t?.lastIpcObject?.fullscreen ?? 0) > 1) ?? false)) ? WlrLayer.Overlay : WlrLayer.Top
+    // Open drawers stay on Top unless a fullscreen window has to be covered:
+    // KWin puts input method popups in OverlayLayer too, and a shell surface
+    // there gets restacked above the fcitx5 candidate window.
+    WlrLayershell.layer: (hasOpenOverlay && actualFullscreen) || (actualFullscreen && fsTransitionProg < 1) || (fsTransitionProg > 0 && Config.general.showOverFullscreen) || (panels.notifications.visible && panels.notifications.height > 0 && GlobalConfig.notifs.fullscreen === "on") || (((monitor?.lastIpcObject?.specialWorkspace?.name?.length ?? 0) > 0) && (monitor?.activeWorkspace?.toplevels?.values?.some(t => (t?.lastIpcObject?.fullscreen ?? 0) > 1) ?? false)) ? WlrLayer.Overlay : WlrLayer.Top
     WlrLayershell.keyboardFocus: wantsKeyboard ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
 
     onWantsKeyboardChanged: {
