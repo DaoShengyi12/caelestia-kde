@@ -63,7 +63,9 @@ Singleton {
 
     onMonitorsChanged: {
         ddcMonitors = [];
-        ddcProc.running = true;
+        // 2026-09-26 未有：暂时关掉 DDC 探测。重启壳时 ddcutil detect 会去刷所有 i2c 总线，
+        // 时间点上和 08:47 那次整会话卡死吻合。需要外接显示器亮度控制时把下面这行放开。
+        // ddcProc.running = true;
     }
 
     Variants {
