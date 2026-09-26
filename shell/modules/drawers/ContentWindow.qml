@@ -39,6 +39,21 @@ StyledWindow {
     readonly property bool actualFullscreen: (Kwin.activeWsId, Kwin.hasFullscreenOn(screen?.name ?? ""))
     readonly property bool hasOpenOverlay: focusGrabState.active || panels.popouts.isDetached || desktopContextMenu.expanded || visibilities.overview || visibilities.launcher || visibilities.dashboard || visibilities.sidebar || visibilities.session || visibilities.utilities
     readonly property bool hasFullscreen: actualFullscreen && !hasOpenOverlay
+
+    // A pinned sidebar gets out of the way of fullscreen windows (games, video)
+    // and comes back once fullscreen ends.
+    onActualFullscreenChanged: {
+        if (actualFullscreen) {
+            if (visibilities.sidebar && Visibilities.sidebarPinned) {
+                visibilities.sidebarSuspended = true;
+                visibilities.sidebar = false;
+            }
+        } else if (visibilities.sidebarSuspended) {
+            visibilities.sidebarSuspended = false;
+            if (Visibilities.sidebarPinned)
+                visibilities.sidebar = true;
+        }
+    }
     // The sidebar is the only thing open and it is pinned (or one of the shell's
     // file dialogs is up): take input only over the panels, not the whole screen,
     // so clicks outside reach other windows instead of closing the sidebar.

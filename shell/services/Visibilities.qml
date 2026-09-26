@@ -11,25 +11,76 @@ Singleton {
     property var screens: new Map()
     property var bars: new Map()
     property string launcherInitialSearch: ""
-    property string initialSidebarTab: "notifications"
+    // Tab to show the next time the sidebar opens, when the opener asks for a
+    // specific one; "" means the configured default (see sidebarOpenTab).
+    property string initialSidebarTab: ""
     // Shell file dialogs currently open. They are separate windows, so focusing
     // one must not count as focus leaving the drawers.
     property int openDialogs: 0
     // A pinned sidebar only closes when the user closes it: losing focus or
     // clicking elsewhere leaves it open, and the rest of the screen stays usable.
     property bool sidebarPinned: false
+    // Tab the sidebar opens on: "last" for wherever it was left, or a tab id.
+    property string sidebarDefaultTab: "last"
+    property string lastSidebarTab: "notifications"
 
     function setSidebarPinned(pinned: bool): void {
         sidebarPinned = pinned;
-        pinFile.setText(pinned ? "1" : "0");
+        saveSidebarState();
+    }
+
+    function setSidebarDefaultTab(tab: string): void {
+        sidebarDefaultTab = tab;
+        saveSidebarState();
+    }
+
+    function setLastSidebarTab(tab: string): void {
+        if (tab === lastSidebarTab)
+            return;
+        lastSidebarTab = tab;
+        saveSidebarState();
+    }
+
+    function sidebarOpenTab(): string {
+        return sidebarDefaultTab === "last" ? lastSidebarTab : sidebarDefaultTab;
+    }
+
+    function saveSidebarState(): void {
+        sidebarStateFile.setText(JSON.stringify({
+            pinned: sidebarPinned,
+            defaultTab: sidebarDefaultTab,
+            lastTab: lastSidebarTab
+        }));
     }
 
     FileView {
-        id: pinFile
+        id: sidebarStateFile
 
-        path: `${Paths.state}/sidebar-pinned`
+        path: `${Paths.state}/sidebar.json`
         printErrors: false
-        onLoaded: sidebarPinned = text().trim() === "1"
+        onLoaded: {
+            try {
+                const s = JSON.parse(text());
+                sidebarPinned = s.pinned === true;
+                sidebarDefaultTab = s.defaultTab || "last";
+                lastSidebarTab = s.lastTab || "notifications";
+            } catch (e) {}
+            if (sidebarPinned)
+                pinRestore.start();
+        }
+    }
+
+    // A pinned sidebar is part of the desktop: bring it back when the shell starts,
+    // once the screens have registered their drawers.
+    Timer {
+        id: pinRestore
+
+        interval: 1500
+        onTriggered: {
+            const v = getForActive();
+            if (v && sidebarPinned)
+                v.sidebar = true;
+        }
     }
     property string preOverviewActiveWindowAddress: ""
     property string dragAddress: ""

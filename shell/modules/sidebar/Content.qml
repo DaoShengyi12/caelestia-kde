@@ -32,7 +32,20 @@ Item {
         }
     }
 
-    Component.onCompleted: checkAiTab()
+    // Opening the sidebar is what loads this, so the first open never reaches
+    // onSidebarChanged below; pick the tab here as well.
+    Component.onCompleted: {
+        if (root.visibilities.sidebar) {
+            root.activeTab = Visibilities.initialSidebarTab || Visibilities.sidebarOpenTab();
+            Visibilities.initialSidebarTab = "";
+        }
+        checkAiTab();
+    }
+
+    onActiveTabChanged: {
+        if (root.visibilities.sidebar)
+            Visibilities.setLastSidebarTab(activeTab);
+    }
 
     Connections {
         function onEnableAiAssistantChanged(): void { checkAiTab(); }
@@ -52,7 +65,8 @@ Item {
     Connections {
         function onSidebarChanged(): void {
             if (root.visibilities.sidebar) {
-                root.activeTab = Visibilities.initialSidebarTab;
+                root.activeTab = Visibilities.initialSidebarTab || Visibilities.sidebarOpenTab();
+                Visibilities.initialSidebarTab = "";
                 checkAiTab();
             }
         }
