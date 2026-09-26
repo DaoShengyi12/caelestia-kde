@@ -29,6 +29,19 @@ LazyLoader {
     onAccepted: activeAsync = false
     onRejected: activeAsync = false
 
+    property bool countedOpen: false
+
+    onActiveAsyncChanged: {
+        if (activeAsync !== countedOpen) {
+            Visibilities.openDialogs += activeAsync ? 1 : -1;
+            countedOpen = activeAsync;
+        }
+    }
+    Component.onDestruction: {
+        if (countedOpen)
+            Visibilities.openDialogs -= 1;
+    }
+
     FloatingWindow {
         id: root
 

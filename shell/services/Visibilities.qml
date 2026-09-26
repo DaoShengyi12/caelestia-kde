@@ -9,6 +9,9 @@ Singleton {
     property var bars: new Map()
     property string launcherInitialSearch: ""
     property string initialSidebarTab: "notifications"
+    // Shell file dialogs currently open. They are separate windows, so focusing
+    // one must not count as focus leaving the drawers.
+    property int openDialogs: 0
     property string preOverviewActiveWindowAddress: ""
     property string dragAddress: ""
     property string dragOriginScreen: ""

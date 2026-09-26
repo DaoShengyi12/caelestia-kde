@@ -211,6 +211,14 @@ StyledWindow {
                 }
             }
             onTriggered: {
+                // Focus moved to one of the shell's own file dialogs: keep the
+                // drawers open, and wait for the shell to be focused again before
+                // treating focus loss as a reason to close them.
+                if (Visibilities.openDialogs > 0) {
+                    parent._wasActive = false;
+                    return;
+                }
+
                 let anyActive = root.active || root.activeFocusItem !== null;
 
                 if (anyActive) {
