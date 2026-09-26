@@ -106,7 +106,8 @@ ColumnLayout {
                 type: IconButton.Text
                 onClicked: {
                     root.visibilities.utilities = false;
-                    root.visibilities.sidebar = false;
+                    if (!Visibilities.sidebarPinned)
+                        root.visibilities.sidebar = false;
                     Quickshell.execDetached([...GlobalConfig.general.apps.playback, recording.path]);
                 }
             }
@@ -116,7 +117,8 @@ ColumnLayout {
                 type: IconButton.Text
                 onClicked: {
                     root.visibilities.utilities = false;
-                    root.visibilities.sidebar = false;
+                    if (!Visibilities.sidebarPinned)
+                        root.visibilities.sidebar = false;
                     Quickshell.execDetached([...GlobalConfig.general.apps.explorer, Paths.recsdir]);
                 }
             }

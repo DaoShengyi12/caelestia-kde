@@ -141,7 +141,8 @@ StyledRect {
 
             onLinkActivated: link => {
                 Qt.openUrlExternally(link);
-                root.visibilities.sidebar = false;
+                if (!Visibilities.sidebarPinned)
+                    root.visibilities.sidebar = false;
             }
         }
 

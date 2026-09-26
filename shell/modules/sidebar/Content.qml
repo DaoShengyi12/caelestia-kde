@@ -184,6 +184,38 @@ Item {
                             Anim {}
                         }
                     }
+
+                    // Pin: keep the sidebar open until it is closed explicitly.
+                    Item {
+                        anchors.top: parent.top
+                        anchors.right: parent.right
+                        anchors.topMargin: 2
+                        anchors.rightMargin: 2
+                        z: 1
+                        implicitWidth: 26
+                        implicitHeight: 26
+
+                        StateLayer {
+                            id: pinStateLayer
+
+                            radius: Tokens.rounding.full
+                            color: Colours.palette.m3onSurface
+                            onClicked: Visibilities.setSidebarPinned(!Visibilities.sidebarPinned)
+                        }
+
+                        MaterialIcon {
+                            anchors.centerIn: parent
+                            text: "push_pin"
+                            rotation: Visibilities.sidebarPinned ? 0 : 45
+                            fill: Visibilities.sidebarPinned ? 1 : 0
+                            color: Visibilities.sidebarPinned ? Colours.palette.m3primary : pinStateLayer.containsMouse ? Colours.palette.m3onSurface : Colours.palette.m3outline
+                            fontStyle: Tokens.font.icon.small
+
+                            Behavior on rotation { Anim { type: Anim.DefaultEffects } }
+                            Behavior on fill { Anim { type: Anim.DefaultEffects } }
+                            Behavior on color { CAnim {} }
+                        }
+                    }
                 }
 
                 StyledRect {
