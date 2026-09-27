@@ -6,11 +6,20 @@ import Quickshell
 import Caelestia.Config
 import qs.components
 import qs.components.controls
+import qs.services
 import qs.utils
 import qs.modules.nexus.common
 
 PageBase {
     id: root
+
+    property list<MenuItem> openTabItems: [
+        MenuItem { text: qsTr("Last used") },
+        MenuItem { text: qsTr("Notifications") },
+        MenuItem { text: qsTr("AI Assistant") },
+        MenuItem { text: qsTr("News") }
+    ]
+    property list<string> openTabValues: ["last", "notifications", "ai", "news"]
 
     title: qsTr("Sidebar")
     isSubPage: true
@@ -63,9 +72,22 @@ PageBase {
             text: qsTr("Sidebar Tabs")
         }
 
-        ToggleRow {
-            Layout.fillWidth: true
+        SelectRow {
             first: true
+            label: qsTr("Open on")
+            subtext: qsTr("Tab shown when the sidebar opens")
+            menuItems: root.openTabItems
+            active: {
+                const idx = root.openTabValues.indexOf(Visibilities.sidebarDefaultTab);
+                return idx >= 0 ? root.openTabItems[idx] : root.openTabItems[0];
+            }
+            fallbackIcon: "tab"
+            onSelected: item => Visibilities.setSidebarDefaultTab(root.openTabValues[root.openTabItems.indexOf(item)])
+        }
+
+        ToggleRow {
+            Layout.topMargin: Tokens.spacing.extraSmall / 2 - parent.spacing
+            Layout.fillWidth: true
             text: qsTr("Show News tab")
             subtext: qsTr("Show the News tab in the sidebar")
             checked: GlobalConfig.ai.showNews

@@ -165,7 +165,7 @@ Scope {
         description: qsTr("Toggle sidebar")
         onPressed: {
             const visibilities = Visibilities.getForActive();
-            Visibilities.initialSidebarTab = "notifications";
+            Visibilities.initialSidebarTab = "";
             visibilities.sidebar = !visibilities.sidebar;
         }
     }
