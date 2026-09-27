@@ -46,6 +46,13 @@ StyledWindow {
     readonly property bool actualFullscreen: (Kwin.activeWsId, Kwin.hasFullscreenOn(screen?.name ?? ""))
     readonly property bool hasOpenOverlay: focusGrabState.active || panels.popouts.isDetached || desktopContextMenu.expanded || visibilities.overview || visibilities.launcher || visibilities.dashboard || visibilities.sidebar || visibilities.session || visibilities.utilities
     readonly property bool hasFullscreen: actualFullscreen && !hasOpenOverlay
+
+    // The sidebar is the only thing open and it is pinned (or one of the shell's
+    // file dialogs is up): take input only over the panels, not the whole screen,
+    // so clicks outside reach other windows instead of closing the sidebar.
+    readonly property bool sidebarPassthrough: visibilities.sidebar && (Visibilities.sidebarPinned || Visibilities.openDialogs > 0)
+        && !(panels.popouts.isDetached || desktopContextMenu.expanded || visibilities.overview || visibilities.launcher || visibilities.dashboard || visibilities.session || visibilities.utilities
+            || (panels.popouts.currentName.startsWith("traymenu") && (panels.popouts.current as StackView)?.depth > 1))
     property real fsTransitionProg: hasFullscreen ? 1 : 0
     readonly property real sdfBorderOffset: 2 * fsTransitionProg // SDFs joins are not exact, so offset by 2px to ensure nothing shows
     // Where dynamicBorderThickness lands once the overview is open. It is the
@@ -134,7 +141,7 @@ StyledWindow {
     // leaves the rest of the process running.
     WlrLayershell.namespace: "dock"
     mask: {
-        if (hasOpenOverlay) return fullRegion;
+        if (hasOpenOverlay && !sidebarPassthrough) return fullRegion;
         if (hasFullscreen) return emptyRegion;
         return regions;
     }
@@ -146,6 +153,20 @@ StyledWindow {
     WlrLayershell.layer: hasOpenOverlay || (actualFullscreen && fsTransitionProg < 1) || (fsTransitionProg > 0 && Config.general.showOverFullscreen) || (panels.notifications.visible && panels.notifications.height > 0 && GlobalConfig.notifs.fullscreen === "on") || (((monitor?.lastIpcObject?.specialWorkspace?.name?.length ?? 0) > 0) && (monitor?.activeWorkspace?.toplevels?.values?.some(t => (t?.lastIpcObject?.fullscreen ?? 0) > 1) ?? false)) ? WlrLayer.Overlay : WlrLayer.Top
     WlrLayershell.keyboardFocus: wantsKeyboard ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
 
+    // A pinned sidebar gets out of the way of fullscreen windows (games, video)
+    // and comes back once fullscreen ends.
+    onActualFullscreenChanged: {
+        if (actualFullscreen) {
+            if (visibilities.sidebar && Visibilities.sidebarPinned) {
+                visibilities.sidebarSuspended = true;
+                visibilities.sidebar = false;
+            }
+        } else if (visibilities.sidebarSuspended) {
+            visibilities.sidebarSuspended = false;
+            if (Visibilities.sidebarPinned)
+                visibilities.sidebar = true;
+        }
+    }
     onWantsKeyboardChanged: {
         if (wantsKeyboard) {
             // The bridge ignores the shell taking focus, so this is still the
@@ -237,7 +258,8 @@ StyledWindow {
         function clear() {
             visibilities.launcher = false;
             visibilities.session = false;
-            visibilities.sidebar = false;
+            if (!Visibilities.sidebarPinned)
+                visibilities.sidebar = false;
             visibilities.dashboard = false;
             visibilities.utilities = false;
             Visibilities.setOverview(false);
@@ -268,6 +290,14 @@ StyledWindow {
                 }
             }
             onTriggered: {
+                // Focus moved to one of the shell's own file dialogs: keep the
+                // drawers open, and wait for the shell to be focused again before
+                // treating focus loss as a reason to close them.
+                if (Visibilities.openDialogs > 0) {
+                    parent._wasActive = false;
+                    return;
+                }
+
                 let anyActive = root.active || root.activeFocusItem !== null;
 
                 if (anyActive) {
