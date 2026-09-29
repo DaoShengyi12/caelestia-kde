@@ -41,7 +41,7 @@ Item {
     }
     onActiveTabChanged: {
         if (root.visibilities.sidebar)
-            Visibilities.setLastSidebarTab(activeTab);
+            Visibilities.lastSidebarTab = activeTab;
     }
 
     Connections {

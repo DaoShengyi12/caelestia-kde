@@ -1,10 +1,9 @@
 pragma Singleton
 
 import Quickshell
-import Quickshell.Io
+import Caelestia.Config
 import qs.components
 import qs.services
-import qs.utils
 
 Singleton {
     property var screens: new Map()
@@ -13,11 +12,7 @@ Singleton {
     // Tab to show the next time the sidebar opens, when the opener asks for a
     // specific one; "" means the configured default (see sidebarOpenTab).
     property string initialSidebarTab: ""
-    // Tab the sidebar opens on: "last" for wherever it was left, or a tab id.
-    property string sidebarDefaultTab: "last"
     property string lastSidebarTab: "notifications"
-    // Persisted sidebar state (state dir, sidebar.json).
-    property var sidebarState: ({})
     property string preOverviewActiveWindowAddress: ""
     property string dragAddress: ""
     property string dragOriginScreen: ""
@@ -29,27 +24,9 @@ Singleton {
 
     signal cycleOverview(bool backwards)
 
-    function setSidebarDefaultTab(tab: string): void {
-        sidebarDefaultTab = tab;
-        saveSidebarState("defaultTab", tab);
-    }
-
-    function setLastSidebarTab(tab: string): void {
-        if (tab === lastSidebarTab)
-            return;
-        lastSidebarTab = tab;
-        saveSidebarState("lastTab", tab);
-    }
-
     function sidebarOpenTab(): string {
-        return sidebarDefaultTab === "last" ? lastSidebarTab : sidebarDefaultTab;
+        return GlobalConfig.sidebar.defaultTab === "last" ? lastSidebarTab : GlobalConfig.sidebar.defaultTab;
     }
-
-    function saveSidebarState(key: string, value: var): void {
-        sidebarState[key] = value;
-        sidebarStateFile.setText(JSON.stringify(sidebarState));
-    }
-
     function load(screen: ShellScreen, visibilities: DrawerVisibilities): void {
         screens.set(Kwin.monitorFor(screen), visibilities);
         screens = new Map(screens);
@@ -95,21 +72,5 @@ Singleton {
     function setOverview(visible: bool): void {
         for (const visibilities of screens.values())
             visibilities.overview = visible;
-    }
-
-    FileView {
-        id: sidebarStateFile
-
-        path: `${Paths.state}/sidebar.json`
-        printErrors: false
-        onLoaded: {
-            try {
-                sidebarState = JSON.parse(text()) || {};
-            } catch (e) {
-                sidebarState = {};
-            }
-            sidebarDefaultTab = sidebarState.defaultTab || "last";
-            lastSidebarTab = sidebarState.lastTab || "notifications";
-        }
     }
 }

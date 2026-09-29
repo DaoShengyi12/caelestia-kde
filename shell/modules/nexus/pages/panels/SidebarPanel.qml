@@ -6,7 +6,6 @@ import Quickshell
 import Caelestia.Config
 import qs.components
 import qs.components.controls
-import qs.services
 import qs.utils
 import qs.modules.nexus.common
 
@@ -77,11 +76,11 @@ PageBase {
             subtext: qsTr("Tab shown when the sidebar opens")
             menuItems: root.openTabItems
             active: {
-                const idx = root.openTabValues.indexOf(Visibilities.sidebarDefaultTab);
+                const idx = root.openTabValues.indexOf(Config.sidebar.defaultTab);
                 return idx >= 0 ? root.openTabItems[idx] : root.openTabItems[0];
             }
             fallbackIcon: "tab"
-            onSelected: item => Visibilities.setSidebarDefaultTab(root.openTabValues[root.openTabItems.indexOf(item)])
+            onSelected: item => GlobalConfig.sidebar.defaultTab = root.openTabValues[root.openTabItems.indexOf(item)]
         }
 
         ToggleRow {
