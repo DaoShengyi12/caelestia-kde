@@ -20,45 +20,6 @@ class GeneralApps : public settings::ObjectNode {
     CONFIG_GLOBAL_PROPERTY(QStringList, explorer, { u"xdg-open"_s })
 };
 
-class GeneralIdleTimeout : public settings::ObjectNode {
-    CONFIG_NODE(GeneralIdleTimeout, settings::ObjectNode)
-
-    CONFIG_PROPERTY(bool, enabled, true)
-    CONFIG_PROPERTY(int, timeout, 300)
-    // A single command or a list of them, so a schedule can name one action or a chain
-    CONFIG_PROPERTY(QVariant, idleAction, {}, .allowedTypes = settings::unionTypes<QString, QStringList>())
-    CONFIG_PROPERTY(QVariant, returnAction, {}, .allowedTypes = settings::unionTypes<QString, QStringList>())
-    CONFIG_PROPERTY(bool, inhibitWhenAudio, false)
-    CONFIG_PROPERTY(bool, inhibitWhenCharging, false)
-    CONFIG_PROPERTY(bool, respectInhibitors, true)
-};
-CONFIG_LIST_TYPE(GeneralIdleTimeout, GeneralIdleTimeoutList)
-
-class GeneralIdle : public settings::ObjectNode {
-    CONFIG_NODE(GeneralIdle, settings::ObjectNode)
-
-    CONFIG_GLOBAL_PROPERTY(bool, lockBeforeSleep, true)
-    CONFIG_GLOBAL_PROPERTY(bool, inhibitWhenAudio, true)
-    CONFIG_GLOBAL_PROPERTY(bool, inhibitWhenCharging, false)
-    CONFIG_GLOBAL_LIST(GeneralIdleTimeoutList, timeouts,
-        DEFAULT_ARG({
-            vmap({
-                { u"timeout"_s, 180 },
-                { u"idleAction"_s, u"lock"_s },
-            }),
-            vmap({
-                { u"timeout"_s, 300 },
-                { u"idleAction"_s, u"dpms off"_s },
-                { u"returnAction"_s, u"dpms on"_s },
-            }),
-            vmap({
-                { u"timeout"_s, 600 },
-                { u"idleAction"_s, QStringList{ u"suspendThenHibernate"_s } },
-                { u"enabled"_s, false },
-            }),
-        }))
-};
-
 class GeneralBatteryWarnLevel : public settings::ObjectNode {
     CONFIG_NODE(GeneralBatteryWarnLevel, settings::ObjectNode)
 
@@ -95,7 +56,6 @@ class GeneralBattery : public settings::ObjectNode {
                 { u"critical"_s, true },
             }),
         }))
-    CONFIG_GLOBAL_PROPERTY(int, criticalLevel, 3)
 };
 
 class GeneralConfig : public settings::ObjectNode {
@@ -113,7 +73,6 @@ class GeneralConfig : public settings::ObjectNode {
     CONFIG_PROPERTY(bool, krohnkiteEnabled, false)
     CONFIG_PROPERTY(QString, krohnkiteLastLayout, QStringLiteral("BTree"))
     CONFIG_SUBOBJECT(GeneralApps, apps)
-    CONFIG_SUBOBJECT(GeneralIdle, idle)
     CONFIG_SUBOBJECT(GeneralBattery, battery)
 };
 

@@ -37,7 +37,6 @@ GridLayout {
         Layout.columnSpan: 2
         Layout.preferredWidth: Tokens.sizes.dashboard.weatherWidth
         Layout.preferredHeight: weather.implicitHeight
-        Layout.fillHeight: true
         Layout.minimumHeight: 140
 
         radius: Tokens.rounding.extraLarge * 1.5

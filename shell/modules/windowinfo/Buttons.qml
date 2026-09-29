@@ -43,9 +43,9 @@ ColumnLayout {
                 readonly property bool isCurrent: root.client?.workspace?.id === wsId
 
                 onClicked: {
-Kwin.setWindowDesktop(root.client?.address, wsId);
-Kwin.switchToWorkspace(wsId);
-                
+                    Kwin.setWindowDesktop(root.client?.address, wsId);
+                    Kwin.switchToWorkspace(wsId);
+
                     Visibilities.setOverview(false);
                 }
                 color: isCurrent ? Colours.tPalette.m3surfaceContainerHighest : Colours.palette.m3tertiaryContainer
@@ -67,10 +67,8 @@ Kwin.switchToWorkspace(wsId);
             onColor: Colours.palette.m3onSecondaryContainer
             text: root.client?.maximized ? qsTr("Restore") : qsTr("Maximize")
             onClicked: {
-                console.log("Maximize clicked. Address:", root.client?.address, "Maximized:", root.client?.maximized);
-console.log("Calling Kwin.maximizeWindow");
-Kwin.maximizeWindow(root.client?.address, !root.client?.maximized, !root.client?.maximized);
-            
+                Kwin.maximizeWindow(root.client?.address, !root.client?.maximized, !root.client?.maximized);
+
                 Visibilities.setOverview(false);
             }
         }
@@ -82,12 +80,12 @@ Kwin.maximizeWindow(root.client?.address, !root.client?.maximized, !root.client?
                 onColor: Colours.palette.m3onSecondaryContainer
                 text: root.client?.minimized ? qsTr("Unminimize") : qsTr("Minimize")
                 onClicked: {
-if (root.client?.minimized) {
-    Kwin.focusWindow(root.client?.address);
-} else {
-    Kwin.minimizeWindow(root.client?.address);
-}
-                
+                    if (root.client?.minimized) {
+                        Kwin.focusWindow(root.client?.address);
+                    } else {
+                        Kwin.minimizeWindow(root.client?.address);
+                    }
+
                     Visibilities.setOverview(false);
                 }
             }
@@ -100,10 +98,8 @@ if (root.client?.minimized) {
             onColor: Colours.palette.m3onErrorContainer
             text: qsTr("Kill")
             onClicked: {
-                console.log("Kill clicked. Address:", root.client?.address);
-console.log("Calling Kwin.closeWindow");
-Kwin.closeWindow(root.client?.address);
-            
+                Kwin.closeWindow(root.client?.address);
+
                 Visibilities.setOverview(false);
             }
         }

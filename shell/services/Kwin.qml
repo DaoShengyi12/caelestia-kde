@@ -175,13 +175,19 @@ Singleton {
         if (!wsUuid && win.workspaceUuid)
             wsUuid = win.workspaceUuid;
 
-        if (wsId === -1 || wsId === 0 || (!wsId && !wsUuid))
+        if (wsId <= 0 && wsUuid) {
+            const resolved = root.indexForId(wsUuid);
+            if (resolved > 0)
+                wsId = resolved;
+        }
+
+        if (wsId <= 0 && !wsUuid)
             return incAll;
 
         if (typeof wsTarget === "number" && wsTarget > 0)
-            return wsId === wsTarget;
+            return wsId === wsTarget || (wsUuid !== "" && wsUuid === root.uuidForIndex(wsTarget));
         if (typeof wsTarget === "string" && wsTarget.length > 0)
-            return wsUuid === wsTarget;
+            return wsUuid === wsTarget || (wsId > 0 && wsId === root.indexForId(wsTarget));
         return true;
     }
 
@@ -191,7 +197,7 @@ Singleton {
         return source.filter(w => {
             if (wsTarget !== undefined && wsTarget !== null && !root.isWindowOnWorkspace(w, wsTarget, incAll))
                 return false;
-            if (screenName) {
+            if (screenName && Quickshell.screens.length > 1) {
                 const out = w.output || w.monitor;
                 if (out && out !== screenName)
                     return false;
@@ -495,6 +501,7 @@ Singleton {
             Toaster.toast(qsTr("Keyboard layout changed"), qsTr("Layout changed to: %1").arg(kbLayoutFull), "keyboard");
         hadKeyboard = kbLayoutFull.length > 0;
     }
+    onWorkspacesChanged: root.refreshWindows()
 
     IpcHandler {
         function refreshDevices(): void {

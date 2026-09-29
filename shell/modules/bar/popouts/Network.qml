@@ -14,7 +14,7 @@ ColumnLayout {
 
     required property PopoutState popouts
 
-    property string view: "wireless" // "wireless" or "ethernet"
+    property string view: "wireless"
     property var passwordNetwork: null
     property bool showPasswordDialog: false
     property bool _isSidebarOpen: false
@@ -38,7 +38,6 @@ ColumnLayout {
         };
     }
 
-    // Injected by Content.qml's Popout.
     property real scaleOffset: 1.0
     property real fontScale: 1.0
 
@@ -86,7 +85,6 @@ ColumnLayout {
             y: Tokens.padding.medium * root.scaleOffset
             spacing: Tokens.spacing.small * root.scaleOffset
 
-    // Wireless section
     StyledText {
         visible: root.view === "wireless"
 
@@ -94,15 +92,6 @@ ColumnLayout {
         Layout.rightMargin: Tokens.padding.extraSmall * root.scaleOffset
         text: qsTr("Wireless")
         font.pointSize: Tokens.font.body.medium.pointSize * root.fontScale
-    }
-
-    PopoutToggleRow {
-        visible: root.view === "wireless"
-        scaleOffset: root.scaleOffset
-        fontScale: root.fontScale
-        label: qsTr("Enabled")
-        checked: Nmcli.wifiEnabled
-        toggle.onToggled: Nmcli.enableWifi(checked)
     }
 
     StyledText {
@@ -200,7 +189,6 @@ ColumnLayout {
                         Nmcli.disconnectFromNetwork();
                     } else if (networkItem.modelData) {
                         NetworkConnection.handleConnect(networkItem.modelData, null, network => {
-                            // Password is required - show password dialog
                             const networkSnapshot = {
                                 ssid: network.ssid,
                                 bssid: network.bssid || "",
@@ -213,8 +201,6 @@ ColumnLayout {
                             root.popouts.currentName = "wirelesspassword";
                         });
 
-                        // Connecting state is tracked by NmQt.connectingSsid and
-                        // cleared by the backend on success, failure, or cancel.
                     }
                 }
             }
@@ -382,7 +368,6 @@ ColumnLayout {
         }
     }
 
-    // Ethernet section
     StyledText {
         visible: root.view === "ethernet"
 
@@ -415,7 +400,7 @@ ColumnLayout {
         StyledRect {
             id: ethernetItem
 
-            required property var modelData
+            required property Nmcli.EthernetDevice modelData
             readonly property bool loading: false
 
             Layout.fillWidth: true
@@ -445,7 +430,7 @@ ColumnLayout {
                     Layout.fillWidth: true
                     Layout.preferredWidth: 0
                     elide: Text.ElideRight
-                    text: ethernetItem.modelData?.interface || qsTr("Unknown")
+                    text: ethernetItem.modelData?.iface || qsTr("Unknown")
                     color: ethernetItem.modelData?.connected ? Colours.palette.m3onSurface : Colours.palette.m3onSurfaceVariant
                     font.pointSize: Tokens.font.body.small.pointSize * root.fontScale
                 }
@@ -478,14 +463,13 @@ ColumnLayout {
                     if (ethernetItem.modelData?.connected && ethernetItem.modelData?.connection) {
                         Nmcli.disconnectEthernet(ethernetItem.modelData.connection, () => {});
                     } else if (ethernetItem.modelData) {
-                        Nmcli.connectEthernet(ethernetItem.modelData.connection || "", ethernetItem.modelData.interface || "", () => {});
+                        Nmcli.connectEthernet(ethernetItem.modelData.connection || "", ethernetItem.modelData.iface || "", () => {});
                     }
                 }
             }
         }
     }
 
-    // Connection details (IP / subnet / gateway / DNS / MAC) for the active device
     PopoutSection {
         visible: root.activeDetails.visible
         Layout.fillWidth: true
@@ -528,7 +512,6 @@ ColumnLayout {
 
     Connections {
         function onActiveChanged(): void {
-            // Reset local dialog tracking if we successfully connected
             if (root.showPasswordDialog && root.passwordNetwork && Nmcli.active && Nmcli.active.ssid === root.passwordNetwork.ssid) {
                 root.showPasswordDialog = false;
                 root.passwordNetwork = null;
@@ -545,7 +528,6 @@ ColumnLayout {
 
     Connections {
         function onCurrentNameChanged(): void {
-            // Clear password network when leaving password dialog
             if (root.popouts.currentName !== "wirelesspassword" && root.showPasswordDialog) {
                 root.showPasswordDialog = false;
                 root.passwordNetwork = null;

@@ -23,10 +23,13 @@ AppEntry::AppEntry(QObject* entry, unsigned int frequency, QObject* parent)
         QObject::connect(m_entry, metaProp.notifySignal(), this, thisMetaProp.notifySignal());
     }
 
-    QObject::connect(m_entry, &QObject::destroyed, this, [this]() {
-        m_entry = nullptr;
-        deleteLater();
-    });
+    QObject::connect(m_entry, &QObject::destroyed, this, &AppEntry::onEntryDestroyed);
+}
+
+void AppEntry::onEntryDestroyed() {
+    m_entry = nullptr;
+    emit removed();
+    deleteLater();
 }
 
 QObject* AppEntry::entry() const {
@@ -228,7 +231,6 @@ void AppDb::incrementFrequency(const QString& id) {
 QList<AppEntry*>& AppDb::getSortedApps() const {
     m_sortedApps = m_apps.values();
 
-    // Pre-compute favourite status to avoid repeated regex matching during sort
     QSet<QString> favSet;
     favSet.reserve(m_sortedApps.size());
     for (const auto* app : std::as_const(m_sortedApps)) {
@@ -292,7 +294,7 @@ void AppDb::updateApps() {
         if (!m_apps.contains(id)) {
             dirty = true;
             auto* const newEntry = new AppEntry(entry, getFrequency(id), this);
-            QObject::connect(newEntry, &QObject::destroyed, this, [id, this]() {
+            QObject::connect(newEntry, &AppEntry::removed, this, [id, this]() {
                 if (m_apps.remove(id)) {
                     emit appsChanged();
                 }

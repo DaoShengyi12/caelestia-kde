@@ -7,31 +7,31 @@ import Caelestia.Config
 import qs.components
 import qs.components.controls
 import qs.services
+import qs.utils
 import qs.modules.nexus.common
 
-// Detail / settings sub-page for the active Wi-Fi network. Reached by tapping
-// the active network row (settings icon) on NetworkPage.
 PageBase {
     id: root
 
     readonly property string ssid: nState.selectedNetworkSsid
+    readonly property string uuid: nState.selectedNetworkUuid
+    readonly property Nmcli.SavedProfile profile: Nmcli.savedConnectionProfiles.find(p => p.uuid === root.uuid) ?? null
     readonly property var ap: Nmcli.findNetwork(root.ssid)
     readonly property var details: Nmcli.wirelessDeviceDetails
-    readonly property bool isActive: !!Nmcli.active && Nmcli.active.ssid === root.ssid
+    readonly property bool isActive: root.profile ? root.profile.active : (!!Nmcli.active && Nmcli.active.ssid === root.ssid)
+    readonly property bool canConnect: !!root.profile && !root.isActive && !!root.ap
 
     property bool autoconnect: true
 
     function loadAutoconnect(): void {
-        if (!root.ssid)
+        if (!root.uuid)
             return;
-        Nmcli.getIpv4Config(root.ssid, cfg => {
+        Nmcli.getIpv4Config(root.uuid, cfg => {
             if (cfg)
                 root.autoconnect = cfg.autoconnect;
         });
     }
 
-    // Close if the network is no longer active (e.g. disconnected elsewhere).
-    // ...But not when the page was opened from saved networks
     onApChanged: {
         if (!nState.networkDetailsFromSaved && !root.ap)
             nState.closeSubPage();
@@ -51,92 +51,45 @@ PageBase {
         width: root.cappedWidth
         spacing: Tokens.spacing.extraSmall / 2
 
-        // ---- Action buttons --------------------------------------------------
         ButtonRow {
             Layout.bottomMargin: Tokens.spacing.large - parent.spacing
             Layout.alignment: Qt.AlignHCenter
-            Layout.minimumWidth: Math.round(root.cappedWidth * (root.isActive ? 0.7 : 0.5))
+            Layout.minimumWidth: Math.round(root.cappedWidth * (root.isActive || root.canConnect ? 0.7 : 0.5))
             spacing: Tokens.spacing.small
 
-            ButtonBase {
-                id: forgetBtn
-
-                fillWidth: true
+            NetworkActionButton {
+                icon: "delete"
+                label: qsTr("Forget")
+                error: true
                 shapeMorph: root.isActive
-                isRound: true
-                inactiveColour: Colours.palette.m3errorContainer
-                inactiveOnColour: Colours.palette.m3onErrorContainer
-
-                implicitWidth: forgetLayout.implicitWidth + Tokens.padding.extraLarge * 2
-                implicitHeight: forgetLayout.implicitHeight + Tokens.padding.medium * 2
-
+                visible: !!root.profile
                 onClicked: {
-                    Nmcli.forgetNetwork(root.ssid);
+                    Nmcli.forgetNetworkByUuid(root.uuid);
                     root.nState.closeSubPage();
-                }
-
-                ColumnLayout {
-                    id: forgetLayout
-
-                    anchors.centerIn: parent
-                    spacing: 0
-
-                    MaterialIcon {
-                        Layout.alignment: Qt.AlignHCenter
-                        text: "delete"
-                        color: forgetBtn.onColour
-                        fontStyle: Tokens.font.icon.medium
-                    }
-
-                    StyledText {
-                        Layout.alignment: Qt.AlignHCenter
-                        text: qsTr("Forget")
-                        color: forgetBtn.onColour
-                    }
                 }
             }
 
-            ButtonBase {
-                id: disconnectBtn
+            NetworkActionButton {
+                icon: "wifi"
+                label: qsTr("Connect")
+                visible: root.canConnect
+                onClicked: {
+                    NetworkConnection.connectToSavedProfile(root.uuid);
+                    root.nState.closeSubPage();
+                }
+            }
 
+            NetworkActionButton {
+                icon: "link_off"
+                label: qsTr("Disconnect")
                 visible: root.isActive
-                fillWidth: true
-                shapeMorph: true
-                isRound: true
-                inactiveColour: Colours.palette.m3primaryContainer
-                inactiveOnColour: Colours.palette.m3onPrimaryContainer
-
-                implicitWidth: disconnectLayout.implicitWidth + Tokens.padding.extraLarge * 2
-                implicitHeight: disconnectLayout.implicitHeight + Tokens.padding.medium * 2
-
                 onClicked: {
                     Nmcli.disconnectFromNetwork();
                     root.nState.closeSubPage();
                 }
-
-                ColumnLayout {
-                    id: disconnectLayout
-
-                    anchors.centerIn: parent
-                    spacing: 0
-
-                    MaterialIcon {
-                        Layout.alignment: Qt.AlignHCenter
-                        text: "link_off"
-                        color: disconnectBtn.onColour
-                        fontStyle: Tokens.font.icon.medium
-                    }
-
-                    StyledText {
-                        Layout.alignment: Qt.AlignHCenter
-                        text: qsTr("Disconnect")
-                        color: disconnectBtn.onColour
-                    }
-                }
             }
         }
 
-        // ---- Connection info (only shows when active) ---------------------------------
         SectionHeader {
             first: true
             text: qsTr("Connection")
@@ -187,7 +140,6 @@ PageBase {
             visible: root.isActive
         }
 
-        // ---- Behaviour -------------------------------------------------------
         SectionHeader {
             first: !root.isActive
             text: qsTr("Behaviour")
@@ -202,13 +154,50 @@ PageBase {
             checked: root.autoconnect
             onToggled: {
                 root.autoconnect = checked;
-                Nmcli.setAutoconnect(root.ssid, checked, () => {});
+                Nmcli.setAutoconnect(root.uuid, checked, () => {});
             }
         }
 
         Ipv4ConfigSection {
             Layout.fillWidth: true
-            connectionName: root.ssid
+            connectionId: root.uuid
+        }
+    }
+
+    component NetworkActionButton: ButtonBase {
+        id: action
+
+        property string icon
+        property string label
+        property bool error
+
+        fillWidth: true
+        shapeMorph: true
+        isRound: true
+        inactiveColour: action.error ? Colours.palette.m3errorContainer : Colours.palette.m3primaryContainer
+        inactiveOnColour: action.error ? Colours.palette.m3onErrorContainer : Colours.palette.m3onPrimaryContainer
+
+        implicitWidth: actionLayout.implicitWidth + Tokens.padding.extraLarge * 2
+        implicitHeight: actionLayout.implicitHeight + Tokens.padding.medium * 2
+
+        ColumnLayout {
+            id: actionLayout
+
+            anchors.centerIn: parent
+            spacing: 0
+
+            MaterialIcon {
+                Layout.alignment: Qt.AlignHCenter
+                text: action.icon
+                color: action.onColour
+                fontStyle: Tokens.font.icon.medium
+            }
+
+            StyledText {
+                Layout.alignment: Qt.AlignHCenter
+                text: action.label
+                color: action.onColour
+            }
         }
     }
 }

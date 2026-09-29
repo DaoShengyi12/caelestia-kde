@@ -2,70 +2,35 @@ pragma Singleton
 
 import QtQuick
 import Quickshell
-import Quickshell.Io
+import Caelestia.Config
 import qs.components
 import qs.services
-import qs.utils
 
 Singleton {
     property var screens: new Map()
     property var bars: new Map()
     property string launcherInitialSearch: ""
-    property string initialSidebarTab: "notifications"
-    // Shell file dialogs currently open. They are separate windows, so focusing
-    // one must not count as focus leaving the drawers.
+    property string initialSidebarTab: ""
+    property string lastSidebarTab: "notifications"
     property int openDialogs: 0
-    // A pinned sidebar only closes when the user closes it: losing focus or
-    // clicking elsewhere leaves it open, and the rest of the screen stays usable.
-    property bool sidebarPinned: false
-    // Persisted sidebar state (state dir, sidebar.json).
-    property var sidebarState: ({})
-
+    readonly property bool sidebarPinned: GlobalConfig.sidebar.pinned
     property string preOverviewActiveWindowAddress: ""
-    // A window card being dragged, shared so every screen's overview knows about
-    // it.
-    //
-    // Each overview is its own window and can only draw on its own screen, so a
-    // card dragged towards the next monitor simply vanishes at the edge -- the
-    // drag is still running and still lands correctly, but there is nothing to
-    // see, and it reads as having dropped the window into nowhere. Publishing
-    // the position here lets the screen the pointer has reached draw what is
-    // arriving.
     property string dragAddress: ""
     property string dragOriginScreen: ""
     property real dragX: 0
     property real dragY: 0
     property real dragWidth: 0
     property real dragHeight: 0
-    /// Address of a window whose screencast is claimed by something other than
-    /// its card in the grid -- the preview shown on the screen a drag has been
-    /// carried to, or an icon pulled up out of the strip.
-    ///
-    /// KWin serves one node per window and a node feeds one consumer: a second
-    /// PipeWireSourceItem bound to the same stream draws black, which is what
-    /// both of those did. The card gives it up while the claim stands, and takes
-    /// it back afterwards. It is off screen or covered at that point, so there
-    /// is nothing to lose.
     property string streamClaim: ""
 
-    // Raised when the overview shortcut is pressed while the overview is
-    // already up: the grid moves its selection on instead of the drawer
-    // closing under the user.
     signal cycleOverview(bool backwards)
 
-    function setSidebarPinned(pinned: bool): void {
-        sidebarPinned = pinned;
-        saveSidebarState("pinned", pinned);
+    function sidebarOpenTab(): string {
+        return GlobalConfig.sidebar.defaultTab === "last" ? lastSidebarTab : GlobalConfig.sidebar.defaultTab;
     }
-
-    function saveSidebarState(key: string, value: var): void {
-        sidebarState[key] = value;
-        sidebarStateFile.setText(JSON.stringify(sidebarState));
-    }
-
     function load(screen: ShellScreen, visibilities: DrawerVisibilities): void {
         screens.set(Kwin.monitorFor(screen), visibilities);
-        screens = new Map(screens); // Force QML property change notification
+        screens = new Map(screens);
         visibilities.launcherChanged.connect(() => {
             if (!visibilities.launcher) {
                 Kwin.clearHighlight();
@@ -87,7 +52,7 @@ Singleton {
     }
     function registerBar(screen: ShellScreen, barWrapper: var): void {
         bars.set(screen.name, barWrapper);
-        bars = new Map(bars); // Force QML property change notification by changing the Map reference
+        bars = new Map(bars);
     }
     function getForActive(): DrawerVisibilities {
         const monitor = Kwin.monitors[Kwin.cursorOutputName()] || Kwin.focusedMonitor;
@@ -105,47 +70,19 @@ Singleton {
         dragAddress = "";
         dragOriginScreen = "";
     }
-    /**
-     * Opens or closes the overview on every screen at once.
-     *
-     * Unlike the other drawers, the overview is a place you drag things across:
-     * a window can be moved to another monitor, or to a desktop that only exists
-     * on that monitor, and neither is possible if the destination is still
-     * showing the desktop underneath. Opening it on the focused screen alone
-     * also reads as broken on a multi-monitor setup -- one screen goes to the
-     * overview and the other carries on as if nothing happened.
-     */
     function setOverview(visible: bool): void {
         for (const visibilities of screens.values())
             visibilities.overview = visible;
     }
 
-    FileView {
-        id: sidebarStateFile
-
-        path: `${Paths.state}/sidebar.json`
-        printErrors: false
-        onLoaded: {
-            try {
-                sidebarState = JSON.parse(text()) || {};
-            } catch (e) {
-                sidebarState = {};
-            }
-            sidebarPinned = sidebarState.pinned === true;
-            if (sidebarPinned)
-                pinRestore.start();
-        }
-    }
-
-    // A pinned sidebar is part of the desktop: bring it back when the shell starts,
-    // once the screens have registered their drawers.
     Timer {
         id: pinRestore
 
         interval: 1500
+        running: GlobalConfig.sidebar.pinned
         onTriggered: {
             const v = getForActive();
-            if (v && sidebarPinned)
+            if (v && GlobalConfig.sidebar.pinned)
                 v.sidebar = true;
         }
     }

@@ -1,3 +1,5 @@
+pragma ComponentBehavior: Bound
+
 import QtQuick
 import Quickshell
 import Quickshell.Services.UPower
@@ -38,20 +40,8 @@ Scope {
                     Toaster.toast(level.title ?? qsTr("Battery warning"), level.message ?? qsTr("Battery level is low"), level.icon ?? "battery_android_alert", level.critical ? Toast.Error : Toast.Warning);
                 }
             }
-
-            if (!hibernateTimer.running && p <= GlobalConfig.general.battery.criticalLevel) {
-                Toaster.toast(qsTr("Hibernating in 5 seconds"), qsTr("Hibernating to prevent data loss"), "battery_android_alert", Toast.Error);
-                hibernateTimer.start();
-            }
         }
 
         target: UPower.displayDevice
-    }
-
-    Timer {
-        id: hibernateTimer
-
-        interval: 5000
-        onTriggered: SessionManager.hibernate()
     }
 }

@@ -9,7 +9,7 @@
       <translation>Hakkında</translation>
     </message>
     <message>
-      <location line="+75"/>
+      <location line="+70"/>
       <source>System</source>
       <translation>Sistem</translation>
     </message>
@@ -39,7 +39,7 @@
       <translation>Ürün yazılımı</translation>
     </message>
     <message>
-      <location line="+6"/>
+      <location line="+5"/>
       <source>Software</source>
       <translation>Yazılım</translation>
     </message>
@@ -51,30 +51,30 @@
     <message>
       <location line="+5"/>
       <source>CLI</source>
-      <translation type="unfinished">CLI</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+5"/>
       <source>Quickshell</source>
-      <translation type="unfinished">Quickshell</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+6"/>
       <source>Qt</source>
-      <translation type="unfinished">Qt</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
-      <location line="+6"/>
+      <location line="+5"/>
       <source>Plugins</source>
       <translation>Eklentiler</translation>
     </message>
     <message>
       <location line="+10"/>
       <source>Enabled plugins</source>
-      <translation type="unfinished">Enabled plugins</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
-      <location line="+13"/>
+      <location line="+12"/>
       <source>Advanced</source>
       <translation>Gelişmiş</translation>
     </message>
@@ -105,7 +105,7 @@
   <context>
     <name>AddNetworkPage</name>
     <message>
-      <location filename="../modules/nexus/pages/network/AddNetworkPage.qml" line="+78"/>
+      <location filename="../modules/nexus/pages/network/AddNetworkPage.qml" line="+66"/>
       <source>Enter password</source>
       <translation>Parolayı girin</translation>
     </message>
@@ -115,9 +115,9 @@
       <translation>Ağ ekle</translation>
     </message>
     <message>
-      <location line="+42"/>
+      <location line="+39"/>
       <source>Enter the password for &quot;%1&quot;.</source>
-      <translation type="unfinished">Enter the password for &quot;%1&quot;.</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
@@ -125,7 +125,7 @@
       <translation>Bir ağa elle bağlanmak için aşağıdaki bilgileri girin.</translation>
     </message>
     <message>
-      <location line="+14"/>
+      <location line="+13"/>
       <source>Network name (SSID)</source>
       <translation>Ağ adı (SSID)</translation>
     </message>
@@ -140,7 +140,7 @@
       <translation>Ağ adı gerekli</translation>
     </message>
     <message>
-      <location line="+12"/>
+      <location line="+11"/>
       <source>Hidden network</source>
       <translation>Gizli ağ</translation>
     </message>
@@ -150,7 +150,7 @@
       <translation>Adını yayınlamayan bir ağı etkin olarak arar</translation>
     </message>
     <message>
-      <location line="+11"/>
+      <location line="+10"/>
       <source>Security</source>
       <translation>Güvenlik</translation>
     </message>
@@ -191,7 +191,7 @@
       <translation>İptal</translation>
     </message>
     <message>
-      <location line="+26"/>
+      <location line="+24"/>
       <source>Connect</source>
       <translation>Bağlan</translation>
     </message>
@@ -232,7 +232,7 @@
   <context>
     <name>AddVpnPage</name>
     <message>
-      <location filename="../modules/nexus/pages/network/AddVpnPage.qml" line="+76"/>
+      <location filename="../modules/nexus/pages/network/AddVpnPage.qml" line="+75"/>
       <source>Edit VPN provider</source>
       <translation>VPN sağlayıcısını düzenle</translation>
     </message>
@@ -336,14 +336,24 @@
       <translation>Sabit saatler</translation>
     </message>
     <message>
-      <location line="+27"/>
+      <location line="+7"/>
+      <source>Light</source>
+      <translation>Açık</translation>
+    </message>
+    <message>
+      <location line="+5"/>
+      <source>Dark</source>
+      <translation>Koyu</translation>
+    </message>
+    <message>
+      <location line="+21"/>
       <source>Advanced Colors</source>
       <translation>Gelişmiş Renkler</translation>
     </message>
     <message>
       <location line="+25"/>
       <source>Theme Automation</source>
-      <translation type="unfinished">Theme Automation</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+9"/>
@@ -353,7 +363,7 @@
     <message>
       <location line="+1"/>
       <source>Automatically select color variants and theme mode</source>
-      <translation type="unfinished">Automatically select color variants and theme mode</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+7"/>
@@ -402,75 +412,95 @@
     </message>
     <message>
       <location line="+9"/>
-      <source>Palette</source>
-      <translation type="unfinished">Palette</translation>
+      <source>Theme mode</source>
+      <translation type="unfinished"/>
     </message>
     <message>
-      <location line="+10"/>
+      <location line="+7"/>
+      <source>Mode</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Switch the color scheme between light and dark</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+0"/>
+      <source>Managed by the automatic light and dark schedule</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+7"/>
+      <source>Palette</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+7"/>
       <source>Color intensity</source>
-      <translation type="unfinished">Color intensity</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>Chroma of the wallpaper-derived palette, at 100% by default</source>
-      <translation type="unfinished">Chroma of the wallpaper-derived palette, at 100% by default</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+0"/>
       <source>%1 keeps its own colors, so this does not apply</source>
-      <translation type="unfinished">%1 keeps its own colors, so this does not apply</translation>
+      <translation type="unfinished"/>
     </message>
   </context>
   <context>
     <name>AiAssistant</name>
     <message>
-      <location filename="../modules/sidebar/AiAssistant.qml" line="+789"/>
-      <location line="+1352"/>
+      <location filename="../modules/sidebar/AiAssistant.qml" line="+701"/>
+      <location line="+1280"/>
       <source>Rate limited - retrying in %1s…</source>
       <translation>Hız sınırına takıldı — %1 sn içinde yeniden denenecek…</translation>
     </message>
     <message>
-      <location line="+292"/>
+      <location line="+282"/>
       <source>Provider</source>
       <translation>Sağlayıcı</translation>
     </message>
     <message>
-      <location line="+41"/>
+      <location line="+39"/>
       <source>Select Model</source>
       <translation>Model Seç</translation>
     </message>
     <message>
-      <location line="+40"/>
+      <location line="+39"/>
       <source>Effort</source>
       <translation>Çaba</translation>
     </message>
     <message>
-      <location line="+32"/>
+      <location line="+31"/>
       <source>Account</source>
       <translation>Hesap</translation>
     </message>
     <message>
-      <location line="+358"/>
+      <location line="+352"/>
       <source>Thought Process</source>
       <translation>Düşünce Süreci</translation>
     </message>
     <message>
-      <location line="+187"/>
+      <location line="+184"/>
       <source>Suggestions</source>
       <translation>Öneriler</translation>
     </message>
     <message>
-      <location line="+124"/>
+      <location line="+123"/>
       <source>Ask assistant...</source>
       <translation>Asistana sorun...</translation>
     </message>
     <message>
-      <location line="+244"/>
+      <location line="+241"/>
       <source>Clear All</source>
       <translation>Tümünü Temizle</translation>
     </message>
     <message>
-      <location line="+35"/>
+      <location line="+34"/>
       <source>New Chat</source>
       <translation>Yeni Sohbet</translation>
     </message>
@@ -483,7 +513,7 @@
       <translation>Yapay Zekâ Asistanı</translation>
     </message>
     <message>
-      <location line="+32"/>
+      <location line="+29"/>
       <source>API key</source>
       <translation>API anahtarı</translation>
     </message>
@@ -493,44 +523,44 @@
       <translation>Oturum anahtarlığınızda saklanır, shell.json içinde değil. %1 ortam değişkeni bunu geçersiz kılar.</translation>
     </message>
     <message>
-      <location line="+92"/>
+      <location line="+79"/>
       <source>API key saved</source>
-      <translation type="unfinished">API key saved</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+2"/>
       <source>secret-tool exited with code %1</source>
-      <translation type="unfinished">secret-tool exited with code %1</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>Couldn&apos;t remove API key</source>
-      <translation type="unfinished">Couldn&apos;t remove API key</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+0"/>
       <source>Couldn&apos;t save API key</source>
-      <translation type="unfinished">Couldn&apos;t save API key</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
-      <location line="+31"/>
-      <location line="+525"/>
+      <location line="+27"/>
+      <location line="+520"/>
       <source>Checking…</source>
       <translation>Denetleniyor…</translation>
     </message>
     <message>
-      <location line="-523"/>
-      <location line="+500"/>
+      <location line="-518"/>
+      <location line="+497"/>
       <source>Not installed</source>
       <translation>Kurulu değil</translation>
     </message>
     <message>
-      <location line="-491"/>
+      <location line="-488"/>
       <source>Daemon not running - start it with: sudo systemctl start ollama</source>
-      <translation type="unfinished">Daemon not running - start it with: sudo systemctl start ollama</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
-      <location line="+80"/>
+      <location line="+73"/>
       <source>Default</source>
       <translation>Varsayılan</translation>
     </message>
@@ -540,76 +570,86 @@
       <translation>Hesap</translation>
     </message>
     <message>
-      <location line="+58"/>
+      <location line="+54"/>
       <source>Login done? You can close this window.</source>
       <translation>Giriş tamamlandı mı? Bu pencereyi kapatabilirsiniz.</translation>
     </message>
     <message>
-      <location line="+69"/>
-      <location line="+40"/>
+      <location line="+79"/>
+      <location line="+35"/>
       <source>Installed.</source>
       <translation>Kuruldu.</translation>
     </message>
     <message>
-      <location line="-40"/>
-      <location line="+44"/>
+      <location line="-35"/>
+      <location line="+39"/>
       <source>Failed</source>
       <translation>Başarısız</translation>
     </message>
     <message>
       <location line="-2"/>
       <source>Cancelled.</source>
-      <translation type="unfinished">Cancelled.</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
-      <location line="+50"/>
+      <location line="+49"/>
       <source>Local provider</source>
       <translation>Yerel sağlayıcı</translation>
     </message>
     <message>
       <location line="+6"/>
       <source>Ollama</source>
-      <translation type="unfinished">Ollama</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+8"/>
-      <location line="+138"/>
+      <location line="+142"/>
       <source>Status</source>
       <translation>Durum</translation>
     </message>
     <message>
-      <location line="-129"/>
+      <location line="-133"/>
       <source>Download Ollama</source>
-      <translation type="unfinished">Download Ollama</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <location line="+5"/>
-      <location line="+147"/>
-      <location line="+19"/>
+      <location line="+149"/>
+      <location line="+18"/>
       <source>Installing…</source>
       <translation>Kuruluyor…</translation>
     </message>
     <message>
-      <location line="-160"/>
+      <location line="-161"/>
       <source>Claude</source>
-      <translation type="unfinished">Claude</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+5"/>
-      <location line="+106"/>
+      <location line="+110"/>
       <source>Claude Code</source>
-      <translation type="unfinished">Claude Code</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
-      <location line="-105"/>
+      <location line="-109"/>
       <source>Uses the Claude CLI and your Claude login</source>
       <translation>Claude CLI&apos;yi ve Claude oturumunuzu kullanır</translation>
     </message>
     <message>
       <location line="+7"/>
+      <source>Let the CLI run its own tools</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Off by default; the assistant&apos;s own tools do not need it</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+7"/>
       <source>Claude API</source>
-      <translation type="unfinished">Claude API</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
@@ -624,7 +664,7 @@
     <message>
       <location line="+5"/>
       <source>OpenAI (ChatGPT)</source>
-      <translation type="unfinished">OpenAI (ChatGPT)</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
@@ -634,7 +674,7 @@
     <message>
       <location line="+6"/>
       <source>Gemini</source>
-      <translation type="unfinished">Gemini</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
@@ -644,7 +684,7 @@
     <message>
       <location line="+6"/>
       <source>OpenRouter</source>
-      <translation type="unfinished">OpenRouter</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
@@ -654,7 +694,7 @@
     <message>
       <location line="+6"/>
       <source>opencode Zen</source>
-      <translation type="unfinished">opencode Zen</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
@@ -664,7 +704,7 @@
     <message>
       <location line="+7"/>
       <source>opencode Go</source>
-      <translation type="unfinished">opencode Go</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
@@ -677,7 +717,7 @@
       <translation>API anahtarları</translation>
     </message>
     <message>
-      <location line="+67"/>
+      <location line="+61"/>
       <source>Download Claude Code</source>
       <translation>Claude Code&apos;u İndir</translation>
     </message>
@@ -697,7 +737,7 @@
       <translation>Güncel</translation>
     </message>
     <message>
-      <location line="+21"/>
+      <location line="+19"/>
       <source>Claude accounts</source>
       <translation>Claude hesapları</translation>
     </message>
@@ -712,7 +752,7 @@
       <translation>Seçmek için dokunun</translation>
     </message>
     <message>
-      <location line="+33"/>
+      <location line="+31"/>
       <source>Log in to selected account</source>
       <translation>Seçili hesaba giriş yap</translation>
     </message>
@@ -731,6 +771,21 @@
       <location line="+1"/>
       <source>Log into a different Claude account</source>
       <translation>Farklı bir Claude hesabına giriş yap</translation>
+    </message>
+    <message>
+      <location line="+8"/>
+      <source>History</source>
+      <translation>Geçmiş</translation>
+    </message>
+    <message>
+      <location line="+5"/>
+      <source>Save chat history</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Keep conversations between sessions; the sidebar&apos;s clear button removes what was already saved</source>
+      <translation type="unfinished"/>
     </message>
   </context>
   <context>
@@ -766,7 +821,7 @@
     <message>
       <location line="+10"/>
       <source>5 GHz</source>
-      <translation type="unfinished">5 GHz</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+10"/>
@@ -790,7 +845,7 @@
   <context>
     <name>AppBrowser</name>
     <message>
-      <location filename="../modules/launcher/AppBrowser.qml" line="+225"/>
+      <location filename="../modules/launcher/AppBrowser.qml" line="+213"/>
       <source>No apps in this category</source>
       <translation>Bu kategoride uygulama yok</translation>
     </message>
@@ -810,22 +865,22 @@
     <message>
       <location line="+18"/>
       <source>Remove from desktop</source>
-      <translation type="unfinished">Remove from desktop</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+0"/>
       <source>Add to desktop</source>
-      <translation type="unfinished">Add to desktop</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+25"/>
       <source>Show in launcher</source>
-      <translation type="unfinished">Show in launcher</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+0"/>
       <source>Hide app</source>
-      <translation type="unfinished">Hide app</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+18"/>
@@ -836,14 +891,14 @@
   <context>
     <name>AppInfo</name>
     <message>
-      <location filename="../modules/nexus/pages/apps/AppInfo.qml" line="+31"/>
+      <location filename="../modules/nexus/pages/apps/AppInfo.qml" line="+30"/>
       <source>App info</source>
       <translation>Uygulama bilgisi</translation>
     </message>
     <message>
-      <location line="+47"/>
+      <location line="+45"/>
       <source>Taskbar &amp; Dock</source>
-      <translation type="unfinished">Taskbar &amp; Dock</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+6"/>
@@ -853,15 +908,15 @@
     <message>
       <location line="+1"/>
       <source>Matched by a regex in pinnedApps - edit the config file to change</source>
-      <translation type="unfinished">Matched by a regex in pinnedApps - edit the config file to change</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+0"/>
       <source>Show on the dock even when not running</source>
-      <translation type="unfinished">Show on the dock even when not running</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
-      <location line="+11"/>
+      <location line="+10"/>
       <source>Launcher</source>
       <translation>Başlatıcı</translation>
     </message>
@@ -896,7 +951,7 @@
       <translation>Başlatıcıda gizle</translation>
     </message>
     <message>
-      <location line="+11"/>
+      <location line="+10"/>
       <source>Details</source>
       <translation>Ayrıntılar</translation>
     </message>
@@ -914,7 +969,7 @@
   <context>
     <name>AppStreamRow</name>
     <message>
-      <location filename="../components/controls/AppStreamRow.qml" line="+24"/>
+      <location filename="../components/controls/AppStreamRow.qml" line="+19"/>
       <source>Muted</source>
       <translation>Sessiz</translation>
     </message>
@@ -922,7 +977,7 @@
   <context>
     <name>AppTile</name>
     <message>
-      <location filename="../modules/launcher/items/AppTile.qml" line="+147"/>
+      <location filename="../modules/launcher/items/AppTile.qml" line="+143"/>
       <source>Matched by a regex in favouriteApps - edit the config file to change</source>
       <translation>favouriteApps içindeki bir düzenli ifadeyle eşleşti - değiştirmek için yapılandırma dosyasını düzenleyin</translation>
     </message>
@@ -949,23 +1004,23 @@
     <name>AppearancePage</name>
     <message>
       <location filename="../modules/nexus/pages/wallandstyle/AppearancePage.qml" line="+21"/>
-      <source>San Francisco Pro</source>
-      <translation type="unfinished">San Francisco Pro</translation>
+      <source>Google Sans Flex</source>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
-      <source>Google Sans Flex</source>
-      <translation type="unfinished">Google Sans Flex</translation>
+      <source>Rubik</source>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+4"/>
-      <source>SF Mono</source>
-      <translation type="unfinished">SF Mono</translation>
+      <source>CaskaydiaCove NF</source>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
-      <source>CaskaydiaCove NF</source>
-      <translation type="unfinished">CaskaydiaCove NF</translation>
+      <source>JetBrainsMono Nerd Font</source>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+15"/>
@@ -1055,25 +1110,25 @@
     <message>
       <location line="+8"/>
       <source>Ambient color mode</source>
-      <translation type="unfinished">Ambient color mode</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>Ambient glow is unavailable in light mode</source>
-      <translation type="unfinished">Ambient glow is unavailable in light mode</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+0"/>
       <source>Ambient light glow in window info panel</source>
-      <translation type="unfinished">Ambient light glow in window info panel</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+8"/>
       <source>Ambient glow opacity</source>
-      <translation type="unfinished">Ambient glow opacity</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
-      <location line="+55"/>
+      <location line="+22"/>
       <source>Background Blur</source>
       <translation>Arka Plan Bulanıklığı</translation>
     </message>
@@ -1088,7 +1143,7 @@
       <translation>Arka planı bulanıklaştırarak buzlu cam efekti uygular</translation>
     </message>
     <message>
-      <location line="+23"/>
+      <location line="+22"/>
       <source>High Quality Blur Masks</source>
       <translation>Yüksek Kaliteli Bulanıklık Maskeleri</translation>
     </message>
@@ -1161,7 +1216,7 @@
       <translation>Uygulamalar</translation>
     </message>
     <message>
-      <location line="+11"/>
+      <location line="+10"/>
       <source>Default applications</source>
       <translation>Varsayılan uygulamalar</translation>
     </message>
@@ -1196,7 +1251,7 @@
       <translation>Dosya yöneticisi</translation>
     </message>
     <message>
-      <location line="+7"/>
+      <location line="+6"/>
       <source>Library</source>
       <translation>Kitaplık</translation>
     </message>
@@ -1226,22 +1281,22 @@
     <message>
       <location filename="../modules/areapicker/AreaPicker.qml" line="+99"/>
       <source>Open screenshot tool</source>
-      <translation type="unfinished">Open screenshot tool</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+13"/>
       <source>Open screenshot tool (freeze mode)</source>
-      <translation type="unfinished">Open screenshot tool (freeze mode)</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+13"/>
       <source>Open screenshot tool (clipboard)</source>
-      <translation type="unfinished">Open screenshot tool (clipboard)</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+13"/>
       <source>Open screenshot tool (freeze mode, clipboard)</source>
-      <translation type="unfinished">Open screenshot tool (freeze mode, clipboard)</translation>
+      <translation type="unfinished"/>
     </message>
   </context>
   <context>
@@ -1252,7 +1307,7 @@
       <translation>Discord Zengin Durumu</translation>
     </message>
     <message>
-      <location line="+34"/>
+      <location line="+40"/>
       <source>Broadcast settings</source>
       <translation>Yayın ayarları</translation>
     </message>
@@ -1380,7 +1435,7 @@
   <context>
     <name>Audio</name>
     <message>
-      <location filename="../modules/bar/popouts/Audio.qml" line="+82"/>
+      <location filename="../modules/bar/popouts/Audio.qml" line="+81"/>
       <source>Audio</source>
       <translation>Ses</translation>
     </message>
@@ -1427,7 +1482,7 @@
     </message>
     <message>
       <location line="+57"/>
-      <location filename="../services/Audio.qml" line="+124"/>
+      <location filename="../services/Audio.qml" line="+117"/>
       <source>Unknown</source>
       <translation>Bilinmiyor</translation>
     </message>
@@ -1437,12 +1492,12 @@
       <translation>Bilinmeyen Aygıt</translation>
     </message>
     <message>
-      <location line="+37"/>
+      <location line="+36"/>
       <source>Unknown Application</source>
       <translation>Bilinmeyen Uygulama</translation>
     </message>
     <message>
-      <location line="+176"/>
+      <location line="+174"/>
       <source>Audio output changed</source>
       <translation>Ses çıkışı değişti</translation>
     </message>
@@ -1624,14 +1679,24 @@
       <translation>Simgeyi göster</translation>
     </message>
     <message>
-      <location line="+7"/>
+      <location line="+6"/>
       <source>Show seconds</source>
-      <translation type="unfinished">Show seconds</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>Add a seconds line to the clock</source>
-      <translation type="unfinished">Add a seconds line to the clock</translation>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+7"/>
+      <source>Calendar popout</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Show a mini calendar when hovering the clock</source>
+      <translation type="unfinished"/>
     </message>
   </context>
   <context>
@@ -1639,7 +1704,7 @@
     <message>
       <location filename="../modules/nexus/pages/panels/taskbar/BarComponents.qml" line="+20"/>
       <source>Logo</source>
-      <translation type="unfinished">Logo</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
@@ -1649,7 +1714,7 @@
     <message>
       <location line="+3"/>
       <source>GitHub</source>
-      <translation type="unfinished">GitHub</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+2"/>
@@ -1658,9 +1723,8 @@
     </message>
     <message>
       <location line="+2"/>
-      <location line="+1"/>
       <source>Greeter</source>
-      <translation type="unfinished">Greeter</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
@@ -1770,12 +1834,12 @@
     <message>
       <location line="+12"/>
       <source>Add to right zone</source>
-      <translation type="unfinished">Add to right zone</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+9"/>
       <source>Disable component</source>
-      <translation type="unfinished">Disable component</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+183"/>
@@ -1783,7 +1847,7 @@
       <translation>Aç/kapat ve yeniden sırala</translation>
     </message>
     <message>
-      <location line="+24"/>
+      <location line="+23"/>
       <source>Active components</source>
       <translation>Etkin bileşenler</translation>
     </message>
@@ -1793,22 +1857,22 @@
       <translation>Yeniden sıralamak veya devre dışı bırakmak için sürükleyin</translation>
     </message>
     <message>
-      <location line="+16"/>
+      <location line="+15"/>
       <source>Left Zone</source>
       <translation>Sol Bölge</translation>
     </message>
     <message>
-      <location line="+56"/>
+      <location line="+55"/>
       <source>Middle Zone</source>
       <translation>Orta Bölge</translation>
     </message>
     <message>
-      <location line="+56"/>
+      <location line="+55"/>
       <source>Right Zone</source>
       <translation>Sağ Bölge</translation>
     </message>
     <message>
-      <location line="+61"/>
+      <location line="+60"/>
       <source>Library</source>
       <translation>Kitaplık</translation>
     </message>
@@ -1868,32 +1932,32 @@
     <message>
       <location line="+7"/>
       <source>Show app badges</source>
-      <translation type="unfinished">Show app badges</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>Show the count, progress and urgency an app publishes for its dock icon</source>
-      <translation type="unfinished">Show the count, progress and urgency an app publishes for its dock icon</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+7"/>
       <source>Filter by current desktop</source>
-      <translation type="unfinished">Filter by current desktop</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>Only show applications and windows belonging to the active virtual desktop</source>
-      <translation type="unfinished">Only show applications and windows belonging to the active virtual desktop</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+8"/>
       <source>Preview window on desktop</source>
-      <translation type="unfinished">Preview window on desktop</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>Highlight and show the window itself on the workspace while hovering over dock previews</source>
-      <translation type="unfinished">Highlight and show the window itself on the workspace while hovering over dock previews</translation>
+      <translation type="unfinished"/>
     </message>
   </context>
   <context>
@@ -1901,22 +1965,22 @@
     <message>
       <location filename="../modules/nexus/pages/panels/taskbar/BarGithub.qml" line="+17"/>
       <source>GitHub</source>
-      <translation type="unfinished">GitHub</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
-      <location line="+9"/>
+      <location line="+7"/>
       <source>No token set</source>
-      <translation type="unfinished">No token set</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+2"/>
       <source>Last fetch failed</source>
-      <translation type="unfinished">Last fetch failed</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+3"/>
       <source>Connected as %1</source>
-      <translation type="unfinished">Connected as %1</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
@@ -1926,15 +1990,15 @@
     <message>
       <location line="+2"/>
       <source>Not fetched yet</source>
-      <translation type="unfinished">Not fetched yet</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+5"/>
       <source>Paste a token below and save it to enable the widget</source>
-      <translation type="unfinished">Paste a token below and save it to enable the widget</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
-      <location line="+49"/>
+      <location line="+50"/>
       <source>Configuration</source>
       <translation>Yapılandırma</translation>
     </message>
@@ -1964,27 +2028,27 @@
     <message>
       <location filename="../modules/nexus/pages/panels/taskbar/BarGreeter.qml" line="+19"/>
       <source>Time of day</source>
-      <translation type="unfinished">Time of day</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>Slideshow</source>
-      <translation type="unfinished">Slideshow</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+23"/>
       <source>Greeter</source>
-      <translation type="unfinished">Greeter</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+5"/>
       <source>Reset Defaults</source>
-      <translation type="unfinished">Reset Defaults</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+15"/>
       <source>General Settings</source>
-      <translation type="unfinished">General Settings</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+5"/>
@@ -2009,7 +2073,7 @@
     <message>
       <location line="+1"/>
       <source>Only show the greeter while hovering</source>
-      <translation type="unfinished">Only show the greeter while hovering</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+10"/>
@@ -2019,201 +2083,209 @@
     <message>
       <location line="+1"/>
       <source>Show a greeter popout when hovering</source>
-      <translation type="unfinished">Show a greeter popout when hovering</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+9"/>
       <source>Animation Mechanism</source>
-      <translation type="unfinished">Animation Mechanism</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+6"/>
       <source>Mode</source>
-      <translation type="unfinished">Mode</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>Switch media according to time of day or cycle through a slideshow</source>
-      <translation type="unfinished">Switch media according to time of day or cycle through a slideshow</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
-      <location line="+14"/>
+      <location line="+11"/>
       <source>Time of Day Periods &amp; Media</source>
-      <translation type="unfinished">Time of Day Periods &amp; Media</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+7"/>
       <source>Morning Media</source>
-      <translation type="unfinished">Morning Media</translation>
-    </message>
-    <message>
-      <location line="+7"/>
-      <source>Select Morning Media</source>
-      <translation type="unfinished">Select Morning Media</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <location line="+45"/>
       <location line="+45"/>
       <location line="+45"/>
-      <location line="+191"/>
-      <source>Multimedia files (Images, GIFs, Videos)</source>
-      <translation type="unfinished">Multimedia files (Images, GIFs, Videos)</translation>
+      <source>Not set</source>
+      <translation type="unfinished"/>
     </message>
     <message>
-      <location line="-315"/>
+      <location line="-129"/>
+      <source>Select Morning Media</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+1"/>
+      <location line="+45"/>
+      <location line="+45"/>
+      <location line="+45"/>
+      <location line="+188"/>
+      <source>Multimedia files (Images, GIFs, Videos)</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="-312"/>
       <source>Morning start time</source>
-      <translation type="unfinished">Morning start time</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+14"/>
       <source>Morning Greeting Text</source>
-      <translation type="unfinished">Morning Greeting Text</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+12"/>
       <source>Afternoon Media</source>
-      <translation type="unfinished">Afternoon Media</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+7"/>
       <source>Select Afternoon Media</source>
-      <translation type="unfinished">Select Afternoon Media</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+12"/>
       <source>Afternoon start time</source>
-      <translation type="unfinished">Afternoon start time</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+14"/>
       <source>Afternoon Greeting Text</source>
-      <translation type="unfinished">Afternoon Greeting Text</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+12"/>
       <source>Evening Media</source>
-      <translation type="unfinished">Evening Media</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+7"/>
       <source>Select Evening Media</source>
-      <translation type="unfinished">Select Evening Media</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+12"/>
       <source>Evening start time</source>
-      <translation type="unfinished">Evening start time</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+14"/>
       <source>Evening Greeting Text</source>
-      <translation type="unfinished">Evening Greeting Text</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+12"/>
       <source>Night Media</source>
-      <translation type="unfinished">Night Media</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+7"/>
       <source>Select Night Media</source>
-      <translation type="unfinished">Select Night Media</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+12"/>
       <source>Night start time</source>
-      <translation type="unfinished">Night start time</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+15"/>
       <source>Night Greeting Text</source>
-      <translation type="unfinished">Night Greeting Text</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
-      <location line="+14"/>
+      <location line="+11"/>
       <source>Slideshow Timing &amp; Order</source>
-      <translation type="unfinished">Slideshow Timing &amp; Order</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+6"/>
       <source>Slide interval</source>
-      <translation type="unfinished">Slide interval</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>%1 seconds</source>
-      <translation type="unfinished">%1 seconds</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+13"/>
       <source>Random shuffle</source>
-      <translation type="unfinished">Random shuffle</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>Pick random media instead of cycling sequentially</source>
-      <translation type="unfinished">Pick random media instead of cycling sequentially</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+10"/>
       <source>Slideshow Greeting Text</source>
-      <translation type="unfinished">Slideshow Greeting Text</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>Optional custom text on bar, supports {user}</source>
-      <translation type="unfinished">Optional custom text on bar, supports {user}</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+12"/>
       <source>Slideshow Greeting Icon</source>
-      <translation type="unfinished">Slideshow Greeting Icon</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>Material icon name for the bar widget</source>
-      <translation type="unfinished">Material icon name for the bar widget</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+11"/>
       <source>Slideshow Folders</source>
-      <translation type="unfinished">Slideshow Folders</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+8"/>
       <source>Add Media Folder</source>
-      <translation type="unfinished">Add Media Folder</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>Select a folder containing images, GIFs, or videos</source>
-      <translation type="unfinished">Select a folder containing images, GIFs, or videos</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+6"/>
       <source>Select Media Folder</source>
-      <translation type="unfinished">Select Media Folder</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+64"/>
       <source>Individual Slideshow Media</source>
-      <translation type="unfinished">Individual Slideshow Media</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+8"/>
       <source>Add Media File</source>
-      <translation type="unfinished">Add Media File</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>Select specific image, GIF, or video file to include</source>
-      <translation type="unfinished">Select specific image, GIF, or video file to include</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+6"/>
       <source>Select a Media File</source>
-      <translation type="unfinished">Select a Media File</translation>
+      <translation type="unfinished"/>
     </message>
   </context>
   <context>
@@ -2234,7 +2306,7 @@
       <translation>Her açılır pencere türü için önizleme ölçeğini ve yazı tipini özelleştirin</translation>
     </message>
     <message>
-      <location line="+23"/>
+      <location line="+22"/>
       <source>RESET ALL</source>
       <translation>TÜMÜNÜ SIFIRLA</translation>
     </message>
@@ -2256,10 +2328,10 @@
     <message>
       <location line="+10"/>
       <source>Greeter</source>
-      <translation type="unfinished">Greeter</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
-      <location line="+19"/>
+      <location line="+13"/>
       <source>Audio</source>
       <translation>Ses</translation>
     </message>
@@ -2271,7 +2343,12 @@
     <message>
       <location line="+13"/>
       <source>Bluetooth</source>
-      <translation type="unfinished">Bluetooth</translation>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+13"/>
+      <source>Clock</source>
+      <translation>Saat</translation>
     </message>
     <message>
       <location line="+13"/>
@@ -2281,7 +2358,7 @@
     <message>
       <location line="+13"/>
       <source>GitHub</source>
-      <translation type="unfinished">GitHub</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+13"/>
@@ -2319,7 +2396,7 @@
     <message>
       <location filename="../modules/nexus/pages/panels/taskbar/BarStatusIcons.qml" line="+12"/>
       <source>Lock keys</source>
-      <translation type="unfinished">Lock keys</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
@@ -2344,12 +2421,12 @@
     <message>
       <location line="+1"/>
       <source>Ethernet</source>
-      <translation type="unfinished">Ethernet</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>Bluetooth</source>
-      <translation type="unfinished">Bluetooth</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
@@ -2364,7 +2441,7 @@
     <message>
       <location line="+1"/>
       <source>Night light</source>
-      <translation type="unfinished">Night light</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
@@ -2377,19 +2454,19 @@
       <translation>Durum simgeleri</translation>
     </message>
     <message>
-      <location line="+12"/>
+      <location line="+11"/>
       <source>Visible icons</source>
       <translation>Görünür simgeler</translation>
     </message>
     <message>
-      <location line="+34"/>
+      <location line="+26"/>
       <source>Add entry</source>
-      <translation type="unfinished">Add entry</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>Add new entry</source>
-      <translation type="unfinished">Add new entry</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
@@ -2397,17 +2474,17 @@
       <translation>Ekle</translation>
     </message>
     <message>
-      <location line="+13"/>
+      <location line="+12"/>
       <source>Wi-Fi</source>
-      <translation type="unfinished">Wi-Fi</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>Show the Wi-Fi icon alongside the network icon</source>
-      <translation type="unfinished">Show the Wi-Fi icon alongside the network icon</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
-      <location line="+7"/>
+      <location line="+6"/>
       <source>Behavior</source>
       <translation>Davranış</translation>
     </message>
@@ -2488,12 +2565,12 @@
     <message>
       <location filename="../modules/nexus/pages/panels/taskbar/BarWorkspaces.qml" line="+16"/>
       <source>Shape</source>
-      <translation type="unfinished">Shape</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+5"/>
       <source>Text</source>
-      <translation type="unfinished">Text</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+4"/>
@@ -2528,12 +2605,12 @@
     <message>
       <location line="+7"/>
       <source>Indicator style</source>
-      <translation type="unfinished">Indicator style</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>Draw each workspace as a material shape or as its number</source>
-      <translation type="unfinished">Draw each workspace as a material shape or as its number</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+8"/>
@@ -2548,12 +2625,12 @@
     <message>
       <location line="+7"/>
       <source>Show unoccupied</source>
-      <translation type="unfinished">Show unoccupied</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>Show workspaces that are inactive and empty</source>
-      <translation type="unfinished">Show workspaces that are inactive and empty</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+6"/>
@@ -2568,30 +2645,30 @@
     <message>
       <location line="+12"/>
       <source>Per monitor</source>
-      <translation type="unfinished">Per monitor</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>Hide workspaces not on the current monitor</source>
-      <translation type="unfinished">Hide workspaces not on the current monitor</translation>
+      <translation type="unfinished"/>
     </message>
   </context>
   <context>
     <name>Battery</name>
     <message>
-      <location filename="../modules/bar/popouts/Battery.qml" line="+24"/>
+      <location filename="../modules/bar/popouts/Battery.qml" line="+23"/>
       <source>The device is too hot</source>
-      <translation type="unfinished">The device is too hot</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+2"/>
       <source>The device is on a lap</source>
-      <translation type="unfinished">The device is on a lap</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+2"/>
       <source>Unknown reason</source>
-      <translation type="unfinished">Unknown reason</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+10"/>
@@ -2599,9 +2676,9 @@
       <translation>Pil</translation>
     </message>
     <message>
-      <location line="+149"/>
+      <location line="+146"/>
       <source>%1%</source>
-      <translation type="unfinished">%1%</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+0"/>
@@ -2617,7 +2694,7 @@
       <location line="+3"/>
       <location line="+5"/>
       <source>~ %1</source>
-      <translation type="unfinished">~ %1</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="-2"/>
@@ -2627,13 +2704,13 @@
     <message>
       <location line="+40"/>
       <source>Performance degraded: %1</source>
-      <translation type="unfinished">Performance degraded: %1</translation>
+      <translation type="unfinished"/>
     </message>
   </context>
   <context>
     <name>BatteryMonitor</name>
     <message>
-      <location filename="../modules/BatteryMonitor.qml" line="+17"/>
+      <location filename="../modules/BatteryMonitor.qml" line="+19"/>
       <source>Charger unplugged</source>
       <translation>Şarj aleti çıkarıldı</translation>
     </message>
@@ -2662,16 +2739,6 @@
       <source>Battery level is low</source>
       <translation>Pil düzeyi düşük</translation>
     </message>
-    <message>
-      <location line="+5"/>
-      <source>Hibernating in 5 seconds</source>
-      <translation>5 saniye içinde hazırda bekletilecek</translation>
-    </message>
-    <message>
-      <location line="+0"/>
-      <source>Hibernating to prevent data loss</source>
-      <translation>Veri kaybını önlemek için hazırda bekletiliyor</translation>
-    </message>
   </context>
   <context>
     <name>BatteryTank</name>
@@ -2694,9 +2761,9 @@
   <context>
     <name>Bluetooth</name>
     <message>
-      <location filename="../modules/bar/popouts/Bluetooth.qml" line="+29"/>
+      <location filename="../modules/bar/popouts/Bluetooth.qml" line="+28"/>
       <source>Bluetooth</source>
-      <translation type="unfinished">Bluetooth</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+24"/>
@@ -2719,12 +2786,12 @@
       <translation> (%1 bağlı)</translation>
     </message>
     <message>
-      <location line="+54"/>
+      <location line="+61"/>
       <source>%1%</source>
-      <translation type="unfinished">%1%</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
-      <location line="+58"/>
+      <location line="+59"/>
       <source>Open settings</source>
       <translation>Ayarları aç</translation>
     </message>
@@ -2739,7 +2806,7 @@
     <message>
       <location line="+10"/>
       <source>Bluetooth</source>
-      <translation type="unfinished">Bluetooth</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+15"/>
@@ -2825,12 +2892,12 @@
     <message>
       <location filename="../services/Brightness.qml" line="+113"/>
       <source>Increase brightness</source>
-      <translation type="unfinished">Increase brightness</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+8"/>
       <source>Decrease brightness</source>
-      <translation type="unfinished">Decrease brightness</translation>
+      <translation type="unfinished"/>
     </message>
   </context>
   <context>
@@ -2851,12 +2918,12 @@
       <translation>Eşleştirilmedi</translation>
     </message>
     <message>
-      <location line="+12"/>
+      <location line="+11"/>
       <source>Device</source>
       <translation>Aygıt</translation>
     </message>
     <message>
-      <location line="+49"/>
+      <location line="+48"/>
       <source>Forget</source>
       <translation>Unut</translation>
     </message>
@@ -2871,7 +2938,7 @@
       <translation>Bağlan</translation>
     </message>
     <message>
-      <location line="+13"/>
+      <location line="+12"/>
       <source>Trusted</source>
       <translation>Güvenilir</translation>
     </message>
@@ -2911,7 +2978,7 @@
       <translation>Bu aygıtın sistemi uyandırmasına izin ver</translation>
     </message>
     <message>
-      <location line="+30"/>
+      <location line="+29"/>
       <source>Battery</source>
       <translation>Pil</translation>
     </message>
@@ -2944,7 +3011,7 @@
       <translation>Ekranı kapla</translation>
     </message>
     <message>
-      <location line="+15"/>
+      <location line="+13"/>
       <source>Unminimize</source>
       <translation>Simge durumundan çıkar</translation>
     </message>
@@ -2980,7 +3047,7 @@
   <context>
     <name>Categories</name>
     <message>
-      <location filename="../modules/launcher/services/Categories.qml" line="+15"/>
+      <location filename="../modules/launcher/services/Categories.qml" line="+12"/>
       <source>Favorites</source>
       <translation>Sık Kullanılanlar</translation>
     </message>
@@ -3002,7 +3069,7 @@
     <message>
       <location line="+1"/>
       <source>Video</source>
-      <translation type="unfinished">Video</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
@@ -3063,7 +3130,7 @@
   <context>
     <name>ClipItem</name>
     <message>
-      <location filename="../modules/launcher/items/ClipItem.qml" line="+33"/>
+      <location filename="../modules/launcher/items/ClipItem.qml" line="+31"/>
       <source>Copied to clipboard</source>
       <translation>Panoya kopyalandı</translation>
     </message>
@@ -3092,14 +3159,22 @@
     </message>
   </context>
   <context>
+    <name>ClockContext</name>
+    <message>
+      <location filename="../modules/bar/popouts/ClockContext.qml" line="+79"/>
+      <source>Clock settings</source>
+      <translation type="unfinished"/>
+    </message>
+  </context>
+  <context>
     <name>ColourSelect</name>
     <message>
-      <location filename="../modules/nexus/pages/wallandstyle/ColourSelect.qml" line="+40"/>
+      <location filename="../modules/nexus/pages/wallandstyle/ColourSelect.qml" line="+39"/>
       <source>Colors</source>
       <translation>Renkler</translation>
     </message>
     <message>
-      <location line="+84"/>
+      <location line="+80"/>
       <source>Dynamic</source>
       <translation>Dinamik</translation>
     </message>
@@ -3122,14 +3197,6 @@
       <location line="+19"/>
       <source>Variants</source>
       <translation>Türevler</translation>
-    </message>
-  </context>
-  <context>
-    <name>CommitRow</name>
-    <message>
-      <location filename="../modules/nexus/common/CommitRow.qml" line="+50"/>
-      <source>%1 • %2</source>
-      <translation type="unfinished">%1 • %2</translation>
     </message>
   </context>
   <context>
@@ -3226,7 +3293,7 @@
       <translation>Komutlar için &quot;%1&quot; yazın</translation>
     </message>
     <message>
-      <location line="+328"/>
+      <location line="+323"/>
       <source>Clear clipboard history?</source>
       <translation>Pano geçmişi temizlensin mi?</translation>
     </message>
@@ -3246,7 +3313,7 @@
       <translation>Temizle</translation>
     </message>
     <message>
-      <location filename="../modules/sidebar/Content.qml" line="+100"/>
+      <location filename="../modules/sidebar/Content.qml" line="+99"/>
       <source>Notifications</source>
       <translation>Bildirimler</translation>
     </message>
@@ -3264,7 +3331,7 @@
   <context>
     <name>ContentList</name>
     <message>
-      <location filename="../modules/launcher/ContentList.qml" line="+225"/>
+      <location filename="../modules/launcher/ContentList.qml" line="+217"/>
       <source>Images</source>
       <translation>Görseller</translation>
     </message>
@@ -3279,7 +3346,7 @@
       <translation>Videolar</translation>
     </message>
     <message>
-      <location line="+238"/>
+      <location line="+236"/>
       <source>cliphist not found</source>
       <translation>cliphist bulunamadı</translation>
     </message>
@@ -3481,12 +3548,12 @@
     </message>
     <message>
       <location line="+5"/>
-      <location line="+85"/>
+      <location line="+84"/>
       <source>Pill</source>
       <translation>Hap</translation>
     </message>
     <message>
-      <location line="-80"/>
+      <location line="-79"/>
       <source>Diamond</source>
       <translation>Elmas</translation>
     </message>
@@ -3532,12 +3599,12 @@
     </message>
     <message>
       <location line="+4"/>
-      <location line="+64"/>
+      <location line="+62"/>
       <source>Dashboard</source>
       <translation>Panel</translation>
     </message>
     <message>
-      <location line="-52"/>
+      <location line="-51"/>
       <source>General</source>
       <translation>Genel</translation>
     </message>
@@ -3569,15 +3636,15 @@
     <message>
       <location line="+18"/>
       <source>Show clock seconds</source>
-      <translation type="unfinished">Show clock seconds</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>Display seconds below the clock in the dashboard</source>
-      <translation type="unfinished">Display seconds below the clock in the dashboard</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
-      <location line="+6"/>
+      <location line="+5"/>
       <source>Tabs</source>
       <translation>Sekmeler</translation>
     </message>
@@ -3632,7 +3699,7 @@
       <translation>Panelde bir karşılama iletisi gösterir</translation>
     </message>
     <message>
-      <location line="+7"/>
+      <location line="+6"/>
       <source>Performance widgets</source>
       <translation>Başarım bileşenleri</translation>
     </message>
@@ -3667,7 +3734,7 @@
       <translation>Ağ</translation>
     </message>
     <message>
-      <location line="+7"/>
+      <location line="+6"/>
       <source>Behavior</source>
       <translation>Davranış</translation>
     </message>
@@ -3765,17 +3832,17 @@
       <location line="-79"/>
       <location line="+123"/>
       <source>Desktop media shapes</source>
-      <translation type="unfinished">Desktop media shapes</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="-110"/>
       <source>Auto-hide media shapes</source>
-      <translation type="unfinished">Auto-hide media shapes</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>Hide media shapes when a window is open</source>
-      <translation type="unfinished">Hide media shapes when a window is open</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+8"/>
@@ -3870,9 +3937,55 @@
     </message>
   </context>
   <context>
+    <name>DesktopIconContextMenu</name>
+    <message>
+      <location filename="../modules/background/DesktopIconContextMenu.qml" line="+75"/>
+      <source>Open</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+8"/>
+      <source>Show in File Manager</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+8"/>
+      <source>Unpin from dock</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+0"/>
+      <source>Pin to dock</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+9"/>
+      <source>Rename</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+8"/>
+      <source>Move to Trash</source>
+      <translation type="unfinished"/>
+    </message>
+  </context>
+  <context>
+    <name>DesktopIcons</name>
+    <message>
+      <location filename="../modules/background/DesktopIcons.qml" line="+157"/>
+      <source>File operation failed</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>kioclient could not complete the request</source>
+      <translation type="unfinished"/>
+    </message>
+  </context>
+  <context>
     <name>DesktopLyrics</name>
     <message>
-      <location filename="../modules/background/DesktopLyrics.qml" line="+286"/>
+      <location filename="../modules/background/DesktopLyrics.qml" line="+285"/>
       <source>Loading lyrics...</source>
       <translation>Şarkı sözleri yükleniyor...</translation>
     </message>
@@ -3957,7 +4070,7 @@
     <message>
       <location line="+1"/>
       <source>Clock, Shapes, Lyrics, Visualiser</source>
-      <translation type="unfinished">Clock, Shapes, Lyrics, Visualiser</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+7"/>
@@ -4034,12 +4147,12 @@
     <message>
       <location line="+15"/>
       <source>Folders</source>
-      <translation type="unfinished">Folders</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+35"/>
       <source>Select Folder</source>
-      <translation type="unfinished">Select Folder</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+0"/>
@@ -4063,7 +4176,7 @@
   <context>
     <name>DinoGame</name>
     <message>
-      <location filename="../modules/sidebar/DinoGame.qml" line="+256"/>
+      <location filename="../modules/sidebar/DinoGame.qml" line="+251"/>
       <source>All up to date!</source>
       <translation>Her şey güncel!</translation>
     </message>
@@ -4071,7 +4184,7 @@
   <context>
     <name>DockContext</name>
     <message>
-      <location filename="../modules/bar/popouts/DockContext.qml" line="+100"/>
+      <location filename="../modules/bar/popouts/DockContext.qml" line="+98"/>
       <source>Unpin from dock</source>
       <translation>Rıhtımdan kaldır</translation>
     </message>
@@ -4081,7 +4194,7 @@
       <translation>Rıhtıma sabitle</translation>
     </message>
     <message>
-      <location line="+40"/>
+      <location line="+33"/>
       <source>Open new window</source>
       <translation>Yeni pencere aç</translation>
     </message>
@@ -4102,95 +4215,95 @@
   <context>
     <name>Entries</name>
     <message>
-      <location filename="../modules/whatsnew/Entries.qml" line="+23"/>
+      <location filename="../modules/whatsnew/Entries.qml" line="+12"/>
       <source>Window Rules Out of the Box</source>
-      <translation type="unfinished">Window Rules Out of the Box</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>The installer now writes three KWin rules: unfocused windows and dialogs dim to 95 percent, dialogs open centered, and picture-in-picture windows stay above others. Only Caelestia&apos;s own groups are written, so your rules keep their names and their order. Edit or remove them under System Settings -&gt; Window Rules, or let uninstall.sh take them out again.</source>
-      <translation type="unfinished">The installer now writes three KWin rules: unfocused windows and dialogs dim to 95 percent, dialogs open centered, and picture-in-picture windows stay above others. Only Caelestia&apos;s own groups are written, so your rules keep their names and their order. Edit or remove them under System Settings -&gt; Window Rules, or let uninstall.sh take them out again.</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+6"/>
       <source>Right-Click Any App</source>
-      <translation type="unfinished">Right-Click Any App</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>An app in the launcher or its app browser now opens a context menu on right click: pin it to the dock, add it to the desktop, hide it from the launcher, or open it in the menu editor. The dock&apos;s pinned list is its own setting now (bar.dock.pinnedApps) instead of borrowing the launcher&apos;s favorites, and an existing list is carried over.</source>
-      <translation type="unfinished">An app in the launcher or its app browser now opens a context menu on right click: pin it to the dock, add it to the desktop, hide it from the launcher, or open it in the menu editor. The dock&apos;s pinned list is its own setting now (bar.dock.pinnedApps) instead of borrowing the launcher&apos;s favorites, and an existing list is carried over.</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+6"/>
       <source>Status Icons You Can Arrange</source>
-      <translation type="unfinished">Status Icons You Can Arrange</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
-      <location line="+1"/>
+      <location line="+3"/>
       <source>The bar&apos;s status icons are an ordered list now instead of a wall of switches: add one, switch it off, or drag it into place under Settings -&gt; Panels -&gt; Taskbar -&gt; Status icons, and the bar draws them in that order. The clock can show seconds, and the workspace indicator can hide the ones that are empty and inactive.</source>
-      <translation type="unfinished">The bar&apos;s status icons are an ordered list now instead of a wall of switches: add one, switch it off, or drag it into place under Settings -&gt; Panels -&gt; Taskbar -&gt; Status icons, and the bar draws them in that order. The clock can show seconds, and the workspace indicator can hide the ones that are empty and inactive.</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+6"/>
       <source>Game Mode at a Tap</source>
-      <translation type="unfinished">Game Mode at a Tap</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
-      <location line="+1"/>
-      <source>The utilities panel has a game mode toggle: it stops window animations and blur, pauses a video wallpaper and stops the desktop media shapes while it is on, then puts everything back afterwards. Game mode can still switch itself on when one of your target windows opens, under Settings -&gt; Services -&gt; Game mode.</source>
-      <translation type="unfinished">The utilities panel has a game mode toggle: it stops window animations and blur, pauses a video wallpaper and stops the desktop media shapes while it is on, then puts everything back afterwards. Game mode can still switch itself on when one of your target windows opens, under Settings -&gt; Services -&gt; Game mode.</translation>
+      <location line="+3"/>
+      <source>The utilities panel has a game mode toggle: it stops window animations and blur, pauses a video wallpaper and stops the desktop media shapes while it is on, then puts everything back afterwards. Game mode can still switch itself on when one of your target windows opens, under Settings -&gt; Utilities -&gt; Game mode.</source>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+6"/>
       <source>Color Intensity</source>
-      <translation type="unfinished">Color Intensity</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
-      <location line="+1"/>
+      <location line="+3"/>
       <source>Advanced color settings gained a slider that scales how saturated the palette derived from your wallpaper is: 0 percent leaves the same palette in grey, 100 percent is what the color engine produces, and 200 percent is the most the accents take. It is kept with the scheme, so it survives a wallpaper change and a reboot, and &apos;caelestia scheme set -i&apos; sets it from the command line.</source>
-      <translation type="unfinished">Advanced color settings gained a slider that scales how saturated the palette derived from your wallpaper is: 0 percent leaves the same palette in grey, 100 percent is what the color engine produces, and 200 percent is the most the accents take. It is kept with the scheme, so it survives a wallpaper change and a reboot, and &apos;caelestia scheme set -i&apos; sets it from the command line.</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+6"/>
       <source>Dock App Badges</source>
-      <translation type="unfinished">Dock App Badges</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
-      <location line="+1"/>
+      <location line="+3"/>
       <source>Dock icons can now display the count, progress, and urgency published by running applications. Configure it under Settings -&gt; Panels -&gt; Taskbar -&gt; Dock.</source>
-      <translation type="unfinished">Dock icons can now display the count, progress, and urgency published by running applications. Configure it under Settings -&gt; Panels -&gt; Taskbar -&gt; Dock.</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+6"/>
       <source>Ambient Glow</source>
-      <translation type="unfinished">Ambient Glow</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
-      <location line="+1"/>
+      <location line="+3"/>
       <source>Shell surfaces and window previews can now cast a subtle, dynamic ambient glow derived from the window content. Enable it under Settings -&gt; Appearance.</source>
-      <translation type="unfinished">Shell surfaces and window previews can now cast a subtle, dynamic ambient glow derived from the window content. Enable it under Settings -&gt; Appearance.</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+6"/>
       <source>Lock Screen Password Reveal</source>
-      <translation type="unfinished">Lock Screen Password Reveal</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>Click or tap the lock icon inside the greeter&apos;s password pill to reveal your typed password before unlocking.</source>
-      <translation type="unfinished">Click or tap the lock icon inside the greeter&apos;s password pill to reveal your typed password before unlocking.</translation>
+      <translation type="unfinished"/>
     </message>
   </context>
   <context>
     <name>EthernetDetailPage</name>
     <message>
-      <location filename="../modules/nexus/pages/network/EthernetDetailPage.qml" line="+22"/>
+      <location filename="../modules/nexus/pages/network/EthernetDetailPage.qml" line="+20"/>
       <source>Ethernet</source>
-      <translation type="unfinished">Ethernet</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
-      <location line="+55"/>
+      <location line="+54"/>
       <source>Disconnect</source>
       <translation>Bağlantıyı kes</translation>
     </message>
@@ -4200,7 +4313,7 @@
       <translation>Bağlan</translation>
     </message>
     <message>
-      <location line="+10"/>
+      <location line="+9"/>
       <source>Connection</source>
       <translation>Bağlantı</translation>
     </message>
@@ -4230,7 +4343,7 @@
       <location line="+6"/>
       <location line="+7"/>
       <source>—</source>
-      <translation type="unfinished">—</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="-21"/>
@@ -4256,9 +4369,9 @@
   <context>
     <name>EthernetSection</name>
     <message>
-      <location filename="../modules/nexus/common/EthernetSection.qml" line="+53"/>
+      <location filename="../modules/nexus/common/EthernetSection.qml" line="+52"/>
       <source>Ethernet</source>
-      <translation type="unfinished">Ethernet</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+10"/>
@@ -4276,7 +4389,7 @@
       <translation>Veri kullanımı: %1</translation>
     </message>
     <message>
-      <location line="+72"/>
+      <location line="+68"/>
       <source>Wired connection</source>
       <translation>Kablolu bağlantı</translation>
     </message>
@@ -4301,7 +4414,7 @@
     <message>
       <location filename="../components/widgets/ExtraIndicator.qml" line="+35"/>
       <source>+%1</source>
-      <translation type="unfinished">+%1</translation>
+      <translation type="unfinished"/>
     </message>
   </context>
   <context>
@@ -4309,7 +4422,7 @@
     <message>
       <location filename="../components/filedialog/FileDialog.qml" line="+16"/>
       <source>Select a folder</source>
-      <translation type="unfinished">Select a folder</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+0"/>
@@ -4328,7 +4441,7 @@
   <context>
     <name>GameMode</name>
     <message>
-      <location filename="../services/GameMode.qml" line="+169"/>
+      <location filename="../services/GameMode.qml" line="+113"/>
       <source>Game mode enabled</source>
       <translation>Oyun kipi etkinleştirildi</translation>
     </message>
@@ -4487,9 +4600,9 @@
   <context>
     <name>Github</name>
     <message>
-      <location filename="../modules/bar/popouts/Github.qml" line="+32"/>
+      <location filename="../modules/bar/popouts/Github.qml" line="+31"/>
       <source>GitHub</source>
-      <translation type="unfinished">GitHub</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+33"/>
@@ -4515,22 +4628,22 @@
   <context>
     <name>GithubActivity</name>
     <message>
-      <location filename="../modules/bar/components/GithubActivity.qml" line="+85"/>
+      <location filename="../modules/bar/components/GithubActivity.qml" line="+83"/>
       <source>GitHub widget needs a token</source>
-      <translation type="unfinished">GitHub widget needs a token</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>Add a personal access token in Settings → Panels → Taskbar → GitHub.</source>
-      <translation type="unfinished">Add a personal access token in Settings → Panels → Taskbar → GitHub.</translation>
+      <translation type="unfinished"/>
     </message>
   </context>
   <context>
     <name>GreeterContext</name>
     <message>
-      <location filename="../modules/bar/popouts/GreeterContext.qml" line="+81"/>
+      <location filename="../modules/bar/popouts/GreeterContext.qml" line="+79"/>
       <source>Greeter settings</source>
-      <translation type="unfinished">Greeter settings</translation>
+      <translation type="unfinished"/>
     </message>
   </context>
   <context>
@@ -4577,7 +4690,7 @@
     <message>
       <location filename="../modules/nexus/common/Ipv4ConfigSection.qml" line="+98"/>
       <source>IPv4</source>
-      <translation type="unfinished">IPv4</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+9"/>
@@ -4650,7 +4763,7 @@
   <context>
     <name>KbLayout</name>
     <message>
-      <location filename="../modules/bar/popouts/kblayout/KbLayout.qml" line="+38"/>
+      <location filename="../modules/bar/popouts/kblayout/KbLayout.qml" line="+37"/>
       <source>Keyboard Layouts</source>
       <translation>Klavye Düzenleri</translation>
     </message>
@@ -4676,7 +4789,7 @@
       <translation>Tuş Atamasını Kaydet</translation>
     </message>
     <message>
-      <location line="+69"/>
+      <location line="+68"/>
       <source>Press keys now...</source>
       <translation>Şimdi tuşlara basın...</translation>
     </message>
@@ -4694,7 +4807,7 @@
   <context>
     <name>KeybindItem</name>
     <message>
-      <location filename="../modules/launcher/items/KeybindItem.qml" line="+68"/>
+      <location filename="../modules/launcher/items/KeybindItem.qml" line="+62"/>
       <source>No keybinds</source>
       <translation>Tuş ataması yok</translation>
     </message>
@@ -4703,77 +4816,77 @@
     <name>KrohnkitePage</name>
     <message>
       <location filename="../modules/nexus/pages/desktop/KrohnkitePage.qml" line="+20"/>
-      <location line="+58"/>
+      <location line="+57"/>
       <source>Window Tiling</source>
       <translation>Pencere Döşeme</translation>
     </message>
     <message>
-      <location line="-53"/>
+      <location line="-52"/>
       <source>BTree</source>
-      <translation type="unfinished">BTree</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
-      <location line="+272"/>
+      <location line="+271"/>
       <source>Monocle</source>
-      <translation type="unfinished">Monocle</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
-      <location line="-271"/>
-      <location line="+264"/>
+      <location line="-270"/>
+      <location line="+263"/>
       <source>Floating</source>
-      <translation type="unfinished">Floating</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
-      <location line="-263"/>
-      <location line="+277"/>
+      <location line="-262"/>
+      <location line="+276"/>
       <source>Quarter</source>
-      <translation type="unfinished">Quarter</translation>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="-275"/>
+      <location line="+289"/>
+      <source>Spread</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="-288"/>
+      <location line="+295"/>
+      <source>Stacked</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="-294"/>
+      <location line="+301"/>
+      <source>Stair</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="-300"/>
+      <location line="+329"/>
+      <source>Columns</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="-328"/>
+      <location line="+306"/>
+      <source>Three Column</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="-305"/>
+      <location line="+277"/>
+      <source>Spiral</source>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="-276"/>
-      <location line="+290"/>
-      <source>Spread</source>
-      <translation type="unfinished">Spread</translation>
-    </message>
-    <message>
-      <location line="-289"/>
-      <location line="+296"/>
-      <source>Stacked</source>
-      <translation type="unfinished">Stacked</translation>
-    </message>
-    <message>
-      <location line="-295"/>
-      <location line="+302"/>
-      <source>Stair</source>
-      <translation type="unfinished">Stair</translation>
+      <location line="+311"/>
+      <source>Tile</source>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="-301"/>
-      <location line="+330"/>
-      <source>Columns</source>
-      <translation type="unfinished">Columns</translation>
-    </message>
-    <message>
-      <location line="-329"/>
-      <location line="+307"/>
-      <source>Three Column</source>
-      <translation type="unfinished">Three Column</translation>
-    </message>
-    <message>
-      <location line="-306"/>
-      <location line="+278"/>
-      <source>Spiral</source>
-      <translation type="unfinished">Spiral</translation>
-    </message>
-    <message>
-      <location line="-277"/>
-      <location line="+312"/>
-      <source>Tile</source>
-      <translation type="unfinished">Tile</translation>
-    </message>
-    <message>
-      <location line="-302"/>
       <source>Save Changes</source>
       <translation>Değişiklikleri Kaydet</translation>
     </message>
@@ -4783,7 +4896,7 @@
       <translation>Değişiklikleri Uygulamak İçin Oturumu Kapatın</translation>
     </message>
     <message>
-      <location line="+24"/>
+      <location line="+23"/>
       <source>Automatically tile windows using Krohnkite</source>
       <translation>Pencereleri Krohnkite ile otomatik olarak döşe</translation>
     </message>
@@ -4951,7 +5064,7 @@
   <context>
     <name>KrohnkitePreview</name>
     <message>
-      <location filename="../modules/nexus/pages/desktop/KrohnkitePreview.qml" line="+268"/>
+      <location filename="../modules/nexus/pages/desktop/KrohnkitePreview.qml" line="+262"/>
       <source>Layout Preview</source>
       <translation>Düzen Önizlemesi</translation>
     </message>
@@ -5016,50 +5129,50 @@
     <message>
       <location line="+56"/>
       <source>Reload devices</source>
-      <translation type="unfinished">Reload devices</translation>
+      <translation type="unfinished"/>
     </message>
   </context>
   <context>
     <name>LanguageAndRegion</name>
     <message>
-      <location filename="../modules/nexus/pages/LanguageAndRegion.qml" line="+45"/>
-      <location line="+44"/>
+      <location filename="../modules/nexus/pages/LanguageAndRegion.qml" line="+44"/>
+      <location line="+41"/>
       <source>Auto</source>
-      <translation type="unfinished">Auto</translation>
+      <translation>Otomatik</translation>
     </message>
     <message>
-      <location line="-40"/>
+      <location line="-37"/>
       <source>°C</source>
-      <translation type="unfinished">°C</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+4"/>
       <source>°F</source>
-      <translation type="unfinished">°F</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+4"/>
       <source>K</source>
-      <translation type="unfinished">K</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
-      <location line="+8"/>
+      <location line="+7"/>
       <source>Binary (KiB, MiB)</source>
-      <translation type="unfinished">Binary (KiB, MiB)</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+4"/>
       <source>Decimal (KB, MB)</source>
-      <translation type="unfinished">Decimal (KB, MB)</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
-      <location line="+9"/>
-      <location line="+62"/>
+      <location line="+8"/>
+      <location line="+60"/>
       <source>System language</source>
       <translation>Sistem dili</translation>
     </message>
     <message>
-      <location line="-47"/>
+      <location line="-46"/>
       <source>12-hour</source>
       <translation>12 saat</translation>
     </message>
@@ -5074,7 +5187,7 @@
       <translation>Dil ve bölge</translation>
     </message>
     <message>
-      <location line="+11"/>
+      <location line="+10"/>
       <source>Language</source>
       <translation>Dil</translation>
     </message>
@@ -5094,7 +5207,7 @@
       <translation>Çevrilmemiş metinler İngilizce gösterilir</translation>
     </message>
     <message>
-      <location line="+10"/>
+      <location line="+9"/>
       <source>Weather</source>
       <translation>Hava durumu</translation>
     </message>
@@ -5139,7 +5252,7 @@
       <translation>Konum seçilmedi</translation>
     </message>
     <message>
-      <location line="+19"/>
+      <location line="+18"/>
       <source>Units</source>
       <translation>Birimler</translation>
     </message>
@@ -5166,15 +5279,15 @@
     <message>
       <location line="+8"/>
       <source>Data sizes</source>
-      <translation type="unfinished">Data sizes</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>Units for data sizes and network speeds</source>
-      <translation type="unfinished">Units for data sizes and network speeds</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
-      <location line="+8"/>
+      <location line="+7"/>
       <source>Time &amp; date</source>
       <translation>Saat ve tarih</translation>
     </message>
@@ -5197,7 +5310,7 @@
       <translation>Başlatıcı</translation>
     </message>
     <message>
-      <location line="+12"/>
+      <location line="+11"/>
       <source>General</source>
       <translation>Genel</translation>
     </message>
@@ -5272,7 +5385,7 @@
       <translation>İmleç ekran kenarına ulaşınca göster</translation>
     </message>
     <message>
-      <location line="+7"/>
+      <location line="+6"/>
       <source>Display</source>
       <translation>Görünüm</translation>
     </message>
@@ -5337,7 +5450,7 @@
       <translation>Başlatıcı açılmadan önce sürüklenecek piksel miktarı</translation>
     </message>
     <message>
-      <location line="+10"/>
+      <location line="+9"/>
       <source>Clipboard</source>
       <translation>Pano</translation>
     </message>
@@ -5362,7 +5475,7 @@
       <translation>Pano geçmişini temizlemeden önce sorar</translation>
     </message>
     <message>
-      <location line="+7"/>
+      <location line="+6"/>
       <source>Behavior</source>
       <translation>Davranış</translation>
     </message>
@@ -5387,7 +5500,7 @@
       <translation>Bilgisayarı kapatan veya oturumu kapatan eylemlere izin verir</translation>
     </message>
     <message>
-      <location line="+7"/>
+      <location line="+6"/>
       <source>Fuzzy search</source>
       <translation>Bulanık arama</translation>
     </message>
@@ -5476,12 +5589,12 @@
     </message>
     <message>
       <location line="+5"/>
-      <location line="+160"/>
+      <location line="+157"/>
       <source>Pentagon</source>
       <translation>Beşgen</translation>
     </message>
     <message>
-      <location line="-155"/>
+      <location line="-152"/>
       <source>Gem</source>
       <translation>Mücevher</translation>
     </message>
@@ -5516,7 +5629,7 @@
       <translation>Kilit Ekranı</translation>
     </message>
     <message>
-      <location line="+26"/>
+      <location line="+25"/>
       <source>Wallpaper</source>
       <translation>Duvar kâğıdı</translation>
     </message>
@@ -5533,17 +5646,17 @@
     <message>
       <location line="+16"/>
       <source>Lock screen wallpaper</source>
-      <translation type="unfinished">Lock screen wallpaper</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>Select an image...</source>
-      <translation type="unfinished">Select an image...</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+6"/>
       <source>Select lock screen wallpaper</source>
-      <translation type="unfinished">Select lock screen wallpaper</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
@@ -5553,15 +5666,15 @@
     <message>
       <location line="+12"/>
       <source>Blur wallpaper</source>
-      <translation type="unfinished">Blur wallpaper</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>Blur the entire wallpaper, not just behind the widgets</source>
-      <translation type="unfinished">Blur the entire wallpaper, not just behind the widgets</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
-      <location line="+10"/>
+      <location line="+9"/>
       <source>Authentication</source>
       <translation>Kimlik doğrulama</translation>
     </message>
@@ -5586,14 +5699,14 @@
       <translation>Parolaya dönmeden önceki deneme sayısı</translation>
     </message>
     <message>
-      <location line="+17"/>
+      <location line="+16"/>
       <source>General</source>
       <translation>Genel</translation>
     </message>
     <message>
       <location line="+6"/>
       <source>Profile picture shape</source>
-      <translation type="unfinished">Profile picture shape</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
@@ -5603,12 +5716,12 @@
     <message>
       <location line="+19"/>
       <source>Rotate profile picture shape</source>
-      <translation type="unfinished">Rotate profile picture shape</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>Continuously rotate the profile picture shape</source>
-      <translation type="unfinished">Continuously rotate the profile picture shape</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+10"/>
@@ -5641,9 +5754,9 @@
       <translation>Kilit ekranı görselini palete uyacak şekilde renklendirir</translation>
     </message>
     <message>
-      <location line="+10"/>
+      <location line="+9"/>
       <source>Session icons</source>
-      <translation type="unfinished">Session icons</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+6"/>
@@ -5653,7 +5766,7 @@
     <message>
       <location line="+1"/>
       <source>Show sleep action on the lock screen</source>
-      <translation type="unfinished">Show sleep action on the lock screen</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+10"/>
@@ -5663,27 +5776,27 @@
     <message>
       <location line="+1"/>
       <source>Show hibernate action on the lock screen</source>
-      <translation type="unfinished">Show hibernate action on the lock screen</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+10"/>
       <source>Switch user</source>
-      <translation type="unfinished">Switch user</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>Show switch user action on the lock screen</source>
-      <translation type="unfinished">Show switch user action on the lock screen</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+10"/>
       <source>Log out</source>
-      <translation type="unfinished">Log out</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>Show log out action on the lock screen</source>
-      <translation type="unfinished">Show log out action on the lock screen</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+10"/>
@@ -5693,45 +5806,45 @@
     <message>
       <location line="+1"/>
       <source>Show restart action on the lock screen</source>
-      <translation type="unfinished">Show restart action on the lock screen</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+11"/>
       <source>Shut down</source>
-      <translation type="unfinished">Shut down</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>Show shut down action on the lock screen</source>
-      <translation type="unfinished">Show shut down action on the lock screen</translation>
+      <translation type="unfinished"/>
     </message>
   </context>
   <context>
     <name>LockStatus</name>
     <message>
-      <location filename="../modules/bar/popouts/LockStatus.qml" line="+22"/>
+      <location filename="../modules/bar/popouts/LockStatus.qml" line="+21"/>
       <source>Keyboard Locks</source>
       <translation>Klavye Kilitleri</translation>
     </message>
     <message>
       <location line="+22"/>
       <source>Caps Lock enabled</source>
-      <translation type="unfinished">Caps Lock enabled</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+0"/>
       <source>Caps Lock disabled</source>
-      <translation type="unfinished">Caps Lock disabled</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+5"/>
       <source>Num Lock enabled</source>
-      <translation type="unfinished">Num Lock enabled</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+0"/>
       <source>Num Lock disabled</source>
-      <translation type="unfinished">Num Lock disabled</translation>
+      <translation type="unfinished"/>
     </message>
   </context>
   <context>
@@ -5926,7 +6039,7 @@
   <context>
     <name>NavPane</name>
     <message>
-      <location filename="../modules/nexus/NavPane.qml" line="+37"/>
+      <location filename="../modules/nexus/NavPane.qml" line="+35"/>
       <source>Search settings</source>
       <translation>Ayarlarda ara</translation>
     </message>
@@ -5951,7 +6064,7 @@
     <message>
       <location line="+1"/>
       <source>DNS</source>
-      <translation type="unfinished">DNS</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
@@ -5959,12 +6072,12 @@
       <translation>MAC adresi</translation>
     </message>
     <message>
-      <location line="+21"/>
+      <location line="+20"/>
       <source>Network</source>
       <translation>Ağ</translation>
     </message>
     <message>
-      <location line="+38"/>
+      <location line="+37"/>
       <source>Wireless</source>
       <translation>Kablosuz</translation>
     </message>
@@ -5979,14 +6092,14 @@
       <translation>%1 ağ kullanılabilir</translation>
     </message>
     <message>
-      <location line="+146"/>
+      <location line="+143"/>
       <source>Rescan networks</source>
       <translation>Ağları yeniden tara</translation>
     </message>
     <message>
       <location line="+29"/>
       <source>VPN</source>
-      <translation type="unfinished">VPN</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+6"/>
@@ -5999,9 +6112,9 @@
       <translation>VPN profili bulunamadı</translation>
     </message>
     <message>
-      <location line="+12"/>
+      <location line="+11"/>
       <source>Ethernet</source>
-      <translation type="unfinished">Ethernet</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+9"/>
@@ -6014,7 +6127,7 @@
       <translation>Bilinmiyor</translation>
     </message>
     <message>
-      <location line="+47"/>
+      <location line="+46"/>
       <source>Connection details</source>
       <translation>Bağlantı ayrıntıları</translation>
     </message>
@@ -6027,22 +6140,22 @@
       <translation>Ağ</translation>
     </message>
     <message>
-      <location line="+56"/>
+      <location line="+54"/>
       <source>Collecting data...</source>
       <translation>Veriler toplanıyor...</translation>
     </message>
     <message>
-      <location line="+19"/>
+      <location line="+18"/>
       <source>Download</source>
       <translation>İndirme</translation>
     </message>
     <message>
-      <location line="+28"/>
+      <location line="+27"/>
       <source>Upload</source>
       <translation>Yükleme</translation>
     </message>
     <message>
-      <location line="+28"/>
+      <location line="+27"/>
       <source>Total</source>
       <translation>Toplam</translation>
     </message>
@@ -6055,17 +6168,22 @@
       <translation>Ağ</translation>
     </message>
     <message>
-      <location line="+53"/>
+      <location line="+22"/>
       <source>Forget</source>
       <translation>Unut</translation>
     </message>
     <message>
-      <location line="+39"/>
+      <location line="+12"/>
+      <source>Connect</source>
+      <translation>Bağlan</translation>
+    </message>
+    <message>
+      <location line="+10"/>
       <source>Disconnect</source>
       <translation>Bağlantıyı kes</translation>
     </message>
     <message>
-      <location line="+10"/>
+      <location line="+11"/>
       <source>Connection</source>
       <translation>Bağlantı</translation>
     </message>
@@ -6077,7 +6195,7 @@
     <message>
       <location line="+1"/>
       <source>%1%</source>
-      <translation type="unfinished">%1%</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+0"/>
@@ -6086,7 +6204,7 @@
       <location line="+7"/>
       <location line="+8"/>
       <source>—</source>
-      <translation type="unfinished">—</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="-30"/>
@@ -6106,7 +6224,7 @@
     <message>
       <location line="+1"/>
       <source>%1 MHz</source>
-      <translation type="unfinished">%1 MHz</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+6"/>
@@ -6124,7 +6242,7 @@
       <translation>MAC adresi</translation>
     </message>
     <message>
-      <location line="+8"/>
+      <location line="+7"/>
       <source>Behaviour</source>
       <translation>Davranış</translation>
     </message>
@@ -6152,7 +6270,7 @@
       <translation>Wi-Fi kapalı</translation>
     </message>
     <message>
-      <location line="+126"/>
+      <location line="+119"/>
       <source>Security: %1%2</source>
       <translation>Güvenlik: %1%2</translation>
     </message>
@@ -6177,15 +6295,15 @@
     <message>
       <location line="+47"/>
       <source>Wi-Fi</source>
-      <translation type="unfinished">Wi-Fi</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
-      <location line="+51"/>
+      <location line="+50"/>
       <source>Show all networks (%1)</source>
       <translation>Tüm ağları göster (%1)</translation>
     </message>
     <message>
-      <location line="+40"/>
+      <location line="+39"/>
       <source>Saved networks</source>
       <translation>Kayıtlı ağlar</translation>
     </message>
@@ -6206,17 +6324,17 @@
     </message>
     <message>
       <location line="+80"/>
-      <location line="+146"/>
+      <location line="+145"/>
       <source>Connected</source>
       <translation>Bağlı</translation>
     </message>
     <message>
-      <location line="-146"/>
+      <location line="-145"/>
       <source>Available</source>
       <translation>Kullanılabilir</translation>
     </message>
     <message>
-      <location line="+44"/>
+      <location line="+43"/>
       <source>VPN providers</source>
       <translation>VPN sağlayıcıları</translation>
     </message>
@@ -6273,7 +6391,7 @@
     <message>
       <location line="+20"/>
       <source>%1 ms</source>
-      <translation type="unfinished">%1 ms</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+28"/>
@@ -6284,22 +6402,22 @@
   <context>
     <name>News</name>
     <message>
-      <location filename="../modules/sidebar/News.qml" line="+94"/>
+      <location filename="../modules/sidebar/News.qml" line="+90"/>
       <source>Failed to fetch news (Status: %1)</source>
       <translation>Haberler alınamadı (Durum: %1)</translation>
     </message>
     <message>
-      <location line="+42"/>
+      <location line="+40"/>
       <source>No news articles found.</source>
       <translation>Haber bulunamadı.</translation>
     </message>
     <message>
-      <location line="+20"/>
+      <location line="+19"/>
       <source>Arch Linux News</source>
       <translation>Arch Linux Haberleri</translation>
     </message>
     <message>
-      <location line="+28"/>
+      <location line="+26"/>
       <source>Fetching latest news...</source>
       <translation>Son haberler alınıyor...</translation>
     </message>
@@ -6307,7 +6425,7 @@
   <context>
     <name>Nexus</name>
     <message>
-      <location filename="../modules/nexus/Nexus.qml" line="+170"/>
+      <location filename="../modules/nexus/Nexus.qml" line="+162"/>
       <source>Update in progress</source>
       <translation>Güncelleme sürüyor</translation>
     </message>
@@ -6330,7 +6448,7 @@
   <context>
     <name>NightLight</name>
     <message>
-      <location filename="../modules/bar/popouts/NightLight.qml" line="+27"/>
+      <location filename="../modules/bar/popouts/NightLight.qml" line="+26"/>
       <source>Night Light</source>
       <translation>Gece Işığı</translation>
     </message>
@@ -6345,12 +6463,12 @@
       <translation>Elle</translation>
     </message>
     <message>
-      <location line="+13"/>
+      <location line="+12"/>
       <source>Daylight Temperature (%1K)</source>
       <translation>Gündüz Sıcaklığı (%1K)</translation>
     </message>
     <message>
-      <location line="+38"/>
+      <location line="+37"/>
       <source>Nightlight Temperature (%1K)</source>
       <translation>Gece Işığı Sıcaklığı (%1K)</translation>
     </message>
@@ -6363,7 +6481,7 @@
   <context>
     <name>Nmcli</name>
     <message>
-      <location filename="../services/Nmcli.qml" line="+426"/>
+      <location filename="../services/Nmcli.qml" line="+409"/>
       <source>Open</source>
       <translation>Açık</translation>
     </message>
@@ -6390,7 +6508,7 @@
     <name>NotifData</name>
     <message>
       <location filename="../services/NotifData.qml" line="+19"/>
-      <location line="+150"/>
+      <location line="+149"/>
       <source>now</source>
       <translation>şimdi</translation>
     </message>
@@ -6428,12 +6546,12 @@
     <message>
       <location line="+7"/>
       <source>All screens</source>
-      <translation type="unfinished">All screens</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+4"/>
       <source>Focused screen</source>
-      <translation type="unfinished">Focused screen</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+7"/>
@@ -6493,12 +6611,12 @@
     <message>
       <location line="+7"/>
       <source>Display on screen</source>
-      <translation type="unfinished">Display on screen</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>Which screens show notification popups</source>
-      <translation type="unfinished">Which screens show notification popups</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+7"/>
@@ -6637,7 +6755,7 @@
   <context>
     <name>Notifications</name>
     <message>
-      <location filename="../modules/bar/popouts/Notifications.qml" line="+27"/>
+      <location filename="../modules/bar/popouts/Notifications.qml" line="+26"/>
       <source>Notifications</source>
       <translation>Bildirimler</translation>
     </message>
@@ -6722,7 +6840,7 @@
   <context>
     <name>Notifs</name>
     <message>
-      <location filename="../services/Notifs.qml" line="+150"/>
+      <location filename="../services/Notifs.qml" line="+133"/>
       <source>Do not disturb enabled</source>
       <translation>Rahatsız etmeyin etkin</translation>
     </message>
@@ -6742,15 +6860,15 @@
       <translation>Açılır bildirimler artık etkin</translation>
     </message>
     <message>
-      <location line="+103"/>
+      <location line="+97"/>
       <source>Clear all notifications</source>
-      <translation type="unfinished">Clear all notifications</translation>
+      <translation type="unfinished"/>
     </message>
   </context>
   <context>
     <name>OptionsToolbar</name>
     <message>
-      <location filename="../modules/screenshot/regionSelector/OptionsToolbar.qml" line="+43"/>
+      <location filename="../modules/screenshot/regionSelector/OptionsToolbar.qml" line="+40"/>
       <source>Window Selector</source>
       <translation>Pencere Seçici</translation>
     </message>
@@ -6762,7 +6880,7 @@
     <message>
       <location line="+1"/>
       <source>Google Lens</source>
-      <translation type="unfinished">Google Lens</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
@@ -7106,7 +7224,7 @@
   <context>
     <name>PageCompRegistry</name>
     <message>
-      <location filename="../modules/nexus/PageCompRegistry.qml" line="+354"/>
+      <location filename="../modules/nexus/PageCompRegistry.qml" line="+325"/>
       <source>Page under construction</source>
       <translation>Sayfa yapım aşamasında</translation>
     </message>
@@ -7119,7 +7237,7 @@
   <context>
     <name>PageDictionary</name>
     <message>
-      <location filename="../modules/nexus/PageDictionary.qml" line="+10"/>
+      <location filename="../modules/nexus/PageDictionary.qml" line="+9"/>
       <source>Appearance</source>
       <translation>Görünüm</translation>
     </message>
@@ -7161,7 +7279,7 @@
     <message>
       <location line="+1"/>
       <source>Color intensity</source>
-      <translation type="unfinished">Color intensity</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
@@ -7181,12 +7299,12 @@
     <message>
       <location line="+1"/>
       <source>Wallhaven</source>
-      <translation type="unfinished">Wallhaven</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>Wallpaper settings</source>
-      <translation type="unfinished">Wallpaper settings</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
@@ -7196,7 +7314,7 @@
     <message>
       <location line="+1"/>
       <source>Video wallpapers</source>
-      <translation type="unfinished">Video wallpapers</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
@@ -7206,12 +7324,12 @@
     <message>
       <location line="+1"/>
       <source>Fingerprint</source>
-      <translation type="unfinished">Fingerprint</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>Bezel mode</source>
-      <translation type="unfinished">Bezel mode</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+4"/>
@@ -7246,7 +7364,7 @@
     <message>
       <location line="+1"/>
       <source>Floating windows</source>
-      <translation type="unfinished">Floating windows</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
@@ -7301,22 +7419,22 @@
     <message>
       <location line="+1"/>
       <source>Workspaces indicator</source>
-      <translation type="unfinished">Workspaces indicator</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>Unoccupied workspaces</source>
-      <translation type="unfinished">Unoccupied workspaces</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>Greeter</source>
-      <translation type="unfinished">Greeter</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>Greeter slideshow</source>
-      <translation type="unfinished">Greeter slideshow</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
@@ -7336,7 +7454,7 @@
     <message>
       <location line="+1"/>
       <source>Clock seconds</source>
-      <translation type="unfinished">Clock seconds</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
@@ -7346,7 +7464,7 @@
     <message>
       <location line="+1"/>
       <source>GitHub</source>
-      <translation type="unfinished">GitHub</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
@@ -7361,7 +7479,7 @@
     <message>
       <location line="+1"/>
       <source>Update indicator</source>
-      <translation type="unfinished">Update indicator</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
@@ -7376,7 +7494,7 @@
     <message>
       <location line="+1"/>
       <source>Dashboard clock seconds</source>
-      <translation type="unfinished">Dashboard clock seconds</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
@@ -7391,10 +7509,10 @@
     <message>
       <location line="+1"/>
       <source>Window Switcher</source>
-      <translation type="unfinished">Window Switcher</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
-      <location line="+5"/>
+      <location line="+4"/>
       <source>Network</source>
       <translation>Ağ</translation>
     </message>
@@ -7406,17 +7524,17 @@
     <message>
       <location line="+3"/>
       <source>Wi-Fi</source>
-      <translation type="unfinished">Wi-Fi</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>VPN</source>
-      <translation type="unfinished">VPN</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>IPv4</source>
-      <translation type="unfinished">IPv4</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
@@ -7441,7 +7559,7 @@
     <message>
       <location line="+3"/>
       <source>Bluetooth</source>
-      <translation type="unfinished">Bluetooth</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
@@ -7494,7 +7612,7 @@
       <translation>Sessize Alınan Bildirim Uygulamaları</translation>
     </message>
     <message>
-      <location line="+5"/>
+      <location line="+4"/>
       <source>Notifications</source>
       <translation>Bildirimler</translation>
     </message>
@@ -7560,31 +7678,6 @@
     </message>
     <message>
       <location line="+4"/>
-      <source>Power</source>
-      <translation>Güç</translation>
-    </message>
-    <message>
-      <location line="+3"/>
-      <source>Battery indicators, idle suspend</source>
-      <translation>Pil göstergeleri, boşta askıya alma</translation>
-    </message>
-    <message>
-      <location line="+3"/>
-      <source>Battery Status</source>
-      <translation>Pil Durumu</translation>
-    </message>
-    <message>
-      <location line="+1"/>
-      <source>Power Saving</source>
-      <translation>Güç Tasarrufu</translation>
-    </message>
-    <message>
-      <location line="+1"/>
-      <source>Screen Timeout</source>
-      <translation>Ekran Zaman Aşımı</translation>
-    </message>
-    <message>
-      <location line="+4"/>
       <source>Session</source>
       <translation>Oturum</translation>
     </message>
@@ -7634,7 +7727,7 @@
       <translation>Özel Tuş Atamaları</translation>
     </message>
     <message>
-      <location line="+5"/>
+      <location line="+4"/>
       <source>Apps</source>
       <translation>Uygulamalar</translation>
     </message>
@@ -7709,7 +7802,7 @@
       <translation>Hava Durumu Konumu</translation>
     </message>
     <message>
-      <location line="+5"/>
+      <location line="+4"/>
       <source>Updates</source>
       <translation>Güncellemeler</translation>
     </message>
@@ -7777,7 +7870,12 @@
     <message>
       <location line="+3"/>
       <source>Claude Code</source>
-      <translation type="unfinished">Claude Code</translation>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Let the CLI run its own tools</source>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
@@ -7793,7 +7891,7 @@
   <context>
     <name>PageRegistry</name>
     <message>
-      <location filename="../modules/nexus/PageRegistry.qml" line="+23"/>
+      <location filename="../modules/nexus/PageRegistry.qml" line="+22"/>
       <source>Main Page</source>
       <translation>Ana Sayfa</translation>
     </message>
@@ -7872,17 +7970,17 @@
     <message>
       <location line="+7"/>
       <source>Window Switcher</source>
-      <translation type="unfinished">Window Switcher</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>Current desktop only</source>
-      <translation type="unfinished">Current desktop only</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+0"/>
       <source>All desktops</source>
-      <translation type="unfinished">All desktops</translation>
+      <translation type="unfinished"/>
     </message>
   </context>
   <context>
@@ -7919,34 +8017,34 @@
   <context>
     <name>Players</name>
     <message>
-      <location filename="../services/Players.qml" line="+64"/>
+      <location filename="../services/Players.qml" line="+63"/>
       <source>Now Playing</source>
       <translation>Şimdi Çalıyor</translation>
     </message>
     <message>
       <location line="+0"/>
       <source>%1 - %2</source>
-      <translation type="unfinished">%1 - %2</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+33"/>
       <source>Toggle media playback</source>
-      <translation type="unfinished">Toggle media playback</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+12"/>
       <source>Previous track</source>
-      <translation type="unfinished">Previous track</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+12"/>
       <source>Next track</source>
-      <translation type="unfinished">Next track</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+12"/>
       <source>Stop media playback</source>
-      <translation type="unfinished">Stop media playback</translation>
+      <translation type="unfinished"/>
     </message>
   </context>
   <context>
@@ -7957,7 +8055,7 @@
       <translation>Ayarlar</translation>
     </message>
     <message>
-      <location line="+52"/>
+      <location line="+51"/>
       <source>Done</source>
       <translation>Bitti</translation>
     </message>
@@ -7965,7 +8063,7 @@
   <context>
     <name>PluginsPage</name>
     <message>
-      <location filename="../modules/nexus/pages/PluginsPage.qml" line="+60"/>
+      <location filename="../modules/nexus/pages/PluginsPage.qml" line="+59"/>
       <source>Plugins</source>
       <translation>Eklentiler</translation>
     </message>
@@ -7981,12 +8079,12 @@
     </message>
     <message>
       <location line="+34"/>
-      <location line="+335"/>
+      <location line="+333"/>
       <source>Installed</source>
       <translation>Kurulu</translation>
     </message>
     <message>
-      <location line="-326"/>
+      <location line="-324"/>
       <source>Store</source>
       <translation>Mağaza</translation>
     </message>
@@ -7996,7 +8094,7 @@
       <translation>Değişikliklerin uygulanması için kabuğun yeniden başlatılması gerekir</translation>
     </message>
     <message>
-      <location line="+15"/>
+      <location line="+14"/>
       <source>Shell Plugins</source>
       <translation>Kabuk Eklentileri</translation>
     </message>
@@ -8011,7 +8109,7 @@
       <translation>Kurulu eklenti yok</translation>
     </message>
     <message>
-      <location line="+39"/>
+      <location line="+38"/>
       <source>Loading store...</source>
       <translation>Mağaza yükleniyor...</translation>
     </message>
@@ -8034,12 +8132,12 @@
   <context>
     <name>PolkitDialog</name>
     <message>
-      <location filename="../components/PolkitDialog.qml" line="+124"/>
+      <location filename="../components/PolkitDialog.qml" line="+122"/>
       <source>Enter your password</source>
       <translation>Parolanızı girin</translation>
     </message>
     <message>
-      <location line="+99"/>
+      <location line="+96"/>
       <source>Authentication Required</source>
       <translation>Kimlik Doğrulaması Gerekli</translation>
     </message>
@@ -8055,102 +8153,6 @@
       <location line="+2"/>
       <source>Opens the power, restart, and logout menu</source>
       <translation>Kapatma, yeniden başlatma ve oturum kapatma menüsünü açar</translation>
-    </message>
-  </context>
-  <context>
-    <name>PowerDevil</name>
-    <message>
-      <location filename="../services/PowerDevil.qml" line="+53"/>
-      <source>KDE&apos;s suspend timer was not updated</source>
-      <translation type="unfinished">KDE&apos;s suspend timer was not updated</translation>
-    </message>
-    <message>
-      <location line="+0"/>
-      <source>Its own timer in System Settings &gt; Power Management can still suspend before the timeout set here.</source>
-      <translation type="unfinished">Its own timer in System Settings &gt; Power Management can still suspend before the timeout set here.</translation>
-    </message>
-  </context>
-  <context>
-    <name>PowerPage</name>
-    <message>
-      <location filename="../modules/nexus/pages/PowerPage.qml" line="+65"/>
-      <source>Power</source>
-      <translation>Güç</translation>
-    </message>
-    <message>
-      <location line="+10"/>
-      <source>Idle &amp; sleep</source>
-      <translation>Boşta ve uyku</translation>
-    </message>
-    <message>
-      <location line="+5"/>
-      <source>Idle suspend</source>
-      <translation>Boştayken askıya al</translation>
-    </message>
-    <message>
-      <location line="+1"/>
-      <source>Suspend the system after inactivity</source>
-      <translation>Hareketsizlik sonrası sistemi askıya alır</translation>
-    </message>
-    <message>
-      <location line="+7"/>
-      <source>Idle suspend timer</source>
-      <translation>Boşta askıya alma süresi</translation>
-    </message>
-    <message>
-      <location line="+2"/>
-      <source>Suspend after %1 minute(s) of inactivity</source>
-      <translation>%1 dakika hareketsizlik sonrası askıya al</translation>
-    </message>
-    <message>
-      <location line="+1"/>
-      <source>Enable idle suspend to apply a timer</source>
-      <translation>Süre belirlemek için boşta askıya almayı etkinleştirin</translation>
-    </message>
-    <message>
-      <location line="+12"/>
-      <source>Lock before sleep</source>
-      <translation>Uykudan önce kilitle</translation>
-    </message>
-    <message>
-      <location line="+1"/>
-      <source>Lock the session before suspending</source>
-      <translation>Askıya almadan önce oturumu kilitler</translation>
-    </message>
-    <message>
-      <location line="+6"/>
-      <source>Inhibit while audio</source>
-      <translation>Ses çalarken engelle</translation>
-    </message>
-    <message>
-      <location line="+1"/>
-      <source>Prevent idle actions while audio is playing</source>
-      <translation>Ses çalarken boşta eylemlerini engeller</translation>
-    </message>
-    <message>
-      <location line="+7"/>
-      <source>Inhibit while charging</source>
-      <translation>Şarj olurken engelle</translation>
-    </message>
-    <message>
-      <location line="+1"/>
-      <source>Prevent idle actions while charging</source>
-      <translation>Şarj olurken boşta kalma eylemlerini engelle</translation>
-    </message>
-    <message>
-      <location line="+6"/>
-      <source>Battery warnings</source>
-      <translation>Pil uyarıları</translation>
-    </message>
-    <message>
-      <location line="+6"/>
-      <source>Critical battery level</source>
-      <translation>Kritik pil düzeyi</translation>
-    </message>
-    <message>
-      <location line="+1"/>
-      <source>Percentage at which the critical warning fires</source>
-      <translation>Kritik uyarının verileceği yüzde</translation>
     </message>
   </context>
   <context>
@@ -8171,17 +8173,17 @@
     <message>
       <location filename="../modules/nexus/pages/utilities/QuickTogglesPage.qml" line="+13"/>
       <source>Wi-Fi</source>
-      <translation type="unfinished">Wi-Fi</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>Bluetooth</source>
-      <translation type="unfinished">Bluetooth</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>VPN</source>
-      <translation type="unfinished">VPN</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+3"/>
@@ -8201,7 +8203,7 @@
     <message>
       <location line="+1"/>
       <source>Bad Apple</source>
-      <translation type="unfinished">Bad Apple</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+3"/>
@@ -8231,7 +8233,7 @@
     <message>
       <location line="+1"/>
       <source>EasyEffects</source>
-      <translation type="unfinished">EasyEffects</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
@@ -8313,7 +8315,7 @@
     <message>
       <location line="+10"/>
       <source>Record GIF</source>
-      <translation type="unfinished">Record GIF</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+9"/>
@@ -8323,7 +8325,7 @@
     <message>
       <location line="+1"/>
       <source>Spectacle</source>
-      <translation type="unfinished">Spectacle</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+124"/>
@@ -8362,7 +8364,7 @@
   <context>
     <name>RecordingDeleteModal</name>
     <message>
-      <location filename="../modules/utilities/RecordingDeleteModal.qml" line="+170"/>
+      <location filename="../modules/utilities/RecordingDeleteModal.qml" line="+168"/>
       <source>Delete recording?</source>
       <translation>Kayıt silinsin mi?</translation>
     </message>
@@ -8403,17 +8405,17 @@
   <context>
     <name>RegionSelection</name>
     <message>
-      <location filename="../modules/screenshot/regionSelector/RegionSelection.qml" line="+581"/>
+      <location filename="../modules/screenshot/regionSelector/RegionSelection.qml" line="+543"/>
       <source>Full Screen Screenshot</source>
       <translation>Tam Ekran Görüntüsü</translation>
     </message>
     <message>
-      <location line="+14"/>
+      <location line="+13"/>
       <source>Snip selected region (Enter)</source>
       <translation>Seçili bölgeyi kes (Enter)</translation>
     </message>
     <message>
-      <location line="+21"/>
+      <location line="+20"/>
       <source>Clear selection</source>
       <translation>Seçimi temizle</translation>
     </message>
@@ -8426,35 +8428,35 @@
   <context>
     <name>RegionSelector</name>
     <message>
-      <location filename="../modules/screenshot/regionSelector/RegionSelector.qml" line="+90"/>
+      <location filename="../modules/screenshot/regionSelector/RegionSelector.qml" line="+85"/>
       <source>Takes a screenshot of the selected region</source>
-      <translation type="unfinished">Takes a screenshot of the selected region</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+5"/>
       <source>Searches the selected region</source>
-      <translation type="unfinished">Searches the selected region</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+5"/>
       <source>Recognizes text in the selected region</source>
-      <translation type="unfinished">Recognizes text in the selected region</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+5"/>
       <source>Records the selected region</source>
-      <translation type="unfinished">Records the selected region</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+5"/>
       <source>Records the selected region with sound</source>
-      <translation type="unfinished">Records the selected region with sound</translation>
+      <translation type="unfinished"/>
     </message>
   </context>
   <context>
     <name>SavedNetworksPage</name>
     <message>
-      <location filename="../modules/nexus/pages/network/SavedNetworksPage.qml" line="+15"/>
+      <location filename="../modules/nexus/pages/network/SavedNetworksPage.qml" line="+16"/>
       <source>Saved networks</source>
       <translation>Kayıtlı ağlar</translation>
     </message>
@@ -8464,7 +8466,12 @@
       <translation>Kayıtlı ağ yok</translation>
     </message>
     <message>
-      <location line="+61"/>
+      <location line="+48"/>
+      <source>%1 (%2)</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+10"/>
       <source>Open</source>
       <translation>Açık</translation>
     </message>
@@ -8482,7 +8489,7 @@
   <context>
     <name>SearchResults</name>
     <message>
-      <location filename="../modules/nexus/navpane/SearchResults.qml" line="+149"/>
+      <location filename="../modules/nexus/navpane/SearchResults.qml" line="+148"/>
       <source>in </source>
       <translation>şu bölgede: </translation>
     </message>
@@ -8490,14 +8497,14 @@
   <context>
     <name>ServicesPage</name>
     <message>
-      <location filename="../modules/nexus/pages/ServicesPage.qml" line="+18"/>
-      <location line="+16"/>
-      <location line="+108"/>
+      <location filename="../modules/nexus/pages/ServicesPage.qml" line="+17"/>
+      <location line="+15"/>
+      <location line="+105"/>
       <source>Auto</source>
       <translation>Otomatik</translation>
     </message>
     <message>
-      <location line="-102"/>
+      <location line="-99"/>
       <source>Generic</source>
       <translation>Genel</translation>
     </message>
@@ -8512,7 +8519,7 @@
       <translation>Hizmetler</translation>
     </message>
     <message>
-      <location line="+26"/>
+      <location line="+24"/>
       <source>Polling</source>
       <translation>Yoklama</translation>
     </message>
@@ -8547,7 +8554,7 @@
       <translation>Kullanılabilir ağların ne sıklıkta yeniden taranacağı (saniye)</translation>
     </message>
     <message>
-      <location line="+10"/>
+      <location line="+9"/>
       <source>Media &amp; lyrics</source>
       <translation>Ortam ve şarkı sözleri</translation>
     </message>
@@ -8572,7 +8579,7 @@
       <translation>Birden çok oynatıcı açıkken yeğlenen ortam oynatıcı</translation>
     </message>
     <message>
-      <location line="+10"/>
+      <location line="+9"/>
       <source>Input increments</source>
       <translation>Giriş artışları</translation>
     </message>
@@ -8607,7 +8614,7 @@
       <translation>Çıkış ses düzeyinin üst sınırı (%)</translation>
     </message>
     <message>
-      <location line="+10"/>
+      <location line="+9"/>
       <source>Service tuning</source>
       <translation>Hizmet ince ayarı</translation>
     </message>
@@ -8655,7 +8662,7 @@
       <translation>Oturum</translation>
     </message>
     <message>
-      <location line="+11"/>
+      <location line="+10"/>
       <source>General</source>
       <translation>Genel</translation>
     </message>
@@ -8690,31 +8697,31 @@
       <translation>Menü hareket etmeden önce sürüklenecek piksel</translation>
     </message>
     <message>
-      <location line="+10"/>
+      <location line="+9"/>
       <source>Icons</source>
       <translation>Simgeler</translation>
     </message>
     <message>
       <location line="+5"/>
-      <location line="+31"/>
+      <location line="+30"/>
       <source>Logout</source>
       <translation>Oturumu kapat</translation>
     </message>
     <message>
-      <location line="-25"/>
-      <location line="+31"/>
+      <location line="-24"/>
+      <location line="+30"/>
       <source>Shutdown</source>
       <translation>Kapat</translation>
     </message>
     <message>
-      <location line="-25"/>
-      <location line="+31"/>
+      <location line="-24"/>
+      <location line="+30"/>
       <source>Hibernate</source>
       <translation>Hazırda beklet</translation>
     </message>
     <message>
-      <location line="-24"/>
-      <location line="+31"/>
+      <location line="-23"/>
+      <location line="+30"/>
       <source>Reboot</source>
       <translation>Yeniden başlat</translation>
     </message>
@@ -8765,7 +8772,7 @@
   <context>
     <name>ShortcutRow</name>
     <message>
-      <location filename="../modules/nexus/common/ShortcutRow.qml" line="+124"/>
+      <location filename="../modules/nexus/common/ShortcutRow.qml" line="+119"/>
       <source>Collides with: </source>
       <translation>Şununla çakışıyor: </translation>
     </message>
@@ -8773,129 +8780,129 @@
   <context>
     <name>Shortcuts</name>
     <message>
-      <location filename="../modules/Shortcuts.qml" line="+29"/>
+      <location filename="../modules/Shortcuts.qml" line="+28"/>
       <source>Open nexus</source>
-      <translation type="unfinished">Open nexus</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+7"/>
       <source>Toggle launcher, dashboard and osd</source>
-      <translation type="unfinished">Toggle launcher, dashboard and osd</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+10"/>
       <source>Toggle dashboard</source>
-      <translation type="unfinished">Toggle dashboard</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+10"/>
       <source>Toggle overview</source>
-      <translation type="unfinished">Toggle overview</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+19"/>
       <source>Toggle screenshot overlay</source>
-      <translation type="unfinished">Toggle screenshot overlay</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+9"/>
       <source>Toggle Google Lens search</source>
-      <translation type="unfinished">Toggle Google Lens search</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+9"/>
       <source>Recognize text on screen</source>
-      <translation type="unfinished">Recognize text on screen</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+9"/>
       <source>Toggle screen recording</source>
-      <translation type="unfinished">Toggle screen recording</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+31"/>
       <source>Toggle session menu</source>
-      <translation type="unfinished">Toggle session menu</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+10"/>
       <source>Toggle launcher</source>
-      <translation type="unfinished">Toggle launcher</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+15"/>
       <source>Interrupt launcher keybind</source>
-      <translation type="unfinished">Interrupt launcher keybind</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+7"/>
       <source>Toggle sidebar</source>
-      <translation type="unfinished">Toggle sidebar</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+11"/>
       <source>Toggle AI Assistant</source>
-      <translation type="unfinished">Toggle AI Assistant</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+11"/>
       <source>Toggle utilities</source>
-      <translation type="unfinished">Toggle utilities</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+10"/>
       <source>Open emoji picker</source>
-      <translation type="unfinished">Open emoji picker</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+11"/>
       <source>Open clipboard history</source>
-      <translation type="unfinished">Open clipboard history</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+29"/>
       <source>Open window switcher</source>
-      <translation type="unfinished">Open window switcher</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
-      <location line="+22"/>
+      <location line="+21"/>
       <source>Open window switcher (reverse)</source>
-      <translation type="unfinished">Open window switcher (reverse)</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+21"/>
       <source>Open wallpaper picker</source>
-      <translation type="unfinished">Open wallpaper picker</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+11"/>
       <source>Open keybinds list</source>
-      <translation type="unfinished">Open keybinds list</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+9"/>
       <source>Launch Terminal</source>
-      <translation type="unfinished">Launch Terminal</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+5"/>
       <source>Launch Browser</source>
-      <translation type="unfinished">Launch Browser</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+5"/>
       <source>Launch Editor</source>
-      <translation type="unfinished">Launch Editor</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+5"/>
       <source>Launch GitHub Desktop</source>
-      <translation type="unfinished">Launch GitHub Desktop</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+5"/>
       <source>Launch File Manager</source>
-      <translation type="unfinished">Launch File Manager</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+5"/>
@@ -8905,232 +8912,232 @@
     <message>
       <location line="+7"/>
       <source>Switch to workspace 1</source>
-      <translation type="unfinished">Switch to workspace 1</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+7"/>
       <source>Switch to workspace 2</source>
-      <translation type="unfinished">Switch to workspace 2</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+7"/>
       <source>Switch to workspace 3</source>
-      <translation type="unfinished">Switch to workspace 3</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+7"/>
       <source>Switch to workspace 4</source>
-      <translation type="unfinished">Switch to workspace 4</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+7"/>
       <source>Switch to workspace 5</source>
-      <translation type="unfinished">Switch to workspace 5</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+7"/>
       <source>Switch to workspace 6</source>
-      <translation type="unfinished">Switch to workspace 6</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+7"/>
       <source>Switch to workspace 7</source>
-      <translation type="unfinished">Switch to workspace 7</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+7"/>
       <source>Switch to workspace 8</source>
-      <translation type="unfinished">Switch to workspace 8</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+7"/>
       <source>Switch to workspace 9</source>
-      <translation type="unfinished">Switch to workspace 9</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+7"/>
       <source>Switch to workspace 10</source>
-      <translation type="unfinished">Switch to workspace 10</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
-      <location line="+90"/>
+      <location line="+89"/>
       <source>Focus the window above</source>
-      <translation type="unfinished">Focus the window above</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+11"/>
       <source>Focus the window below</source>
-      <translation type="unfinished">Focus the window below</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+11"/>
       <source>Focus the window to the left</source>
-      <translation type="unfinished">Focus the window to the left</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+11"/>
       <source>Focus the window to the right</source>
-      <translation type="unfinished">Focus the window to the right</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+11"/>
       <source>Move window up</source>
-      <translation type="unfinished">Move window up</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+11"/>
       <source>Move window down</source>
-      <translation type="unfinished">Move window down</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+11"/>
       <source>Move window left</source>
-      <translation type="unfinished">Move window left</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+11"/>
       <source>Move window right</source>
-      <translation type="unfinished">Move window right</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+11"/>
       <source>Close current window</source>
-      <translation type="unfinished">Close current window</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+11"/>
       <source>Focus next window</source>
-      <translation type="unfinished">Focus next window</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+7"/>
       <source>Focus previous window</source>
-      <translation type="unfinished">Focus previous window</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+7"/>
       <source>Set active window as Master</source>
-      <translation type="unfinished">Set active window as Master</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+7"/>
       <source>Switch to next layout</source>
-      <translation type="unfinished">Switch to next layout</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+7"/>
       <source>Switch to previous layout</source>
-      <translation type="unfinished">Switch to previous layout</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+7"/>
       <source>Switch to BTree layout</source>
-      <translation type="unfinished">Switch to BTree layout</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+7"/>
       <source>Switch to Monocle layout</source>
-      <translation type="unfinished">Switch to Monocle layout</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+7"/>
       <source>Switch to Floating layout</source>
-      <translation type="unfinished">Switch to Floating layout</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+7"/>
       <source>Switch to Quarter layout</source>
-      <translation type="unfinished">Switch to Quarter layout</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+7"/>
       <source>Switch to Spread layout</source>
-      <translation type="unfinished">Switch to Spread layout</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+7"/>
       <source>Switch to Stacked layout</source>
-      <translation type="unfinished">Switch to Stacked layout</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+7"/>
       <source>Switch to Stair layout</source>
-      <translation type="unfinished">Switch to Stair layout</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+7"/>
       <source>Switch to Columns layout</source>
-      <translation type="unfinished">Switch to Columns layout</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+7"/>
       <source>Switch to Three Column layout</source>
-      <translation type="unfinished">Switch to Three Column layout</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+7"/>
       <source>Switch to Spiral layout</source>
-      <translation type="unfinished">Switch to Spiral layout</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+7"/>
       <source>Switch to Tile layout</source>
-      <translation type="unfinished">Switch to Tile layout</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+7"/>
       <source>Increase window height</source>
-      <translation type="unfinished">Increase window height</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+7"/>
       <source>Decrease window height</source>
-      <translation type="unfinished">Decrease window height</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+7"/>
       <source>Increase window width</source>
-      <translation type="unfinished">Increase window width</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+7"/>
       <source>Decrease window width</source>
-      <translation type="unfinished">Decrease window width</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+7"/>
       <source>Increase master area size</source>
-      <translation type="unfinished">Increase master area size</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+7"/>
       <source>Decrease master area size</source>
-      <translation type="unfinished">Decrease master area size</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+7"/>
       <source>Toggle floating state</source>
-      <translation type="unfinished">Toggle floating state</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+7"/>
       <source>Toggle floating state for all</source>
-      <translation type="unfinished">Toggle floating state for all</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+7"/>
       <source>Rotate the window layout</source>
-      <translation type="unfinished">Rotate the window layout</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+7"/>
       <source>Rotate windows within a part</source>
-      <translation type="unfinished">Rotate windows within a part</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+7"/>
       <source>Toggle dock support</source>
-      <translation type="unfinished">Toggle dock support</translation>
+      <translation type="unfinished"/>
     </message>
   </context>
   <context>
@@ -9192,7 +9199,7 @@
       <translation>Kenar çubuğunu yakalamak için ayrılan ekran kenarı pikseli</translation>
     </message>
     <message>
-      <location line="+10"/>
+      <location line="+9"/>
       <source>Sidebar Tabs</source>
       <translation>Kenar Çubuğu Sekmeleri</translation>
     </message>
@@ -9319,6 +9326,14 @@
     </message>
   </context>
   <context>
+    <name>StatusIconsContext</name>
+    <message>
+      <location filename="../modules/bar/popouts/StatusIconsContext.qml" line="+83"/>
+      <source>Status icons settings</source>
+      <translation type="unfinished"/>
+    </message>
+  </context>
+  <context>
     <name>StorageCard</name>
     <message>
       <location filename="../modules/dashboard/performance/StorageCard.qml" line="+74"/>
@@ -9346,82 +9361,82 @@
     <message>
       <location filename="../modules/nexus/pages/panels/TabSwitcherPanel.qml" line="+31"/>
       <source>Window Switcher</source>
-      <translation type="unfinished">Window Switcher</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
-      <location line="+38"/>
+      <location line="+37"/>
       <source>General</source>
       <translation>Genel</translation>
     </message>
     <message>
       <location line="+6"/>
       <source>Enable Window Switcher</source>
-      <translation type="unfinished">Enable Window Switcher</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>Use Caelestia&apos;s window switcher for Alt+Tab</source>
-      <translation type="unfinished">Use Caelestia&apos;s window switcher for Alt+Tab</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+11"/>
       <source>Forward</source>
-      <translation type="unfinished">Forward</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+13"/>
       <source>Backward</source>
-      <translation type="unfinished">Backward</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
-      <location line="+11"/>
+      <location line="+10"/>
       <source>Behavior</source>
       <translation>Davranış</translation>
     </message>
     <message>
       <location line="+5"/>
       <source>Filter by current desktop</source>
-      <translation type="unfinished">Filter by current desktop</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>Only show windows belonging to the active virtual desktop</source>
-      <translation type="unfinished">Only show windows belonging to the active virtual desktop</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+14"/>
       <source>Preview window on desktop</source>
-      <translation type="unfinished">Preview window on desktop</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>Highlight and show the window itself on the workspace while cycling Alt+Tab</source>
-      <translation type="unfinished">Highlight and show the window itself on the workspace while cycling Alt+Tab</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
-      <location line="+14"/>
+      <location line="+13"/>
       <source>Display</source>
       <translation>Görünüm</translation>
     </message>
     <message>
       <location line="+5"/>
       <source>Show minimized windows</source>
-      <translation type="unfinished">Show minimized windows</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>Include minimized windows in the window switcher</source>
-      <translation type="unfinished">Include minimized windows in the window switcher</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+14"/>
       <source>Show windows from all screens</source>
-      <translation type="unfinished">Show windows from all screens</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>Include windows from all connected monitors</source>
-      <translation type="unfinished">Include windows from all connected monitors</translation>
+      <translation type="unfinished"/>
     </message>
   </context>
   <context>
@@ -9449,12 +9464,12 @@
     <message>
       <location line="+6"/>
       <source>Greeter</source>
-      <translation type="unfinished">Greeter</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>Greeting display, popout</source>
-      <translation type="unfinished">Greeting display, popout</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+6"/>
@@ -9499,7 +9514,7 @@
     <message>
       <location line="+6"/>
       <source>GitHub</source>
-      <translation type="unfinished">GitHub</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
@@ -9520,7 +9535,7 @@
   <context>
     <name>TaskbarPanel</name>
     <message>
-      <location filename="../modules/nexus/pages/panels/TaskbarPanel.qml" line="+18"/>
+      <location filename="../modules/nexus/pages/panels/TaskbarPanel.qml" line="+19"/>
       <source>Top</source>
       <translation>Üst</translation>
     </message>
@@ -9542,15 +9557,15 @@
     <message>
       <location line="+6"/>
       <source>Use global position</source>
-      <translation type="unfinished">Use global position</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
-      <location line="+13"/>
+      <location line="+24"/>
       <source>Taskbar</source>
       <translation>Görev çubuğu</translation>
     </message>
     <message>
-      <location line="+12"/>
+      <location line="+11"/>
       <source>Behavior</source>
       <translation>Davranış</translation>
     </message>
@@ -9595,7 +9610,7 @@
       <translation>Çubuğun yerleştirileceği ekran kenarı</translation>
     </message>
     <message>
-      <location line="+7"/>
+      <location line="+10"/>
       <source>Show on hover</source>
       <translation>Üzerine gelince göster</translation>
     </message>
@@ -9617,20 +9632,20 @@
     <message>
       <location line="+10"/>
       <source>Per-monitor position</source>
-      <translation type="unfinished">Per-monitor position</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+19"/>
       <source>Overridden for this monitor</source>
-      <translation type="unfinished">Overridden for this monitor</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+0"/>
       <source>Using global position</source>
-      <translation type="unfinished">Using global position</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
-      <location line="+15"/>
+      <location line="+13"/>
       <source>Scaling</source>
       <translation>Ölçekleme</translation>
     </message>
@@ -9695,7 +9710,7 @@
       <translation>Her açılır pencere türü için ölçeği ve yazı tipini özelleştirin</translation>
     </message>
     <message>
-      <location line="+6"/>
+      <location line="+5"/>
       <source>Components</source>
       <translation>Bileşenler</translation>
     </message>
@@ -9720,7 +9735,7 @@
       <translation>Çalışma alanları, tepsi, durum simgeleri, saat, rıhtım ve daha fazlası</translation>
     </message>
     <message>
-      <location line="+6"/>
+      <location line="+5"/>
       <source>Scroll actions</source>
       <translation>Kaydırma eylemleri</translation>
     </message>
@@ -9929,7 +9944,7 @@
   <context>
     <name>Toggles</name>
     <message>
-      <location filename="../modules/utilities/cards/Toggles.qml" line="+97"/>
+      <location filename="../modules/utilities/cards/Toggles.qml" line="+95"/>
       <source>Quick Toggles</source>
       <translation>Hızlı Anahtarlar</translation>
     </message>
@@ -9937,20 +9952,20 @@
   <context>
     <name>TrayItem</name>
     <message>
-      <location filename="../modules/bar/components/TrayItem.qml" line="+46"/>
+      <location filename="../modules/bar/components/TrayItem.qml" line="+34"/>
       <source>Left-click activates, right-click opens the menu, middle-click runs the secondary action.</source>
-      <translation type="unfinished">Left-click activates, right-click opens the menu, middle-click runs the secondary action.</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+0"/>
       <source>Left-click activates, middle- or right-click runs the secondary action.</source>
-      <translation type="unfinished">Left-click activates, middle- or right-click runs the secondary action.</translation>
+      <translation type="unfinished"/>
     </message>
   </context>
   <context>
     <name>TrayMenu</name>
     <message>
-      <location filename="../modules/bar/popouts/TrayMenu.qml" line="+335"/>
+      <location filename="../modules/bar/popouts/TrayMenu.qml" line="+330"/>
       <source>Back</source>
       <translation>Geri</translation>
     </message>
@@ -9958,154 +9973,154 @@
   <context>
     <name>Units</name>
     <message>
-      <location filename="../services/Units.qml" line="+26"/>
+      <location filename="../services/Units.qml" line="+22"/>
       <source>%1°</source>
       <comment>temperature</comment>
-      <translation type="unfinished">%1°</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+3"/>
       <source>%1°F</source>
       <comment>temperature</comment>
-      <translation type="unfinished">%1°F</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+2"/>
       <source>%1 K</source>
       <comment>temperature</comment>
-      <translation type="unfinished">%1 K</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>%1°C</source>
       <comment>temperature</comment>
-      <translation type="unfinished">%1°C</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
-      <location line="+12"/>
+      <location line="+10"/>
       <source>%1 B</source>
       <comment>data unit</comment>
-      <translation type="unfinished">%1 B</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>%1 KB</source>
       <comment>data unit</comment>
-      <translation type="unfinished">%1 KB</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>%1 MB</source>
       <comment>data unit</comment>
-      <translation type="unfinished">%1 MB</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>%1 GB</source>
       <comment>data unit</comment>
-      <translation type="unfinished">%1 GB</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>%1 TB</source>
       <comment>data unit</comment>
-      <translation type="unfinished">%1 TB</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>%1 KiB</source>
       <comment>data unit</comment>
-      <translation type="unfinished">%1 KiB</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>%1 MiB</source>
       <comment>data unit</comment>
-      <translation type="unfinished">%1 MiB</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>%1 GiB</source>
       <comment>data unit</comment>
-      <translation type="unfinished">%1 GiB</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>%1 TiB</source>
       <comment>data unit</comment>
-      <translation type="unfinished">%1 TiB</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>%1 B/s</source>
       <comment>data unit</comment>
-      <translation type="unfinished">%1 B/s</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>%1 KB/s</source>
       <comment>data unit</comment>
-      <translation type="unfinished">%1 KB/s</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>%1 MB/s</source>
       <comment>data unit</comment>
-      <translation type="unfinished">%1 MB/s</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>%1 GB/s</source>
       <comment>data unit</comment>
-      <translation type="unfinished">%1 GB/s</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>%1 TB/s</source>
       <comment>data unit</comment>
-      <translation type="unfinished">%1 TB/s</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>%1 KiB/s</source>
       <comment>data unit</comment>
-      <translation type="unfinished">%1 KiB/s</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>%1 MiB/s</source>
       <comment>data unit</comment>
-      <translation type="unfinished">%1 MiB/s</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>%1 GiB/s</source>
       <comment>data unit</comment>
-      <translation type="unfinished">%1 GiB/s</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>%1 TiB/s</source>
       <comment>data unit</comment>
-      <translation type="unfinished">%1 TiB/s</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+2"/>
       <source>%1 %2</source>
       <comment>value and data unit</comment>
-      <translation type="unfinished">%1 %2</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
-      <location line="+36"/>
+      <location line="+34"/>
       <source>%1 / %2</source>
       <comment>used / total amount</comment>
-      <translation type="unfinished">%1 / %2</translation>
+      <translation type="unfinished"/>
     </message>
   </context>
   <context>
     <name>UpdateChecker</name>
     <message>
-      <location filename="../services/UpdateChecker.qml" line="+375"/>
+      <location filename="../services/UpdateChecker.qml" line="+363"/>
       <source>Done!</source>
       <translation>Bitti!</translation>
     </message>
@@ -10121,28 +10136,28 @@
     </message>
     <message>
       <location line="+15"/>
-      <location line="+397"/>
+      <location line="+379"/>
       <source>Canceled</source>
       <translation>İptal edildi</translation>
     </message>
     <message>
-      <location line="-310"/>
-      <location line="+22"/>
+      <location line="-294"/>
+      <location line="+21"/>
       <source>Release</source>
       <translation>Sürüm</translation>
     </message>
     <message>
-      <location line="-20"/>
+      <location line="-19"/>
       <source>GitHub release</source>
       <translation>GitHub sürümü</translation>
     </message>
     <message>
-      <location line="+22"/>
+      <location line="+21"/>
       <source>Tag</source>
       <translation>Etiket</translation>
     </message>
     <message>
-      <location line="+290"/>
+      <location line="+275"/>
       <source>Update Successful</source>
       <translation>Güncelleme Başarılı</translation>
     </message>
@@ -10183,70 +10198,70 @@
   <context>
     <name>UpdateTimeline</name>
     <message>
-      <location filename="../modules/nexus/common/UpdateTimeline.qml" line="+35"/>
+      <location filename="../modules/nexus/common/UpdateTimeline.qml" line="+27"/>
       <source>feat</source>
-      <translation type="unfinished">feat</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>fix</source>
-      <translation type="unfinished">fix</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>perf</source>
-      <translation type="unfinished">perf</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>refactor</source>
-      <translation type="unfinished">refactor</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>style</source>
-      <translation type="unfinished">style</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>docs</source>
-      <translation type="unfinished">docs</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>test</source>
-      <translation type="unfinished">test</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>build</source>
-      <translation type="unfinished">build</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>ci</source>
-      <translation type="unfinished">ci</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>chore</source>
-      <translation type="unfinished">chore</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>revert</source>
-      <translation type="unfinished">revert</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
-      <location line="+260"/>
+      <location line="+230"/>
       <source>merge</source>
-      <translation type="unfinished">merge</translation>
+      <translation type="unfinished"/>
     </message>
   </context>
   <context>
     <name>Updates</name>
     <message>
-      <location filename="../modules/bar/popouts/Updates.qml" line="+35"/>
+      <location filename="../modules/bar/popouts/Updates.qml" line="+34"/>
       <source>Updating…</source>
       <translation>Güncelleniyor…</translation>
     </message>
@@ -10282,12 +10297,12 @@
     </message>
     <message>
       <location line="+69"/>
-      <location line="+80"/>
+      <location line="+78"/>
       <source>Checking…</source>
       <translation>Denetleniyor…</translation>
     </message>
     <message>
-      <location line="-78"/>
+      <location line="-76"/>
       <source>Last check: not yet</source>
       <translation>Son denetim: henüz yok</translation>
     </message>
@@ -10302,17 +10317,17 @@
       <translation>Sonraki denetim %1 içinde</translation>
     </message>
     <message>
-      <location line="+57"/>
+      <location line="+55"/>
       <source>Check for updates</source>
       <translation>Güncellemeleri denetle</translation>
     </message>
     <message>
-      <location line="+41"/>
+      <location line="+40"/>
       <source>Open Updates</source>
       <translation>Güncellemeleri Aç</translation>
     </message>
     <message>
-      <location line="+38"/>
+      <location line="+37"/>
       <source>Hide from bar</source>
       <translation>Çubuktan gizle</translation>
     </message>
@@ -10320,17 +10335,17 @@
   <context>
     <name>UpdatesPage</name>
     <message>
-      <location filename="../modules/nexus/pages/UpdatesPage.qml" line="+162"/>
+      <location filename="../modules/nexus/pages/UpdatesPage.qml" line="+136"/>
       <source>Updates</source>
       <translation>Güncellemeler</translation>
     </message>
     <message>
       <location line="+4"/>
       <source>Help</source>
-      <translation type="unfinished">Help</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
-      <location line="+99"/>
+      <location line="+97"/>
       <source>Update complete - log out to apply</source>
       <translation>Güncelleme tamamlandı - uygulamak için oturumu kapatın</translation>
     </message>
@@ -10347,7 +10362,7 @@
     <message>
       <location line="+1"/>
       <source>Reinstall %1?</source>
-      <translation type="unfinished">Reinstall %1?</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+2"/>
@@ -10385,7 +10400,7 @@
       <translation>Kanal: %1</translation>
     </message>
     <message>
-      <location line="+26"/>
+      <location line="+22"/>
       <source>Log Out</source>
       <translation>Oturumu Kapat</translation>
     </message>
@@ -10397,7 +10412,7 @@
     <message>
       <location line="+1"/>
       <source>Reinstall</source>
-      <translation type="unfinished">Reinstall</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+2"/>
@@ -10410,7 +10425,7 @@
       <translation>Güncellemeyi Kur</translation>
     </message>
     <message>
-      <location line="+44"/>
+      <location line="+40"/>
       <source>Stop</source>
       <translation>Durdur</translation>
     </message>
@@ -10430,7 +10445,7 @@
       <translation>Denetle</translation>
     </message>
     <message>
-      <location line="+35"/>
+      <location line="+31"/>
       <source>General</source>
       <translation>Genel</translation>
     </message>
@@ -10460,7 +10475,7 @@
       <translation>Güncelleme olduğunda görev çubuğunda bir bildirim simgesi gösterir</translation>
     </message>
     <message>
-      <location line="+67"/>
+      <location line="+63"/>
       <source>Customize Installation</source>
       <translation>Kurulumu Özelleştir</translation>
     </message>
@@ -10500,7 +10515,7 @@
       <translation>%1 kanalına geçiliyor…</translation>
     </message>
     <message>
-      <location line="+8"/>
+      <location line="+7"/>
       <source>Version History</source>
       <translation>Sürüm Geçmişi</translation>
     </message>
@@ -10510,7 +10525,7 @@
       <translation>İşleme Geçmişi</translation>
     </message>
     <message>
-      <location line="+62"/>
+      <location line="+54"/>
       <source>Loading…</source>
       <translation>Yükleniyor…</translation>
     </message>
@@ -10520,7 +10535,7 @@
       <translation>10 Tane Daha Yükle</translation>
     </message>
     <message>
-      <location line="+12"/>
+      <location line="+11"/>
       <source>Update Log</source>
       <translation>Güncelleme Günlüğü</translation>
     </message>
@@ -10686,12 +10701,12 @@
     <message>
       <location line="+6"/>
       <source>GIF Recorder</source>
-      <translation type="unfinished">GIF Recorder</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>Show the Record GIF option in the recorder menu</source>
-      <translation type="unfinished">Show the Record GIF option in the recorder menu</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+7"/>
@@ -10707,7 +10722,7 @@
   <context>
     <name>VPN</name>
     <message>
-      <location filename="../services/VPN.qml" line="+209"/>
+      <location filename="../services/VPN.qml" line="+174"/>
       <source>VPN connection failed</source>
       <translation>VPN bağlantısı başarısız oldu</translation>
     </message>
@@ -10717,7 +10732,7 @@
       <translation>VPN bağlantısı kesilemedi</translation>
     </message>
     <message>
-      <location line="+241"/>
+      <location line="+221"/>
       <source>VPN connected</source>
       <translation>VPN bağlandı</translation>
     </message>
@@ -10745,7 +10760,7 @@
       <location line="+0"/>
       <location line="+5"/>
       <source>%1: %2</source>
-      <translation type="unfinished">%1: %2</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+0"/>
@@ -10753,13 +10768,13 @@
       <translation>VPN hatası</translation>
     </message>
     <message>
-      <location line="+196"/>
-      <location line="+69"/>
+      <location line="+184"/>
+      <location line="+68"/>
       <source>Could not start %1. Is it installed?</source>
       <translation>%1 başlatılamadı. Kurulu mu?</translation>
     </message>
     <message>
-      <location line="-55"/>
+      <location line="-54"/>
       <source>Could not connect to %1</source>
       <translation>%1 bağlantısı kurulamadı</translation>
     </message>
@@ -10772,7 +10787,7 @@
       <translation>Video Duvar Kâğıtları</translation>
     </message>
     <message>
-      <location line="+13"/>
+      <location line="+12"/>
       <source>Pause video wallpapers</source>
       <translation>Video duvar kâğıtlarını duraklat</translation>
     </message>
@@ -10807,7 +10822,7 @@
     <message>
       <location filename="../modules/nexus/pages/wallandstyle/WallhavenPage.qml" line="+7"/>
       <source>Wallhaven</source>
-      <translation type="unfinished">Wallhaven</translation>
+      <translation type="unfinished"/>
     </message>
   </context>
   <context>
@@ -10815,7 +10830,7 @@
     <message>
       <location filename="../modules/dashboard/WallhavenTab.qml" line="+132"/>
       <source>Wallhaven</source>
-      <translation type="unfinished">Wallhaven</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+5"/>
@@ -10823,12 +10838,12 @@
       <translation>Duvar kâğıtlarını anında arayın, önizleyin ve uygulayın</translation>
     </message>
     <message>
-      <location line="+22"/>
+      <location line="+21"/>
       <source>Search wallpapers...</source>
       <translation>Duvar kâğıdı ara...</translation>
     </message>
     <message>
-      <location line="+39"/>
+      <location line="+38"/>
       <source>Found %1 wallpapers (page %2 of %3)</source>
       <translation>%1 duvar kâğıdı bulundu (sayfa %2 / %3)</translation>
     </message>
@@ -10843,7 +10858,7 @@
       <translation>Daha fazla yükle</translation>
     </message>
     <message>
-      <location line="+140"/>
+      <location line="+138"/>
       <source>Downloading...</source>
       <translation>İndiriliyor...</translation>
     </message>
@@ -10859,18 +10874,18 @@
     </message>
     <message>
       <location line="+16"/>
-      <location line="+102"/>
+      <location line="+101"/>
       <source>Wallpaper applied</source>
       <translation>Duvar kâğıdı uygulandı</translation>
     </message>
     <message>
-      <location line="-100"/>
-      <location line="+113"/>
+      <location line="-99"/>
+      <location line="+112"/>
       <source>Download failed</source>
       <translation>İndirme başarısız</translation>
     </message>
     <message>
-      <location line="-112"/>
+      <location line="-111"/>
       <source>Downloading... %1%</source>
       <translation>İndiriliyor... %1%</translation>
     </message>
@@ -10923,7 +10938,7 @@
     <message>
       <location line="+6"/>
       <source>Wallhaven</source>
-      <translation type="unfinished">Wallhaven</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
@@ -11011,7 +11026,7 @@
   <context>
     <name>WallpaperSelect</name>
     <message>
-      <location filename="../modules/nexus/pages/wallandstyle/WallpaperSelect.qml" line="+116"/>
+      <location filename="../modules/nexus/pages/wallandstyle/WallpaperSelect.qml" line="+122"/>
       <source>Select wallpaper</source>
       <translation>Duvar kâğıdı seç</translation>
     </message>
@@ -11041,12 +11056,12 @@
       <translation>Klasörü aç</translation>
     </message>
     <message>
-      <location line="+20"/>
+      <location line="+16"/>
       <source>Featured wallpaper</source>
-      <translation type="unfinished">Featured wallpaper</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
-      <location line="+175"/>
+      <location line="+168"/>
       <location line="+7"/>
       <source>All</source>
       <translation>Tümü</translation>
@@ -11072,7 +11087,7 @@
       <translation>Yerel duvar kâğıtları</translation>
     </message>
     <message>
-      <location line="+101"/>
+      <location line="+100"/>
       <source>No local wallpapers found</source>
       <translation>Yerel duvar kâğıdı bulunamadı</translation>
     </message>
@@ -11184,32 +11199,37 @@
   <context>
     <name>WhatsNewWindow</name>
     <message>
-      <location filename="../modules/whatsnew/WhatsNewWindow.qml" line="+114"/>
-      <location line="+151"/>
+      <location filename="../modules/whatsnew/WhatsNewWindow.qml" line="+110"/>
+      <location line="+148"/>
       <source>What&apos;s New in Caelestia</source>
       <translation>Caelestia&apos;da Neler Yeni</translation>
     </message>
     <message>
-      <location line="-99"/>
+      <location line="-97"/>
       <source>What&apos;s New</source>
-      <translation type="unfinished">What&apos;s New</translation>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+421"/>
+      <source>Open in Settings</source>
+      <translation type="unfinished"/>
     </message>
   </context>
   <context>
     <name>WirelessPassword</name>
     <message>
-      <location filename="../modules/bar/popouts/WirelessPassword.qml" line="+58"/>
-      <location line="+22"/>
-      <location line="+460"/>
-      <location line="+32"/>
-      <location line="+12"/>
-      <location line="+51"/>
+      <location filename="../modules/bar/popouts/WirelessPassword.qml" line="+52"/>
+      <location line="+21"/>
+      <location line="+449"/>
+      <location line="+28"/>
+      <location line="+10"/>
+      <location line="+48"/>
       <location line="+44"/>
       <source>Connect</source>
       <translation>Bağlan</translation>
     </message>
     <message>
-      <location line="-454"/>
+      <location line="-439"/>
       <source>Enter password</source>
       <translation>Parolayı girin</translation>
     </message>
@@ -11221,7 +11241,7 @@
     <message>
       <location line="+3"/>
       <source>Unknown network</source>
-      <translation type="unfinished">Unknown network</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+43"/>
@@ -11230,12 +11250,12 @@
     </message>
     <message>
       <location line="+3"/>
-      <location line="+273"/>
+      <location line="+265"/>
       <source>Connecting...</source>
       <translation>Bağlanıyor...</translation>
     </message>
     <message>
-      <location line="-140"/>
+      <location line="-138"/>
       <source>Password</source>
       <translation>Parola</translation>
     </message>
@@ -11250,12 +11270,12 @@
     <message>
       <location filename="../services/WorkspaceTrackerGuard.qml" line="+36"/>
       <source>Workspace tracker effect is not running</source>
-      <translation type="unfinished">Workspace tracker effect is not running</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+0"/>
       <source>KWin stopped loading it after a KDE update. Run caelestia update, then log out and back in.</source>
-      <translation type="unfinished">KWin stopped loading it after a KDE update. Run caelestia update, then log out and back in.</translation>
+      <translation type="unfinished"/>
     </message>
   </context>
   <context>

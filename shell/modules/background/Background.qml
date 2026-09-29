@@ -21,11 +21,6 @@ Variants {
         readonly property var drawerVisibilities: Visibilities.screens.get(Kwin.monitorFor(modelData)) ?? Visibilities.screens.get(modelData.name)
         readonly property bool isOverviewOpen: drawerVisibilities ? drawerVisibilities.overview : false
         readonly property bool wallpaperUp: wallpaper.item?.shown ?? false
-        // The fallback black waits for the wallpaper to have something to show, so a
-        // starting shell does not cover the desktop in black while the image is still
-        // decoding. It latches: readiness comes from an image decode status and from
-        // video playback, and letting it flip would blink the whole desktop surface
-        // between black and transparent for as long as the state kept changing.
         property bool wallpaperHasBeenUp: false
 
         onWallpaperUpChanged: {
@@ -38,8 +33,6 @@ Variants {
         isDesktopWidget: true
         color: (Config.background.wallpaperEnabled && wallpaperHasBeenUp) ? "black" : "transparent"
         surfaceFormat.opaque: false
-        // If Quickshell wallpaper is disabled, use empty mask so KDE desktop gets clicks
-        // If enabled, use null mask so Quickshell captures clicks
         mask: Config.background.wallpaperEnabled ? null : emptyRegion
         anchors.top: true
         anchors.bottom: true
@@ -55,7 +48,9 @@ Variants {
         TapHandler {
             acceptedButtons: Qt.LeftButton | Qt.RightButton
             onTapped: (eventPoint, button) => {
-                if (button === Qt.RightButton && Config.background.wallpaperEnabled) {
+                if (desktopIcons.renameActive)
+                    desktopIcons.renamingDelegate?.cancelRename();
+                if (button === Qt.RightButton && Config.background.wallpaperEnabled && !desktopIcons.iconAt(eventPoint.position.x, eventPoint.position.y)) {
                     ContextMenuStore.openDesktopContextMenu(eventPoint.position.x, eventPoint.position.y, win.modelData.name);
                 } else if (button === Qt.LeftButton) {
                     if (true) {
@@ -88,6 +83,8 @@ Variants {
             }
         }
         DesktopIcons {
+            id: desktopIcons
+
             screenData: win.modelData
             z: 3
         }
@@ -470,5 +467,6 @@ Variants {
         }
         WlrLayershell.exclusionMode: ExclusionMode.Ignore
         WlrLayershell.layer: WlrLayer.Bottom
+        WlrLayershell.keyboardFocus: desktopIcons.renameActive ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
     }
 }

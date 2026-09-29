@@ -26,12 +26,12 @@ PageBase {
 
     property var wallpaperColors: ({})
 
-    readonly property var sortColors: ["#e53935" // Red
-        , "#1e88e5" // Blue
-        , "#43a047" // Green
-        , "#fdd835" // Yellow
-        , "#8e24aa" // Purple
-        , "#fb8c00"  // Orange
+    readonly property var sortColors: ["#e53935"
+        , "#1e88e5"
+        , "#43a047"
+        , "#fdd835"
+        , "#8e24aa"
+        , "#fb8c00"
     ]
 
     property var wallsList: {
@@ -83,10 +83,11 @@ PageBase {
     }
 
     function colorDistance(c1: color, c2: color): real {
+        const rMean = (c1.r + c2.r) / 2;
         const dr = c1.r - c2.r;
         const dg = c1.g - c2.g;
         const db = c1.b - c2.b;
-        return Math.sqrt(dr * dr + dg * dg + db * db);
+        return Math.sqrt((2 + rMean) * dr * dr + 4 * dg * dg + (3 - rMean) * db * db);
     }
 
     function toggleSortColor(color: color) {
@@ -104,9 +105,14 @@ PageBase {
         const newDistances = {};
 
         for (const w of walls) {
-            if (w.parentDir === baseDir) {
-                newDistances[w.path] = colorDistance(root.wallpaperColors[w.path] ?? "black", root.sortColor);
-            }
+            if (w.parentDir !== baseDir)
+                continue;
+
+            const dominant = root.wallpaperColors[w.path];
+            if (dominant === undefined)
+                continue;
+
+            newDistances[w.path] = colorDistance(dominant, root.sortColor);
         }
 
         root.colorDistances = newDistances;
@@ -204,10 +210,6 @@ PageBase {
                 }
             }
 
-            // The wallpaper the shell ships with, one tap away, above the user's
-            // own. Upstream's tile and its `Wallpapers.fallback` are the same file
-            // there too; this port swaps that file for assets/wallpapers/, so the
-            // tile reads the fallback rather than naming the path a second time.
             WallItem {
                 Layout.topMargin: Tokens.spacing.medium
                 imgHeight: Math.round(width * 0.3)
@@ -221,7 +223,6 @@ PageBase {
                 }
             }
 
-            // Color sorting and type filtering
             RowLayout {
                 Layout.topMargin: Tokens.spacing.medium
                 Layout.fillWidth: true
@@ -234,7 +235,6 @@ PageBase {
                 Row {
                     spacing: Tokens.spacing.medium
 
-                    // Red button
                     Rectangle {
                         width: 36
                         height: 36
@@ -258,7 +258,6 @@ PageBase {
                         }
                     }
 
-                    // Blue button
                     Rectangle {
                         width: 36
                         height: 36
@@ -282,7 +281,6 @@ PageBase {
                         }
                     }
 
-                    // Green button
                     Rectangle {
                         width: 36
                         height: 36
@@ -306,7 +304,6 @@ PageBase {
                         }
                     }
 
-                    // Yellow button
                     Rectangle {
                         width: 36
                         height: 36
@@ -330,7 +327,6 @@ PageBase {
                         }
                     }
 
-                    // Purple button
                     Rectangle {
                         width: 36
                         height: 36
@@ -354,7 +350,6 @@ PageBase {
                         }
                     }
 
-                    // Orange button
                     Rectangle {
                         width: 36
                         height: 36
@@ -462,7 +457,6 @@ PageBase {
                     readonly property int globalIndex: rowDel.index * Config.nexus.wallpapersPerRow + index
                     readonly property var modelData: root.wallsList[globalIndex]
 
-                    // Empty placeholders for sizing
                     opacity: modelData ? 1 : 0
                     enabled: !!modelData
                     Layout.fillWidth: true
@@ -489,7 +483,7 @@ PageBase {
                     onClicked: {
                         if (modelData.parentDir !== Paths.wallsdir) {
                             root.nState.selectedWallpaperCategory = Wallpapers.getCategoryFor(modelData);
-                            root.nState.openSubPage(2); // Category page
+                            root.nState.openSubPage(2);
                         } else {
                             Wallpapers.setWallpaper(modelData.path);
                         }

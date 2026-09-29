@@ -25,9 +25,7 @@ QtObject {
         PlaceholderComp {}
     }
     readonly property list<Component> pageComps: [
-        // Personalization
         Component {
-            // Appearance
             StackPage {
                 Component {
                     WallpaperAndStyle {}
@@ -65,7 +63,6 @@ QtObject {
             }
         },
         Component {
-            // Desktop
             StackPage {
                 Component {
                     DesktopPage {}
@@ -82,7 +79,6 @@ QtObject {
             }
         },
         Component {
-            // Panels
             StackPage {
                 Component {
                     PanelsPage {}
@@ -102,7 +98,6 @@ QtObject {
                 Component {
                     UtilitiesPanel {}
                 }
-                // Taskbar component sub-pages
                 Component {
                     BarComponents {}
                 }
@@ -144,9 +139,7 @@ QtObject {
                 }
             }
         },
-        // Connectivity
         Component {
-            // Network
             StackPage {
                 Component {
                     NetworkPage {}
@@ -169,10 +162,12 @@ QtObject {
                 Component {
                     SavedNetworksPage {}
                 }
+                Component {
+                    HotspotPage {}
+                }
             }
         },
         Component {
-            // Bluetooth
             StackPage {
                 Component {
                     BluetoothPage {}
@@ -186,7 +181,6 @@ QtObject {
             }
         },
         Component {
-            // Audio
             StackPage {
                 Component {
                     AudioPage {}
@@ -202,9 +196,7 @@ QtObject {
                 }
             }
         },
-        // Controls
         Component {
-            // Notifications
             StackPage {
                 Component {
                     NotificationsPage {}
@@ -221,7 +213,6 @@ QtObject {
             }
         },
         Component {
-            // Utilities
             StackPage {
                 Component {
                     UtilitiesPage {}
@@ -247,15 +238,6 @@ QtObject {
             }
         },
         Component {
-            // Power
-            StackPage {
-                Component {
-                    PowerPage {}
-                }
-            }
-        },
-        Component {
-            // Session
             StackPage {
                 Component {
                     SessionPage {}
@@ -263,16 +245,13 @@ QtObject {
             }
         },
         Component {
-            // Shortcuts
             StackPage {
                 Component {
                     ShortcutManagerPage {}
                 }
             }
         },
-        // Shell
         Component {
-            // Apps
             StackPage {
                 Component {
                     AppsPage {}
@@ -286,7 +265,6 @@ QtObject {
             }
         },
         Component {
-            // Services
             StackPage {
                 Component {
                     ServicesPage {}
@@ -297,16 +275,13 @@ QtObject {
             }
         },
         Component {
-            // Language & region
             StackPage {
                 Component {
                     LanguageAndRegion {}
                 }
             }
         },
-        // System
         Component {
-            // Updates
             StackPage {
                 Component {
                     UpdatesPage {}
@@ -314,7 +289,6 @@ QtObject {
             }
         },
         Component {
-            // Plugins
             StackPage {
                 Component {
                     PluginsPage {}
@@ -338,7 +312,7 @@ QtObject {
     ]
 
     component PlaceholderComp: Item {
-        property NexusState nState // To avoid the warning from non-existent property
+        property NexusState nState
 
         ColumnLayout {
             anchors.centerIn: parent

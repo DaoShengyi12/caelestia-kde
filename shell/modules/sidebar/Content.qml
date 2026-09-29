@@ -30,7 +30,17 @@ Item {
         }
     }
 
-    Component.onCompleted: checkAiTab()
+    Component.onCompleted: {
+        if (root.visibilities.sidebar) {
+            root.activeTab = Visibilities.initialSidebarTab || Visibilities.sidebarOpenTab();
+            Visibilities.initialSidebarTab = "";
+        }
+        checkAiTab();
+    }
+    onActiveTabChanged: {
+        if (root.visibilities.sidebar)
+            Visibilities.lastSidebarTab = activeTab;
+    }
 
     Connections {
         function onEnableAiAssistantChanged(): void { checkAiTab(); }
@@ -50,7 +60,8 @@ Item {
     Connections {
         function onSidebarChanged(): void {
             if (root.visibilities.sidebar) {
-                root.activeTab = Visibilities.initialSidebarTab;
+                root.activeTab = Visibilities.initialSidebarTab || Visibilities.sidebarOpenTab();
+                Visibilities.initialSidebarTab = "";
                 checkAiTab();
             }
         }
@@ -77,7 +88,6 @@ Item {
                 anchors.fill: parent
                 spacing: 0
 
-                // Tab Switcher Header
                 Item {
                     id: headerContainer
 
@@ -155,7 +165,6 @@ Item {
                         }
                     }
 
-                    // Sliding Indicator
                     Item {
                         id: indicator
 
@@ -218,7 +227,6 @@ Item {
                     }
                 }
 
-                // Divider
                 StyledRect {
                     Layout.fillWidth: true
                     implicitHeight: 1
@@ -226,7 +234,6 @@ Item {
                     color: Colours.palette.m3outlineVariant
                 }
 
-                // Content Panel Stack
                 Item {
                     property int activeIndex: indicator.activeIndex
 
@@ -284,7 +291,6 @@ Item {
             }
         }
 
-        // Utilities Separator
         StyledRect {
             visible: utilities && utilities.offsetScale < 1
             Layout.row: Config.bar.position === "bottom" ? 0 : (Config.bar.position === "top" ? 2 : 1)
@@ -296,7 +302,6 @@ Item {
             color: Colours.tPalette.m3outlineVariant
         }
 
-        // Popout Separator
         StyledRect {
             visible: showPopoutSeparator
             Layout.row: Config.bar.position === "bottom" ? 2 : 0

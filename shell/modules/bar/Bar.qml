@@ -92,6 +92,9 @@ Item {
     }
 
     function checkPopout(pos: real): void {
+        if (popouts.hasCurrent && (popouts.currentName === "clockcontext" || popouts.currentName === "dockcontext" || popouts.currentName === "greetercontext" || popouts.currentName === "statusiconscontext"))
+            return;
+
         const ch = getLoaderAt(isHorizontal ? pos : width / 2, isHorizontal ? height / 2 : pos) as WrappedLoader;
 
         if (currentHoveredItem && currentHoveredItem !== ch?.item) {
@@ -104,15 +107,13 @@ Item {
             closeTray();
 
         if (!ch) {
-            if (popouts.hasCurrent && (popouts.currentName === "dockcontext" || popouts.currentName === "dockhover" || popouts.currentName === "greeter" || popouts.currentName === "greetercontext" || popouts.currentName === "activewindow")) return;
+            if (popouts.hasCurrent && (popouts.currentName === "dockhover" || popouts.currentName === "greeter")) return;
             if (!Config.bar.popouts.tray && popouts.currentName.startsWith("traymenu")) return;
-            // skip hover-driven tray recalculation in click mode
             popouts.hasCurrent = false;
             return;
         }
 
         const id = ch.id;
-        // top is absolute pos
         let mappedChPos = mapFromItem(ch, 0, 0);
         const top = isHorizontal ? mappedChPos.x : mappedChPos.y;
 
@@ -148,7 +149,6 @@ Item {
 
             let icon = items.childAt(localX, localY);
             if (!icon) {
-                // Find nearest visible child by center distance
                 let bestDist = 1e9;
                 for (let i = 0; i < items.children.length; i++) {
                     const child = items.children[i];
@@ -170,7 +170,7 @@ Item {
             } else {
                 popouts.hasCurrent = false;
             }
-        } else if ((id === "greeter" || id === "activeWindow") && (Config.bar.popouts.greeter ?? Config.bar.popouts.activeWindow) && (Config.bar.greeter.showOnHover ?? Config.bar.activeWindow.showOnHover)) {
+        } else if (id === "greeter" && Config.bar.popouts.greeter && Config.bar.greeter.showOnHover) {
             const item = ch.item as Item;
             if (item) {
                 const relPos = pos - top;
@@ -190,7 +190,7 @@ Item {
                 popouts.hasCurrent = false;
             }
         } else if (id === "dock") {
-            if (popouts.hasCurrent && (popouts.currentName === "dockcontext" || popouts.currentName === "greeter" || popouts.currentName === "greetercontext" || popouts.currentName === "activewindow")) return;
+            if (popouts.hasCurrent && (popouts.currentName === "dockcontext" || popouts.currentName === "greeter" || popouts.currentName === "greetercontext" || popouts.currentName === "statusiconscontext")) return;
 
             const item = ch.item;
             if (item && typeof item.handleHover === "function") {
@@ -223,6 +223,25 @@ Item {
                     popouts.currentName = "updateIndicator";
                     popouts.currentCenter = isHorizontal ? item.mapToItem(null, item.implicitWidth / 2, 0).x : (item.mapToItem(null, 0, item.implicitHeight / 2).y ?? 0);
                     popouts.hasCurrent = true;
+                } else {
+                    popouts.hasCurrent = false;
+                }
+            } else {
+                popouts.hasCurrent = false;
+            }
+        } else if (id === "clock") {
+            if (Config.bar.popouts.clock) {
+                const item = ch.item as Item;
+                if (item) {
+                    const relPos = pos - top;
+                    const inside = isHorizontal ? (relPos >= 0 && relPos <= item.implicitWidth) : (relPos >= 0 && relPos <= item.implicitHeight);
+                    if (inside) {
+                        popouts.currentName = "clock";
+                        popouts.currentCenter = isHorizontal ? item.mapToItem(null, item.implicitWidth / 2, 0).x : (item.mapToItem(null, 0, item.implicitHeight / 2).y ?? 0);
+                        popouts.hasCurrent = true;
+                    } else {
+                        popouts.hasCurrent = false;
+                    }
                 } else {
                     popouts.hasCurrent = false;
                 }
@@ -313,10 +332,6 @@ Item {
         columnSpacing: Tokens.spacing.medium
         rowSpacing: Tokens.spacing.medium
 
-        // Plain ternaries assigning `undefined` to x/y (a real-typed property)
-        // trigger "Unable to assign [undefined] to y/x" warnings even though
-        // the other branch is unreachable at the same time. Bindings with a
-        // `when` guard simply don't apply instead of assigning undefined.
         Binding on x {
             when: isHorizontal
             value: Math.max(middleLayout.minX, Math.min(middleLayout.idealX, middleLayout.maxX))
@@ -399,15 +414,6 @@ Item {
                 }
             }
             DelegateChoice {
-                roleValue: "activeWindow"
-                delegate: WrappedLoader {
-                    sourceComponent: Greeter {
-                        bar: root
-                        monitor: Brightness.getMonitorForScreen(root.screen)
-                    }
-                }
-            }
-            DelegateChoice {
                 roleValue: "tray"
                 delegate: WrappedLoader {
                     sourceComponent: Tray {
@@ -418,13 +424,17 @@ Item {
             DelegateChoice {
                 roleValue: "clock"
                 delegate: WrappedLoader {
-                    sourceComponent: Clock {}
+                    sourceComponent: Clock {
+                        bar: root
+                    }
                 }
             }
             DelegateChoice {
                 roleValue: "statusIcons"
                 delegate: WrappedLoader {
-                    sourceComponent: StatusIcons {}
+                    sourceComponent: StatusIcons {
+                        bar: root
+                    }
                 }
             }
             DelegateChoice {

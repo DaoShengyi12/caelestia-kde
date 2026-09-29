@@ -23,7 +23,6 @@ ScrollBar {
             shouldBeActive = flickable.moving;
     }
 
-    // Sync nonAnimPosition with Qt's automatic position binding
     onPositionChanged: {
         if (_updatingFromUser) {
             _updatingFromUser = false;
@@ -43,7 +42,7 @@ ScrollBar {
             const contentLen = isVertical ? flickable.contentHeight : flickable.contentWidth;
             const len = isVertical ? flickable.height : flickable.width;
             if (contentLen > len) {
-                const pos = isVertical ? flickable.contentY : flickable.contentX;
+                const pos = isVertical ? flickable.contentY - flickable.originY : flickable.contentX - flickable.originX;
                 nonAnimPosition = Math.max(0, Math.min(1, pos / (contentLen - len)));
             }
         }
@@ -88,7 +87,6 @@ ScrollBar {
         }
     }
 
-    // Sync nonAnimPosition with flickable when not animating
     Connections {
         function onContentYChanged() { if (root.isVertical) updatePos(); }
         function onContentXChanged() { if (!root.isVertical) updatePos(); }
@@ -99,7 +97,9 @@ ScrollBar {
                 const contentLen = root.isVertical ? root.flickable.contentHeight : root.flickable.contentWidth;
                 const len = root.isVertical ? root.flickable.height : root.flickable.width;
                 if (contentLen > len) {
-                    const pos = root.isVertical ? root.flickable.contentY : root.flickable.contentX;
+                    // ListViews with delegates of varying size move their origin as
+                    // they estimate the content size; positions are relative to it.
+                    const pos = root.isVertical ? root.flickable.contentY - root.flickable.originY : root.flickable.contentX - root.flickable.originX;
                     root.nonAnimPosition = Math.max(0, Math.min(1, pos / (contentLen - len)));
                 } else {
                     root.nonAnimPosition = 0;
@@ -155,9 +155,9 @@ ScrollBar {
                     const contentPos = maxPos > 0 ? (newPos / maxPos) * maxContentPos : 0;
                     const finalPos = Math.max(0, Math.min(maxContentPos, contentPos));
                     if (root.isVertical)
-                        root.flickable.contentY = finalPos;
+                        root.flickable.contentY = root.flickable.originY + finalPos;
                     else
-                        root.flickable.contentX = finalPos;
+                        root.flickable.contentX = root.flickable.originX + finalPos;
                 }
             }
         }

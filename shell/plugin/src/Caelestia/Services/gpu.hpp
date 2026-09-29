@@ -14,10 +14,10 @@ class Gpu : public TickingService {
 
 public:
     enum Type {
-        Auto,    // user override is empty (config "") — defer to detected autoType
-        None,    // no usable GPU
-        Nvidia,  // queried via nvidia-smi
-        Generic, // queried via /sys/class/drm/card*/device/gpu_busy_percent
+        Auto,
+        None,
+        Nvidia,
+        Generic,
     };
     Q_ENUM(Type)
 
@@ -52,14 +52,15 @@ protected:
 
 private:
     void detectGpu();
+    void finishLspciProbe(const QByteArray& out);
+    void probeNvidiaCapability();
     void tryNameSource(int index);
     void finishNameSource(int index, QString name);
     void readGenericUsage();
     void startNvidiaUsage();
     void readGpuTemperature();
+    void resetReadings();
 
-    // Runs a one-shot process, delivering its stdout to callback exactly once
-    // (empty output if it crashes or never starts), then tears the process down.
     void runProcess(const QString& program, const QStringList& args, std::function<void(const QByteArray&)> callback);
 
     void setUserType(Type value);
@@ -74,9 +75,12 @@ private:
     qreal m_percentage = 0.0;
     qreal m_temperature = 0.0;
 
-    // /sys/class/drm card busy files, enumerated once at construction (the card
-    // set is static at runtime) and reused by detection and the tick path.
     QStringList m_busyFiles;
+
+    QString m_nvidiaPciPath;
+
+    int m_nvidiaFailures = 0;
+
     bool m_detecting = false;
     bool m_nvidiaQuerying = false;
 };

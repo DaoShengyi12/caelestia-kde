@@ -4,11 +4,13 @@
 #include "Input.hpp"
 #include "Term.hpp"
 #include "UI.hpp"
+#include "Sudo.hpp"
 #include <cerrno>
 #include <chrono>
 #include <csignal>
 #include <cstdio>
 #include <cstdlib>
+#include <cstring>
 #include <filesystem>
 #include <fcntl.h>
 #include <fstream>
@@ -412,10 +414,38 @@ void execute() {
   setenv("SRCPKGDEST", (cache_dir + "/makepkg-srcpackages").c_str(), 1);
 
   std::error_code fs_error;
-  for (const string& path : {cache_dir, cache_dir + "/makepkg-build",
+  std::filesystem::create_directories(cache_dir, fs_error);
+  if (fs_error) {
+    Term::restore();
+    cerr << "Could not create installer cache directory at " << cache_dir << ": "
+         << fs_error.message() << endl;
+    exit(1);
+  }
+
+  // The install log and the makepkg trees live in here, so the directory stays private
+  // and has to be ours. lstat rather than stat: a /tmp/caelestia-kde left behind by
+  // another user would otherwise be followed, and the log below is opened in a mode
+  // that truncates whatever the path points at.
+  struct stat cache_st {};
+  if (lstat(cache_dir.c_str(), &cache_st) != 0 || !S_ISDIR(cache_st.st_mode) ||
+      cache_st.st_uid != getuid()) {
+    Term::restore();
+    cerr << "Refusing the installer cache directory at " << cache_dir
+         << ": not a directory owned by this user." << endl;
+    exit(1);
+  }
+  if (chmod(cache_dir.c_str(), 0700) != 0) {
+    Term::restore();
+    cerr << "Could not restrict the installer cache directory at " << cache_dir
+         << ": " << strerror(errno) << endl;
+    exit(1);
+  }
+
+  for (const string& path : {cache_dir + "/makepkg-build",
                              cache_dir + "/makepkg-packages",
                              cache_dir + "/makepkg-sources",
                              cache_dir + "/makepkg-srcpackages"}) {
+    fs_error.clear();
     std::filesystem::create_directories(path, fs_error);
     if (fs_error) {
       Term::restore();
@@ -439,10 +469,12 @@ void execute() {
 
   setenv("CONFIRM_ARG", "--noconfirm", 1);
 
-  // One shared install log: every step appends, and the live view tails it.
+  // One shared install log: every step appends, and the live view tails it. It carries
+  // every step's output, so it stays 0600 and never opens through a symlink.
   string log_path = cache_dir + "/install.log";
-  int log_fd = open(log_path.c_str(),
-                    O_WRONLY | O_CREAT | O_TRUNC | O_APPEND | O_CLOEXEC, 0644);
+  int log_fd =
+      open(log_path.c_str(),
+           O_WRONLY | O_CREAT | O_TRUNC | O_APPEND | O_CLOEXEC | O_NOFOLLOW, 0600);
   if (log_fd < 0) {
     Term::restore();
     cerr << "Could not open installation log at " << log_path << ": "
@@ -525,9 +557,7 @@ void execute() {
         int st2 = 0;
         waitpid(child, &st2, 0);
         Term::restore();
-        if (!g_sudo_bin_dir.empty() && run_shell("rm -rf \"" + g_sudo_bin_dir + "\"") != 0) {
-          cerr << "[installer] warning: could not remove the sudo shim directory " << g_sudo_bin_dir << endl;
-        }
+        Sudo::cleanup();
         exit(130);
       }
 
