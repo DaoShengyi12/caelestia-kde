@@ -16,6 +16,7 @@ class SidebarConfig : public settings::ObjectNode {
     CONFIG_PROPERTY(int, dragThreshold, 50)
     CONFIG_PROPERTY(int, grabWidth, 12)
     CONFIG_PROPERTY(QString, defaultTab, u"last"_s)
+    CONFIG_PROPERTY(bool, pinned, false)
 };
 
 } // namespace caelestia::config

@@ -209,7 +209,7 @@ Item {
 
                             radius: Tokens.rounding.full
                             color: Colours.palette.m3onSurface
-                            onClicked: Visibilities.setSidebarPinned(!Visibilities.sidebarPinned)
+                            onClicked: GlobalConfig.sidebar.pinned = !GlobalConfig.sidebar.pinned
                         }
 
                         MaterialIcon {
