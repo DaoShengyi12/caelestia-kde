@@ -9,8 +9,6 @@ Singleton {
     property var screens: new Map()
     property var bars: new Map()
     property string launcherInitialSearch: ""
-    // Tab to show the next time the sidebar opens, when the opener asks for a
-    // specific one; "" means the configured default (see sidebarOpenTab).
     property string initialSidebarTab: ""
     property string lastSidebarTab: "notifications"
     property string preOverviewActiveWindowAddress: ""

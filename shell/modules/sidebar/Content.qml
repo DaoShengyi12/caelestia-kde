@@ -30,8 +30,6 @@ Item {
         }
     }
 
-    // Opening the sidebar is what loads this, so the first open never reaches
-    // onSidebarChanged below; pick the tab here as well.
     Component.onCompleted: {
         if (root.visibilities.sidebar) {
             root.activeTab = Visibilities.initialSidebarTab || Visibilities.sidebarOpenTab();
