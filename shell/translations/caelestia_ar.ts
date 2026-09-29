@@ -9,14 +9,14 @@
       <translation>حول</translation>
     </message>
     <message>
-      <location line="+75"/>
+      <location line="+70"/>
       <source>System</source>
       <translation>النظام</translation>
     </message>
     <message>
       <location line="+5"/>
       <source>Hostname</source>
-      <translation>Hostname</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+5"/>
@@ -39,7 +39,7 @@
       <translation>البرامج الثابتة</translation>
     </message>
     <message>
-      <location line="+6"/>
+      <location line="+5"/>
       <source>Software</source>
       <translation>البرمجيات</translation>
     </message>
@@ -51,7 +51,7 @@
     <message>
       <location line="+5"/>
       <source>CLI</source>
-      <translation>CLI</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+5"/>
@@ -61,10 +61,10 @@
     <message>
       <location line="+6"/>
       <source>Qt</source>
-      <translation>Qt</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
-      <location line="+6"/>
+      <location line="+5"/>
       <source>Plugins</source>
       <translation>الإضافات</translation>
     </message>
@@ -74,7 +74,7 @@
       <translation>تمكين الإضافات</translation>
     </message>
     <message>
-      <location line="+13"/>
+      <location line="+12"/>
       <source>Advanced</source>
       <translation>متقدم</translation>
     </message>
@@ -105,7 +105,7 @@
   <context>
     <name>AddNetworkPage</name>
     <message>
-      <location filename="../modules/nexus/pages/network/AddNetworkPage.qml" line="+78"/>
+      <location filename="../modules/nexus/pages/network/AddNetworkPage.qml" line="+66"/>
       <source>Enter password</source>
       <translation>أدخل كلمة المرور</translation>
     </message>
@@ -115,7 +115,7 @@
       <translation>إضافة شبكة</translation>
     </message>
     <message>
-      <location line="+42"/>
+      <location line="+39"/>
       <source>Enter the password for &quot;%1&quot;.</source>
       <translation>أدخل كلمة المرور ل &quot;%1&quot;.</translation>
     </message>
@@ -125,7 +125,7 @@
       <translation>أدخل التفاصيل أدناه للاتصال بالشبكة يدوياً.</translation>
     </message>
     <message>
-      <location line="+14"/>
+      <location line="+13"/>
       <source>Network name (SSID)</source>
       <translation>اسم الشبكة (SSID)</translation>
     </message>
@@ -140,7 +140,7 @@
       <translation>اسم الشبكة مطلوب</translation>
     </message>
     <message>
-      <location line="+12"/>
+      <location line="+11"/>
       <source>Hidden network</source>
       <translation>الشبكة المخفية</translation>
     </message>
@@ -150,7 +150,7 @@
       <translation>البحث النشط عن شبكة تقوم بالبث&apos;t لاسمها</translation>
     </message>
     <message>
-      <location line="+11"/>
+      <location line="+10"/>
       <source>Security</source>
       <translation>أمان</translation>
     </message>
@@ -191,7 +191,7 @@
       <translation>إلغاء</translation>
     </message>
     <message>
-      <location line="+26"/>
+      <location line="+24"/>
       <source>Connect</source>
       <translation>الاتصال</translation>
     </message>
@@ -232,7 +232,7 @@
   <context>
     <name>AddVpnPage</name>
     <message>
-      <location filename="../modules/nexus/pages/network/AddVpnPage.qml" line="+76"/>
+      <location filename="../modules/nexus/pages/network/AddVpnPage.qml" line="+75"/>
       <source>Edit VPN provider</source>
       <translation>تعديل موفر VPN</translation>
     </message>
@@ -328,149 +328,179 @@
     <message>
       <location filename="../modules/nexus/pages/wallandstyle/AdvancedColorsPage.qml" line="+19"/>
       <source>Sunrise and sunset</source>
-      <translation type="unfinished">Sunrise and sunset</translation>
+      <translation>الشروق والغروب</translation>
     </message>
     <message>
       <location line="+3"/>
       <source>Fixed times</source>
-      <translation type="unfinished">Fixed times</translation>
+      <translation>أوقات ثابتة</translation>
     </message>
     <message>
-      <location line="+27"/>
+      <location line="+7"/>
+      <source>Light</source>
+      <translation>فاتح</translation>
+    </message>
+    <message>
+      <location line="+5"/>
+      <source>Dark</source>
+      <translation>داكن</translation>
+    </message>
+    <message>
+      <location line="+21"/>
       <source>Advanced Colors</source>
-      <translation type="unfinished">Advanced Colors</translation>
+      <translation>ألوان متقدمة</translation>
     </message>
     <message>
       <location line="+25"/>
       <source>Theme Automation</source>
-      <translation type="unfinished">Theme Automation</translation>
+      <translation>أتمتة السمة</translation>
     </message>
     <message>
       <location line="+9"/>
       <source>Smart color scheme</source>
-      <translation type="unfinished">Smart color scheme</translation>
+      <translation>نظام ألوان ذكي</translation>
     </message>
     <message>
       <location line="+1"/>
       <source>Automatically select color variants and theme mode</source>
-      <translation type="unfinished">Automatically select color variants and theme mode</translation>
+      <translation>تحديد متغيرات الألوان ووضع السمة تلقائياً</translation>
     </message>
     <message>
       <location line="+7"/>
       <source>Automatic light and dark</source>
-      <translation type="unfinished">Automatic light and dark</translation>
+      <translation>فاتح وداكن تلقائي</translation>
     </message>
     <message>
       <location line="+1"/>
       <source>Switch the theme mode on a schedule</source>
-      <translation type="unfinished">Switch the theme mode on a schedule</translation>
+      <translation>تبديل وضع السمة بجدول زمني</translation>
     </message>
     <message>
       <location line="+9"/>
       <source>Schedule</source>
-      <translation type="unfinished">Schedule</translation>
+      <translation>جدول زمني</translation>
     </message>
     <message>
       <location line="+1"/>
       <source>Sunrise and sunset use your weather location</source>
-      <translation type="unfinished">Sunrise and sunset use your weather location</translation>
+      <translation>يستخدم الشروق والغروب موقع الطقس الخاص بك</translation>
     </message>
     <message>
       <location line="+0"/>
       <source>Set a weather location to use sunrise and sunset</source>
-      <translation type="unfinished">Set a weather location to use sunrise and sunset</translation>
+      <translation>تعيين موقع للطقس لاستخدام الشروق والغروب</translation>
     </message>
     <message>
       <location line="+10"/>
       <source>Light mode hour</source>
-      <translation type="unfinished">Light mode hour</translation>
+      <translation>ساعة الوضع الفاتح</translation>
     </message>
     <message>
       <location line="+1"/>
       <source>Switches at %1</source>
-      <translation type="unfinished">Switches at %1</translation>
+      <translation>يتم التبديل في %1</translation>
     </message>
     <message>
       <location line="+11"/>
       <source>Dark mode hour</source>
-      <translation type="unfinished">Dark mode hour</translation>
+      <translation>ساعة الوضع الداكن</translation>
     </message>
     <message>
       <location line="+1"/>
       <source>Switches at %1, also used when sunrise and sunset are unavailable</source>
-      <translation type="unfinished">Switches at %1, also used when sunrise and sunset are unavailable</translation>
+      <translation>يتم التبديل في %1، يُستخدم أيضاً عندما لا تتوفر أوقات الشروق والغروب</translation>
     </message>
     <message>
       <location line="+9"/>
-      <source>Palette</source>
-      <translation type="unfinished">Palette</translation>
+      <source>Theme mode</source>
+      <translation>وضع السمة</translation>
     </message>
     <message>
-      <location line="+10"/>
+      <location line="+7"/>
+      <source>Mode</source>
+      <translation>الوضع</translation>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Switch the color scheme between light and dark</source>
+      <translation>تبديل نظام الألوان بين الفاتح والداكن</translation>
+    </message>
+    <message>
+      <location line="+0"/>
+      <source>Managed by the automatic light and dark schedule</source>
+      <translation>مُدار بواسطة جدول الفاتح والداكن التلقائي</translation>
+    </message>
+    <message>
+      <location line="+7"/>
+      <source>Palette</source>
+      <translation>لوحة الألوان</translation>
+    </message>
+    <message>
+      <location line="+7"/>
       <source>Color intensity</source>
-      <translation type="unfinished">Color intensity</translation>
+      <translation>كثافة اللون</translation>
     </message>
     <message>
       <location line="+1"/>
       <source>Chroma of the wallpaper-derived palette, at 100% by default</source>
-      <translation type="unfinished">Chroma of the wallpaper-derived palette, at 100% by default</translation>
+      <translation>صفاء لوحة الألوان المستمدة من الخلفية، 100% افتراضياً</translation>
     </message>
     <message>
       <location line="+0"/>
       <source>%1 keeps its own colors, so this does not apply</source>
-      <translation type="unfinished">%1 keeps its own colors, so this does not apply</translation>
+      <translation>%1 يحتفظ بألوانه الخاصة، لذا هذا لا ينطبق</translation>
     </message>
   </context>
   <context>
     <name>AiAssistant</name>
     <message>
-      <location filename="../modules/sidebar/AiAssistant.qml" line="+789"/>
-      <location line="+1352"/>
+      <location filename="../modules/sidebar/AiAssistant.qml" line="+701"/>
+      <location line="+1280"/>
       <source>Rate limited - retrying in %1s…</source>
       <translation>معدل محدود - إعادة المحاولة في %1s…</translation>
     </message>
     <message>
-      <location line="+292"/>
+      <location line="+282"/>
       <source>Provider</source>
       <translation>موفر</translation>
     </message>
     <message>
-      <location line="+41"/>
+      <location line="+39"/>
       <source>Select Model</source>
       <translation>حدد الموديل</translation>
     </message>
     <message>
-      <location line="+40"/>
+      <location line="+39"/>
       <source>Effort</source>
       <translation>مجهود</translation>
     </message>
     <message>
-      <location line="+32"/>
+      <location line="+31"/>
       <source>Account</source>
       <translation>حساب</translation>
     </message>
     <message>
-      <location line="+358"/>
+      <location line="+352"/>
       <source>Thought Process</source>
       <translation>عملية التفكير</translation>
     </message>
     <message>
-      <location line="+187"/>
+      <location line="+184"/>
       <source>Suggestions</source>
       <translation>اقتراحات</translation>
     </message>
     <message>
-      <location line="+124"/>
+      <location line="+123"/>
       <source>Ask assistant...</source>
       <translation>اسأل المساعد...</translation>
     </message>
     <message>
-      <location line="+244"/>
+      <location line="+241"/>
       <source>Clear All</source>
       <translation>مسح الكل</translation>
     </message>
     <message>
-      <location line="+35"/>
+      <location line="+34"/>
       <source>New Chat</source>
       <translation>دردشة جديدة</translation>
     </message>
@@ -483,7 +513,7 @@
       <translation>مساعد AI</translation>
     </message>
     <message>
-      <location line="+32"/>
+      <location line="+29"/>
       <source>API key</source>
       <translation>مفتاح API</translation>
     </message>
@@ -493,7 +523,7 @@
       <translation>تخزين في مفتاح الجلسة الخاص بك، ليس في shell.json. متغير البيئة %1 يتجاوزه.</translation>
     </message>
     <message>
-      <location line="+92"/>
+      <location line="+79"/>
       <source>API key saved</source>
       <translation>تم حفظ مفتاح API</translation>
     </message>
@@ -513,24 +543,24 @@
       <translation>تعثر على&apos;مفتاح حفظ API</translation>
     </message>
     <message>
-      <location line="+31"/>
-      <location line="+525"/>
+      <location line="+27"/>
+      <location line="+520"/>
       <source>Checking…</source>
       <translation>التحقق…</translation>
     </message>
     <message>
-      <location line="-523"/>
-      <location line="+500"/>
+      <location line="-518"/>
+      <location line="+497"/>
       <source>Not installed</source>
       <translation>لم يتم تثبيته</translation>
     </message>
     <message>
-      <location line="-491"/>
+      <location line="-488"/>
       <source>Daemon not running - start it with: sudo systemctl start ollama</source>
       <translation>دايمون لا يعمل - ابدأ ب : sudo systemctl يبدأ فلاما</translation>
     </message>
     <message>
-      <location line="+80"/>
+      <location line="+73"/>
       <source>Default</source>
       <translation>الافتراضي</translation>
     </message>
@@ -540,19 +570,19 @@
       <translation>حساب</translation>
     </message>
     <message>
-      <location line="+58"/>
+      <location line="+54"/>
       <source>Login done? You can close this window.</source>
       <translation>تسجيل الدخول؟ يمكنك إغلاق هذه النافذة.</translation>
     </message>
     <message>
-      <location line="+69"/>
-      <location line="+40"/>
+      <location line="+79"/>
+      <location line="+35"/>
       <source>Installed.</source>
       <translation>مثبت.</translation>
     </message>
     <message>
-      <location line="-40"/>
-      <location line="+44"/>
+      <location line="-35"/>
+      <location line="+39"/>
       <source>Failed</source>
       <translation>فشل</translation>
     </message>
@@ -562,7 +592,7 @@
       <translation>ملغاة.</translation>
     </message>
     <message>
-      <location line="+50"/>
+      <location line="+49"/>
       <source>Local provider</source>
       <translation>المزود المحلي</translation>
     </message>
@@ -573,43 +603,53 @@
     </message>
     <message>
       <location line="+8"/>
-      <location line="+138"/>
+      <location line="+142"/>
       <source>Status</source>
       <translation>الحالة</translation>
     </message>
     <message>
-      <location line="-129"/>
+      <location line="-133"/>
       <source>Download Ollama</source>
       <translation>تحميل أولاما</translation>
     </message>
     <message>
       <location line="+1"/>
       <location line="+5"/>
-      <location line="+147"/>
-      <location line="+19"/>
+      <location line="+149"/>
+      <location line="+18"/>
       <source>Installing…</source>
       <translation>تثبيت…</translation>
     </message>
     <message>
-      <location line="-160"/>
+      <location line="-161"/>
       <source>Claude</source>
       <translation>كلود</translation>
     </message>
     <message>
       <location line="+5"/>
-      <location line="+106"/>
+      <location line="+110"/>
       <source>Claude Code</source>
       <translation>كود كلود</translation>
     </message>
     <message>
-      <location line="-105"/>
+      <location line="-109"/>
       <source>Uses the Claude CLI and your Claude login</source>
       <translation>يستخدم كلود CLI ودخل كلود الخاص بك</translation>
     </message>
     <message>
       <location line="+7"/>
+      <source>Let the CLI run its own tools</source>
+      <translation>السماح لـ CLI بتشغيل أدواته الخاصة</translation>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Off by default; the assistant&apos;s own tools do not need it</source>
+      <translation>مغلق افتراضياً؛ أدوات المساعد الخاصة لا تحتاجه</translation>
+    </message>
+    <message>
+      <location line="+7"/>
       <source>Claude API</source>
-      <translation>Claude API</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
@@ -624,7 +664,7 @@
     <message>
       <location line="+5"/>
       <source>OpenAI (ChatGPT)</source>
-      <translation>OpenAI (ChatGPT)</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
@@ -634,7 +674,7 @@
     <message>
       <location line="+6"/>
       <source>Gemini</source>
-      <translation>Gemini</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
@@ -654,7 +694,7 @@
     <message>
       <location line="+6"/>
       <source>opencode Zen</source>
-      <translation>opencode Zen</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
@@ -677,7 +717,7 @@
       <translation>مفاتيح API</translation>
     </message>
     <message>
-      <location line="+67"/>
+      <location line="+61"/>
       <source>Download Claude Code</source>
       <translation>تحميل كود كلود</translation>
     </message>
@@ -697,7 +737,7 @@
       <translation>حتى الآن</translation>
     </message>
     <message>
-      <location line="+21"/>
+      <location line="+19"/>
       <source>Claude accounts</source>
       <translation>حسابات كلود</translation>
     </message>
@@ -712,7 +752,7 @@
       <translation>انقر لتحديد</translation>
     </message>
     <message>
-      <location line="+33"/>
+      <location line="+31"/>
       <source>Log in to selected account</source>
       <translation>تسجيل الدخول إلى الحساب المحدد</translation>
     </message>
@@ -731,6 +771,21 @@
       <location line="+1"/>
       <source>Log into a different Claude account</source>
       <translation>تسجيل الدخول إلى حساب كلود مختلف</translation>
+    </message>
+    <message>
+      <location line="+8"/>
+      <source>History</source>
+      <translation>السجل</translation>
+    </message>
+    <message>
+      <location line="+5"/>
+      <source>Save chat history</source>
+      <translation>حفظ سجل الدردشة</translation>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Keep conversations between sessions; the sidebar&apos;s clear button removes what was already saved</source>
+      <translation>الاحتفاظ بالمحادثات بين الجلسات؛ زر مسح الشريط الجانبي يزيل ما تم حفظه</translation>
     </message>
   </context>
   <context>
@@ -790,7 +845,7 @@
   <context>
     <name>AppBrowser</name>
     <message>
-      <location filename="../modules/launcher/AppBrowser.qml" line="+225"/>
+      <location filename="../modules/launcher/AppBrowser.qml" line="+213"/>
       <source>No apps in this category</source>
       <translation>لا توجد تطبيقات في هذه الفئة</translation>
     </message>
@@ -800,68 +855,68 @@
     <message>
       <location filename="../modules/launcher/items/AppContextMenu.qml" line="+56"/>
       <source>Unpin from dock</source>
-      <translation type="unfinished">Unpin from dock</translation>
+      <translation>إزالة التثبيت من الـ Dock</translation>
     </message>
     <message>
       <location line="+0"/>
       <source>Pin to dock</source>
-      <translation type="unfinished">Pin to dock</translation>
+      <translation>تثبيت بالـ Dock</translation>
     </message>
     <message>
       <location line="+18"/>
       <source>Remove from desktop</source>
-      <translation type="unfinished">Remove from desktop</translation>
+      <translation>إزالة من سطح المكتب</translation>
     </message>
     <message>
       <location line="+0"/>
       <source>Add to desktop</source>
-      <translation type="unfinished">Add to desktop</translation>
+      <translation>إضافة إلى سطح المكتب</translation>
     </message>
     <message>
       <location line="+25"/>
       <source>Show in launcher</source>
-      <translation type="unfinished">Show in launcher</translation>
+      <translation>إظهار في مشغل التطبيقات</translation>
     </message>
     <message>
       <location line="+0"/>
       <source>Hide app</source>
-      <translation type="unfinished">Hide app</translation>
+      <translation>إخفاء التطبيق</translation>
     </message>
     <message>
       <location line="+18"/>
       <source>App info</source>
-      <translation type="unfinished">App info</translation>
+      <translation>معلومات التطبيق</translation>
     </message>
   </context>
   <context>
     <name>AppInfo</name>
     <message>
-      <location filename="../modules/nexus/pages/apps/AppInfo.qml" line="+31"/>
+      <location filename="../modules/nexus/pages/apps/AppInfo.qml" line="+30"/>
       <source>App info</source>
       <translation>معلومات التطبيق</translation>
     </message>
     <message>
-      <location line="+47"/>
+      <location line="+45"/>
       <source>Taskbar &amp; Dock</source>
-      <translation type="unfinished">Taskbar &amp; Dock</translation>
+      <translation>شريط المهام والـ Dock</translation>
     </message>
     <message>
       <location line="+6"/>
       <source>Pin to dock</source>
-      <translation type="unfinished">Pin to dock</translation>
+      <translation>تثبيت بالـ Dock</translation>
     </message>
     <message>
       <location line="+1"/>
       <source>Matched by a regex in pinnedApps - edit the config file to change</source>
-      <translation type="unfinished">Matched by a regex in pinnedApps - edit the config file to change</translation>
+      <translation>متطابق بواسطة تعبير نمطي في pinnedApps - قم بتحرير ملف التكوين للتغيير</translation>
     </message>
     <message>
       <location line="+0"/>
       <source>Show on the dock even when not running</source>
-      <translation type="unfinished">Show on the dock even when not running</translation>
+      <translation>إظهار في الـ Dock حتى عند عدم التشغيل</translation>
     </message>
     <message>
-      <location line="+11"/>
+      <location line="+10"/>
       <source>Launcher</source>
       <translation>المشغل</translation>
     </message>
@@ -883,7 +938,7 @@
     <message>
       <location line="+11"/>
       <source>Hidden</source>
-      <translation>Hidden</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
@@ -896,7 +951,7 @@
       <translation>إخفاء من المشغل</translation>
     </message>
     <message>
-      <location line="+11"/>
+      <location line="+10"/>
       <source>Details</source>
       <translation>التفاصيل</translation>
     </message>
@@ -914,7 +969,7 @@
   <context>
     <name>AppStreamRow</name>
     <message>
-      <location filename="../components/controls/AppStreamRow.qml" line="+24"/>
+      <location filename="../components/controls/AppStreamRow.qml" line="+19"/>
       <source>Muted</source>
       <translation>كتم</translation>
     </message>
@@ -922,7 +977,7 @@
   <context>
     <name>AppTile</name>
     <message>
-      <location filename="../modules/launcher/items/AppTile.qml" line="+147"/>
+      <location filename="../modules/launcher/items/AppTile.qml" line="+143"/>
       <source>Matched by a regex in favouriteApps - edit the config file to change</source>
       <translation>تطابق مع regex في المفضلة - تحرير ملف التكوين لتغيير</translation>
     </message>
@@ -949,23 +1004,23 @@
     <name>AppearancePage</name>
     <message>
       <location filename="../modules/nexus/pages/wallandstyle/AppearancePage.qml" line="+21"/>
-      <source>San Francisco Pro</source>
-      <translation>San Francisco Pro</translation>
+      <source>Google Sans Flex</source>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
-      <source>Google Sans Flex</source>
-      <translation>Google Sans Flex</translation>
+      <source>Rubik</source>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+4"/>
-      <source>SF Mono</source>
-      <translation>SF أحادي</translation>
+      <source>CaskaydiaCove NF</source>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
-      <source>CaskaydiaCove NF</source>
-      <translation>CaskaydiaCove NF</translation>
+      <source>JetBrainsMono Nerd Font</source>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+15"/>
@@ -980,12 +1035,12 @@
     <message>
       <location line="+20"/>
       <source>Font</source>
-      <translation>Font</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+10"/>
       <source>Monospace font</source>
-      <translation>Monospace font</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+18"/>
@@ -1055,25 +1110,25 @@
     <message>
       <location line="+8"/>
       <source>Ambient color mode</source>
-      <translation type="unfinished">Ambient color mode</translation>
+      <translation>وضع اللون المحيطي</translation>
     </message>
     <message>
       <location line="+1"/>
       <source>Ambient glow is unavailable in light mode</source>
-      <translation type="unfinished">Ambient glow is unavailable in light mode</translation>
+      <translation>التوهج المحيطي غير متوفر في الوضع الفاتح</translation>
     </message>
     <message>
       <location line="+0"/>
       <source>Ambient light glow in window info panel</source>
-      <translation type="unfinished">Ambient light glow in window info panel</translation>
+      <translation>توهج الضوء المحيطي في لوحة معلومات النافذة</translation>
     </message>
     <message>
       <location line="+8"/>
       <source>Ambient glow opacity</source>
-      <translation type="unfinished">Ambient glow opacity</translation>
+      <translation>تعتيم التوهج المحيطي</translation>
     </message>
     <message>
-      <location line="+55"/>
+      <location line="+22"/>
       <source>Background Blur</source>
       <translation>طمس الخلفية</translation>
     </message>
@@ -1088,7 +1143,7 @@
       <translation>تمكين تأثير زجاجي مجمد عن طريق طمس الخلفية</translation>
     </message>
     <message>
-      <location line="+23"/>
+      <location line="+22"/>
       <source>High Quality Blur Masks</source>
       <translation>أقنعة ضبابية عالية الجودة</translation>
     </message>
@@ -1125,7 +1180,7 @@
     <message>
       <location line="+10"/>
       <source>Padding scale</source>
-      <translation>Padding scale</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+11"/>
@@ -1161,7 +1216,7 @@
       <translation>التطبيقات</translation>
     </message>
     <message>
-      <location line="+11"/>
+      <location line="+10"/>
       <source>Default applications</source>
       <translation>التطبيقات الافتراضية</translation>
     </message>
@@ -1196,7 +1251,7 @@
       <translation>مدير الملفات</translation>
     </message>
     <message>
-      <location line="+7"/>
+      <location line="+6"/>
       <source>Library</source>
       <translation>المكتبة</translation>
     </message>
@@ -1252,7 +1307,7 @@
       <translation>وجود ديسكورد الغني</translation>
     </message>
     <message>
-      <location line="+34"/>
+      <location line="+40"/>
       <source>Broadcast settings</source>
       <translation>إعدادات البث</translation>
     </message>
@@ -1294,7 +1349,7 @@
     <message>
       <location line="+1"/>
       <source>Hide the presence after %1 minutes away</source>
-      <translation type="unfinished">Hide the presence after %1 minutes away</translation>
+      <translation>إخفاء الحضور بعد %1 دقائق من الغياب</translation>
     </message>
     <message>
       <location line="+0"/>
@@ -1380,7 +1435,7 @@
   <context>
     <name>Audio</name>
     <message>
-      <location filename="../modules/bar/popouts/Audio.qml" line="+82"/>
+      <location filename="../modules/bar/popouts/Audio.qml" line="+81"/>
       <source>Audio</source>
       <translation>الصوت</translation>
     </message>
@@ -1403,7 +1458,7 @@
     <message>
       <location line="-27"/>
       <source>Input</source>
-      <translation>Input</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+5"/>
@@ -1413,7 +1468,7 @@
     <message>
       <location line="+21"/>
       <source>Input volume</source>
-      <translation>Input volume</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+19"/>
@@ -1427,7 +1482,7 @@
     </message>
     <message>
       <location line="+57"/>
-      <location filename="../services/Audio.qml" line="+124"/>
+      <location filename="../services/Audio.qml" line="+117"/>
       <source>Unknown</source>
       <translation>غير معروف</translation>
     </message>
@@ -1437,12 +1492,12 @@
       <translation>جهاز غير معروف</translation>
     </message>
     <message>
-      <location line="+37"/>
+      <location line="+36"/>
       <source>Unknown Application</source>
       <translation>تطبيق غير معروف</translation>
     </message>
     <message>
-      <location line="+176"/>
+      <location line="+174"/>
       <source>Audio output changed</source>
       <translation>تم تغيير إخراج الصوت</translation>
     </message>
@@ -1499,7 +1554,7 @@
       <location line="+5"/>
       <location line="+6"/>
       <source>Input</source>
-      <translation>Input</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+19"/>
@@ -1624,7 +1679,7 @@
       <translation>إظهار الأيقونة</translation>
     </message>
     <message>
-      <location line="+7"/>
+      <location line="+6"/>
       <source>Show seconds</source>
       <translation>إظهار الثواني</translation>
     </message>
@@ -1632,6 +1687,16 @@
       <location line="+1"/>
       <source>Add a seconds line to the clock</source>
       <translation>إضافة خط ثواني إلى الساعة</translation>
+    </message>
+    <message>
+      <location line="+7"/>
+      <source>Calendar popout</source>
+      <translation>نافذة التقويم المنبثقة</translation>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Show a mini calendar when hovering the clock</source>
+      <translation>إظهار تقويم مصغر عند تمرير المؤشر فوق الساعة</translation>
     </message>
   </context>
   <context>
@@ -1649,7 +1714,7 @@
     <message>
       <location line="+3"/>
       <source>GitHub</source>
-      <translation>GitHub</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+2"/>
@@ -1658,7 +1723,6 @@
     </message>
     <message>
       <location line="+2"/>
-      <location line="+1"/>
       <source>Greeter</source>
       <translation>أيها</translation>
     </message>
@@ -1730,7 +1794,7 @@
     <message>
       <location line="+1"/>
       <source>GPU</source>
-      <translation>GPU</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+0"/>
@@ -1770,12 +1834,12 @@
     <message>
       <location line="+12"/>
       <source>Add to right zone</source>
-      <translation type="unfinished">Add to right zone</translation>
+      <translation>إضافة إلى المنطقة اليمنى</translation>
     </message>
     <message>
       <location line="+9"/>
       <source>Disable component</source>
-      <translation type="unfinished">Disable component</translation>
+      <translation>تعطيل المكون</translation>
     </message>
     <message>
       <location line="+183"/>
@@ -1783,7 +1847,7 @@
       <translation>تبديل واعادة الترتيب</translation>
     </message>
     <message>
-      <location line="+24"/>
+      <location line="+23"/>
       <source>Active components</source>
       <translation>المكونات النشطة</translation>
     </message>
@@ -1793,22 +1857,22 @@
       <translation>اسحب لإعادة الترتيب أو تعطيل</translation>
     </message>
     <message>
-      <location line="+16"/>
+      <location line="+15"/>
       <source>Left Zone</source>
       <translation>المنطقة اليسرى</translation>
     </message>
     <message>
-      <location line="+56"/>
+      <location line="+55"/>
       <source>Middle Zone</source>
       <translation>المنطقة الوسطى</translation>
     </message>
     <message>
-      <location line="+56"/>
+      <location line="+55"/>
       <source>Right Zone</source>
       <translation>المنطقة اليمنى</translation>
     </message>
     <message>
-      <location line="+61"/>
+      <location line="+60"/>
       <source>Library</source>
       <translation>المكتبة</translation>
     </message>
@@ -1820,7 +1884,7 @@
     <message>
       <location line="+9"/>
       <source>RESET</source>
-      <translation>RESET</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+2"/>
@@ -1868,32 +1932,32 @@
     <message>
       <location line="+7"/>
       <source>Show app badges</source>
-      <translation type="unfinished">Show app badges</translation>
+      <translation>إظهار شارات التطبيق</translation>
     </message>
     <message>
       <location line="+1"/>
       <source>Show the count, progress and urgency an app publishes for its dock icon</source>
-      <translation type="unfinished">Show the count, progress and urgency an app publishes for its dock icon</translation>
+      <translation>إظهار العدد والتقدم والأهمية التي ينشرها التطبيق لأيقونته في الـ Dock</translation>
     </message>
     <message>
       <location line="+7"/>
       <source>Filter by current desktop</source>
-      <translation type="unfinished">Filter by current desktop</translation>
+      <translation>تصفية حسب سطح المكتب الحالي</translation>
     </message>
     <message>
       <location line="+1"/>
       <source>Only show applications and windows belonging to the active virtual desktop</source>
-      <translation type="unfinished">Only show applications and windows belonging to the active virtual desktop</translation>
+      <translation>إظهار التطبيقات والنوافذ المنتمية لسطح المكتب الوهمي النشط فقط</translation>
     </message>
     <message>
       <location line="+8"/>
       <source>Preview window on desktop</source>
-      <translation type="unfinished">Preview window on desktop</translation>
+      <translation>معاينة النافذة على سطح المكتب</translation>
     </message>
     <message>
       <location line="+1"/>
       <source>Highlight and show the window itself on the workspace while hovering over dock previews</source>
-      <translation type="unfinished">Highlight and show the window itself on the workspace while hovering over dock previews</translation>
+      <translation>تمييز وإظهار النافذة نفسها في مساحة العمل عند تمرير المؤشر فوق معاينات الـ Dock</translation>
     </message>
   </context>
   <context>
@@ -1901,10 +1965,10 @@
     <message>
       <location filename="../modules/nexus/pages/panels/taskbar/BarGithub.qml" line="+17"/>
       <source>GitHub</source>
-      <translation>GitHub</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
-      <location line="+9"/>
+      <location line="+7"/>
       <source>No token set</source>
       <translation>لم يتم تعيين رمز</translation>
     </message>
@@ -1934,7 +1998,7 @@
       <translation>لصق الرمز المميز أدناه وحفظه لتمكين عنصر واجهة المستخدم</translation>
     </message>
     <message>
-      <location line="+49"/>
+      <location line="+50"/>
       <source>Configuration</source>
       <translation>الإعدادات</translation>
     </message>
@@ -1969,7 +2033,7 @@
     <message>
       <location line="+1"/>
       <source>Slideshow</source>
-      <translation>Slideshow</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+23"/>
@@ -2037,7 +2101,7 @@
       <translation>تبديل الوسائط حسب الوقت من اليوم أو الدورة من خلال عرض الشرائح</translation>
     </message>
     <message>
-      <location line="+14"/>
+      <location line="+11"/>
       <source>Time of Day Periods &amp; Media</source>
       <translation>وقت النهار و وسائل الإعلام</translation>
     </message>
@@ -2047,7 +2111,15 @@
       <translation>وسائط الصباح</translation>
     </message>
     <message>
-      <location line="+7"/>
+      <location line="+1"/>
+      <location line="+45"/>
+      <location line="+45"/>
+      <location line="+45"/>
+      <source>Not set</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="-129"/>
       <source>Select Morning Media</source>
       <translation>حدد وسائط الصباح</translation>
     </message>
@@ -2056,12 +2128,12 @@
       <location line="+45"/>
       <location line="+45"/>
       <location line="+45"/>
-      <location line="+191"/>
+      <location line="+188"/>
       <source>Multimedia files (Images, GIFs, Videos)</source>
       <translation>ملفات الوسائط المتعددة (صور، صور GIF، فيديو)</translation>
     </message>
     <message>
-      <location line="-315"/>
+      <location line="-312"/>
       <source>Morning start time</source>
       <translation>وقت بداية الصباح</translation>
     </message>
@@ -2131,7 +2203,7 @@
       <translation>نص التحية الليلية</translation>
     </message>
     <message>
-      <location line="+14"/>
+      <location line="+11"/>
       <source>Slideshow Timing &amp; Order</source>
       <translation>توقيت عرض الشرائح و الطلب</translation>
     </message>
@@ -2234,7 +2306,7 @@
       <translation>تخصيص مقياس المعاينة والخطوط لكل نوع من النوافذ المنبثقة</translation>
     </message>
     <message>
-      <location line="+23"/>
+      <location line="+22"/>
       <source>RESET ALL</source>
       <translation>إعادة جميع</translation>
     </message>
@@ -2251,7 +2323,7 @@
     <message>
       <location line="+7"/>
       <source>Font</source>
-      <translation>Font</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+10"/>
@@ -2259,7 +2331,7 @@
       <translation>أيها</translation>
     </message>
     <message>
-      <location line="+19"/>
+      <location line="+13"/>
       <source>Audio</source>
       <translation>الصوت</translation>
     </message>
@@ -2275,13 +2347,18 @@
     </message>
     <message>
       <location line="+13"/>
+      <source>Clock</source>
+      <translation>الساعة</translation>
+    </message>
+    <message>
+      <location line="+13"/>
       <source>Dock</source>
       <translation>الإرساء</translation>
     </message>
     <message>
       <location line="+13"/>
       <source>GitHub</source>
-      <translation>GitHub</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+13"/>
@@ -2377,12 +2454,12 @@
       <translation>أيقونات الحالة</translation>
     </message>
     <message>
-      <location line="+12"/>
+      <location line="+11"/>
       <source>Visible icons</source>
       <translation>أيقونات مرئية</translation>
     </message>
     <message>
-      <location line="+34"/>
+      <location line="+26"/>
       <source>Add entry</source>
       <translation>إضافة مدخل</translation>
     </message>
@@ -2397,9 +2474,9 @@
       <translation>إضافة</translation>
     </message>
     <message>
-      <location line="+13"/>
+      <location line="+12"/>
       <source>Wi-Fi</source>
-      <translation>Wi-Fi</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
@@ -2407,7 +2484,7 @@
       <translation>إظهار أيقونة Wi-Fi إلى جانب أيقونة الشبكة</translation>
     </message>
     <message>
-      <location line="+7"/>
+      <location line="+6"/>
       <source>Behavior</source>
       <translation>السلوك</translation>
     </message>
@@ -2568,18 +2645,18 @@
     <message>
       <location line="+12"/>
       <source>Per monitor</source>
-      <translation type="unfinished">Per monitor</translation>
+      <translation>لكل شاشة</translation>
     </message>
     <message>
       <location line="+1"/>
       <source>Hide workspaces not on the current monitor</source>
-      <translation type="unfinished">Hide workspaces not on the current monitor</translation>
+      <translation>إخفاء مساحات العمل غير الموجودة في الشاشة الحالية</translation>
     </message>
   </context>
   <context>
     <name>Battery</name>
     <message>
-      <location filename="../modules/bar/popouts/Battery.qml" line="+24"/>
+      <location filename="../modules/bar/popouts/Battery.qml" line="+23"/>
       <source>The device is too hot</source>
       <translation>الجهاز حار جدا</translation>
     </message>
@@ -2599,9 +2676,9 @@
       <translation>البطارية</translation>
     </message>
     <message>
-      <location line="+149"/>
+      <location line="+146"/>
       <source>%1%</source>
-      <translation>%1%</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+0"/>
@@ -2617,7 +2694,7 @@
       <location line="+3"/>
       <location line="+5"/>
       <source>~ %1</source>
-      <translation>~ %1</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="-2"/>
@@ -2633,7 +2710,7 @@
   <context>
     <name>BatteryMonitor</name>
     <message>
-      <location filename="../modules/BatteryMonitor.qml" line="+17"/>
+      <location filename="../modules/BatteryMonitor.qml" line="+19"/>
       <source>Charger unplugged</source>
       <translation>الشاحن غير موصول</translation>
     </message>
@@ -2662,16 +2739,6 @@
       <source>Battery level is low</source>
       <translation>مستوى البطارية منخفض</translation>
     </message>
-    <message>
-      <location line="+5"/>
-      <source>Hibernating in 5 seconds</source>
-      <translation>تنقية في 5 ثوان</translation>
-    </message>
-    <message>
-      <location line="+0"/>
-      <source>Hibernating to prevent data loss</source>
-      <translation>التلاعب لمنع فقدان البيانات</translation>
-    </message>
   </context>
   <context>
     <name>BatteryTank</name>
@@ -2694,7 +2761,7 @@
   <context>
     <name>Bluetooth</name>
     <message>
-      <location filename="../modules/bar/popouts/Bluetooth.qml" line="+29"/>
+      <location filename="../modules/bar/popouts/Bluetooth.qml" line="+28"/>
       <source>Bluetooth</source>
       <translation>البلوتوث</translation>
     </message>
@@ -2719,12 +2786,12 @@
       <translation> (%1 متصل)</translation>
     </message>
     <message>
-      <location line="+54"/>
+      <location line="+61"/>
       <source>%1%</source>
-      <translation>%1%</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
-      <location line="+58"/>
+      <location line="+59"/>
       <source>Open settings</source>
       <translation>فتح الإعدادات</translation>
     </message>
@@ -2759,7 +2826,7 @@
     <message>
       <location line="+7"/>
       <source>Connected%1</source>
-      <translation type="unfinished">Connected%1</translation>
+      <translation>متصل%1</translation>
     </message>
     <message>
       <location line="+0"/>
@@ -2817,7 +2884,7 @@
     <message>
       <location line="+7"/>
       <source>Pairing...</source>
-      <translation>Pairing...</translation>
+      <translation type="unfinished"/>
     </message>
   </context>
   <context>
@@ -2843,7 +2910,7 @@
     <message>
       <location line="+0"/>
       <source>Paired</source>
-      <translation>Paired</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+0"/>
@@ -2851,12 +2918,12 @@
       <translation>غير مقترن</translation>
     </message>
     <message>
-      <location line="+12"/>
+      <location line="+11"/>
       <source>Device</source>
       <translation>الجهاز</translation>
     </message>
     <message>
-      <location line="+49"/>
+      <location line="+48"/>
       <source>Forget</source>
       <translation>نسيت</translation>
     </message>
@@ -2871,7 +2938,7 @@
       <translation>الاتصال</translation>
     </message>
     <message>
-      <location line="+13"/>
+      <location line="+12"/>
       <source>Trusted</source>
       <translation>موثوق به</translation>
     </message>
@@ -2911,14 +2978,14 @@
       <translation>السماح لهذا الجهاز بإيقاظ النظام</translation>
     </message>
     <message>
-      <location line="+30"/>
+      <location line="+29"/>
       <source>Battery</source>
       <translation>البطارية</translation>
     </message>
     <message>
       <location line="+4"/>
       <source>Unavailable</source>
-      <translation>Unavailable</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+36"/>
@@ -2941,17 +3008,17 @@
     <message>
       <location line="+0"/>
       <source>Maximize</source>
-      <translation>Maximize</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
-      <location line="+15"/>
+      <location line="+13"/>
       <source>Unminimize</source>
-      <translation>Unminimize</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+0"/>
       <source>Minimize</source>
-      <translation>Minimize</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+18"/>
@@ -2980,7 +3047,7 @@
   <context>
     <name>Categories</name>
     <message>
-      <location filename="../modules/launcher/services/Categories.qml" line="+15"/>
+      <location filename="../modules/launcher/services/Categories.qml" line="+12"/>
       <source>Favorites</source>
       <translation>المفضلة</translation>
     </message>
@@ -3063,7 +3130,7 @@
   <context>
     <name>ClipItem</name>
     <message>
-      <location filename="../modules/launcher/items/ClipItem.qml" line="+33"/>
+      <location filename="../modules/launcher/items/ClipItem.qml" line="+31"/>
       <source>Copied to clipboard</source>
       <translation>نسخ إلى الحافظة</translation>
     </message>
@@ -3092,14 +3159,22 @@
     </message>
   </context>
   <context>
+    <name>ClockContext</name>
+    <message>
+      <location filename="../modules/bar/popouts/ClockContext.qml" line="+79"/>
+      <source>Clock settings</source>
+      <translation>إعدادات الساعة</translation>
+    </message>
+  </context>
+  <context>
     <name>ColourSelect</name>
     <message>
-      <location filename="../modules/nexus/pages/wallandstyle/ColourSelect.qml" line="+40"/>
+      <location filename="../modules/nexus/pages/wallandstyle/ColourSelect.qml" line="+39"/>
       <source>Colors</source>
       <translation>الألوان</translation>
     </message>
     <message>
-      <location line="+84"/>
+      <location line="+80"/>
       <source>Dynamic</source>
       <translation>ديناميكية</translation>
     </message>
@@ -3122,14 +3197,6 @@
       <location line="+19"/>
       <source>Variants</source>
       <translation>المتغيرات</translation>
-    </message>
-  </context>
-  <context>
-    <name>CommitRow</name>
-    <message>
-      <location filename="../modules/nexus/common/CommitRow.qml" line="+50"/>
-      <source>%1 • %2</source>
-      <translation>%1 • %2</translation>
     </message>
   </context>
   <context>
@@ -3226,7 +3293,7 @@
       <translation>اكتب &quot;%1&quot; للأوامر</translation>
     </message>
     <message>
-      <location line="+328"/>
+      <location line="+323"/>
       <source>Clear clipboard history?</source>
       <translation>مسح سجل الحافظة؟</translation>
     </message>
@@ -3246,7 +3313,7 @@
       <translation>مسح</translation>
     </message>
     <message>
-      <location filename="../modules/sidebar/Content.qml" line="+100"/>
+      <location filename="../modules/sidebar/Content.qml" line="+99"/>
       <source>Notifications</source>
       <translation>الإشعارات</translation>
     </message>
@@ -3264,7 +3331,7 @@
   <context>
     <name>ContentList</name>
     <message>
-      <location filename="../modules/launcher/ContentList.qml" line="+225"/>
+      <location filename="../modules/launcher/ContentList.qml" line="+217"/>
       <source>Images</source>
       <translation>الصور</translation>
     </message>
@@ -3279,7 +3346,7 @@
       <translation>فيديوهات</translation>
     </message>
     <message>
-      <location line="+238"/>
+      <location line="+236"/>
       <source>cliphist not found</source>
       <translation>لم يتم العثور على العشب</translation>
     </message>
@@ -3481,12 +3548,12 @@
     </message>
     <message>
       <location line="+5"/>
-      <location line="+85"/>
+      <location line="+84"/>
       <source>Pill</source>
-      <translation>Pill</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
-      <location line="-80"/>
+      <location line="-79"/>
       <source>Diamond</source>
       <translation>الماس</translation>
     </message>
@@ -3498,7 +3565,7 @@
     <message>
       <location line="+5"/>
       <source>Pentagon</source>
-      <translation>Pentagon</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+5"/>
@@ -3532,12 +3599,12 @@
     </message>
     <message>
       <location line="+4"/>
-      <location line="+64"/>
+      <location line="+62"/>
       <source>Dashboard</source>
       <translation>لوحة التحكم</translation>
     </message>
     <message>
-      <location line="-52"/>
+      <location line="-51"/>
       <source>General</source>
       <translation>عام</translation>
     </message>
@@ -3577,9 +3644,9 @@
       <translation>عرض الثواني أسفل الساعة في لوحة التحكم</translation>
     </message>
     <message>
-      <location line="+6"/>
+      <location line="+5"/>
       <source>Tabs</source>
-      <translation>Tabs</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+11"/>
@@ -3632,7 +3699,7 @@
       <translation>إظهار رسالة ترحيب على لوحة التحكم</translation>
     </message>
     <message>
-      <location line="+7"/>
+      <location line="+6"/>
       <source>Performance widgets</source>
       <translation>أدوات الأداء</translation>
     </message>
@@ -3644,7 +3711,7 @@
     <message>
       <location line="+6"/>
       <source>GPU</source>
-      <translation>GPU</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+6"/>
@@ -3667,14 +3734,14 @@
       <translation>الشبكة</translation>
     </message>
     <message>
-      <location line="+7"/>
+      <location line="+6"/>
       <source>Behavior</source>
       <translation>السلوك</translation>
     </message>
     <message>
       <location line="+5"/>
       <source>Hover trigger depth</source>
-      <translation>Hover trigger depth</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
@@ -3684,7 +3751,7 @@
     <message>
       <location line="+9"/>
       <source>Hover trigger width</source>
-      <translation>Hover trigger width</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
@@ -3856,7 +3923,7 @@
     <message>
       <location line="+10"/>
       <source>Blur</source>
-      <translation>Blur</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+7"/>
@@ -3870,9 +3937,55 @@
     </message>
   </context>
   <context>
+    <name>DesktopIconContextMenu</name>
+    <message>
+      <location filename="../modules/background/DesktopIconContextMenu.qml" line="+75"/>
+      <source>Open</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+8"/>
+      <source>Show in File Manager</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+8"/>
+      <source>Unpin from dock</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+0"/>
+      <source>Pin to dock</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+9"/>
+      <source>Rename</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+8"/>
+      <source>Move to Trash</source>
+      <translation type="unfinished"/>
+    </message>
+  </context>
+  <context>
+    <name>DesktopIcons</name>
+    <message>
+      <location filename="../modules/background/DesktopIcons.qml" line="+157"/>
+      <source>File operation failed</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>kioclient could not complete the request</source>
+      <translation type="unfinished"/>
+    </message>
+  </context>
+  <context>
     <name>DesktopLyrics</name>
     <message>
-      <location filename="../modules/background/DesktopLyrics.qml" line="+286"/>
+      <location filename="../modules/background/DesktopLyrics.qml" line="+285"/>
       <source>Loading lyrics...</source>
       <translation>تحميل الكلمات...</translation>
     </message>
@@ -3887,7 +4000,7 @@
     <message>
       <location line="+14"/>
       <source>Show KDE Desktop</source>
-      <translation>Show KDE Desktop</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
@@ -4063,7 +4176,7 @@
   <context>
     <name>DinoGame</name>
     <message>
-      <location filename="../modules/sidebar/DinoGame.qml" line="+256"/>
+      <location filename="../modules/sidebar/DinoGame.qml" line="+251"/>
       <source>All up to date!</source>
       <translation>كل شيء حتى الآن!</translation>
     </message>
@@ -4071,7 +4184,7 @@
   <context>
     <name>DockContext</name>
     <message>
-      <location filename="../modules/bar/popouts/DockContext.qml" line="+100"/>
+      <location filename="../modules/bar/popouts/DockContext.qml" line="+98"/>
       <source>Unpin from dock</source>
       <translation>إلغاء التثبيت من الإرساء</translation>
     </message>
@@ -4081,7 +4194,7 @@
       <translation>تثبيت إلى الإرساء</translation>
     </message>
     <message>
-      <location line="+40"/>
+      <location line="+33"/>
       <source>Open new window</source>
       <translation>فتح نافذة جديدة</translation>
     </message>
@@ -4102,95 +4215,95 @@
   <context>
     <name>Entries</name>
     <message>
-      <location filename="../modules/whatsnew/Entries.qml" line="+23"/>
+      <location filename="../modules/whatsnew/Entries.qml" line="+12"/>
       <source>Window Rules Out of the Box</source>
-      <translation type="unfinished">Window Rules Out of the Box</translation>
+      <translation>قواعد النوافذ جاهزة</translation>
     </message>
     <message>
       <location line="+1"/>
       <source>The installer now writes three KWin rules: unfocused windows and dialogs dim to 95 percent, dialogs open centered, and picture-in-picture windows stay above others. Only Caelestia&apos;s own groups are written, so your rules keep their names and their order. Edit or remove them under System Settings -&gt; Window Rules, or let uninstall.sh take them out again.</source>
-      <translation type="unfinished">The installer now writes three KWin rules: unfocused windows and dialogs dim to 95 percent, dialogs open centered, and picture-in-picture windows stay above others. Only Caelestia&apos;s own groups are written, so your rules keep their names and their order. Edit or remove them under System Settings -&gt; Window Rules, or let uninstall.sh take them out again.</translation>
+      <translation>يكتب المثبت الآن ثلاث قواعد KWin: تعتيم النوافذ غير المركزة والمربعات الحوارية بنسبة 95 بالمئة، وتُفتح المربعات الحوارية في المنتصف، وتبقى نوافذ صورة في صورة فوق الأخرى. تُكتب مجموعات Caelestia الخاصة فقط، لذا تحتفظ قواعدك بأسمائها وترتيبها. يمكنك تحريرها أو إزالتها في إعدادات النظام -&gt; قواعد النوافذ، أو اترك uninstall.sh يزيلها مجدداً.</translation>
     </message>
     <message>
       <location line="+6"/>
       <source>Right-Click Any App</source>
-      <translation type="unfinished">Right-Click Any App</translation>
+      <translation>النقر بزر الماوس الأيمن على أي تطبيق</translation>
     </message>
     <message>
       <location line="+1"/>
       <source>An app in the launcher or its app browser now opens a context menu on right click: pin it to the dock, add it to the desktop, hide it from the launcher, or open it in the menu editor. The dock&apos;s pinned list is its own setting now (bar.dock.pinnedApps) instead of borrowing the launcher&apos;s favorites, and an existing list is carried over.</source>
-      <translation type="unfinished">An app in the launcher or its app browser now opens a context menu on right click: pin it to the dock, add it to the desktop, hide it from the launcher, or open it in the menu editor. The dock&apos;s pinned list is its own setting now (bar.dock.pinnedApps) instead of borrowing the launcher&apos;s favorites, and an existing list is carried over.</translation>
+      <translation>يفتح التطبيق في المشغل أو متصفح التطبيقات الخاص به الآن قائمة سياق عند النقر بزر الماوس الأيمن: تثبيت في الـ Dock، أو الإضافة إلى سطح المكتب، أو إخفاء من المشغل، أو الفتح في محرر القائمة. أصبحت القائمة المثبتة في الـ Dock إعداداً خاصاً بها الآن (bar.dock.pinnedApps) بدلاً من استعارة مفضلات المشغل، وتم نقل القائمة الموجودة.</translation>
     </message>
     <message>
       <location line="+6"/>
       <source>Status Icons You Can Arrange</source>
-      <translation type="unfinished">Status Icons You Can Arrange</translation>
+      <translation>أيقونات حالة يمكنك ترتيبها</translation>
     </message>
     <message>
-      <location line="+1"/>
+      <location line="+3"/>
       <source>The bar&apos;s status icons are an ordered list now instead of a wall of switches: add one, switch it off, or drag it into place under Settings -&gt; Panels -&gt; Taskbar -&gt; Status icons, and the bar draws them in that order. The clock can show seconds, and the workspace indicator can hide the ones that are empty and inactive.</source>
-      <translation type="unfinished">The bar&apos;s status icons are an ordered list now instead of a wall of switches: add one, switch it off, or drag it into place under Settings -&gt; Panels -&gt; Taskbar -&gt; Status icons, and the bar draws them in that order. The clock can show seconds, and the workspace indicator can hide the ones that are empty and inactive.</translation>
+      <translation>أصبحت أيقونات حالة الشريط قائمة مرتبة الآن بدلاً من مفاتيح تبديل فقط: يمكنك إضافة واحدة، إيقاف تشغيلها، أو سحبها إلى مكانها في الإعدادات -&gt; اللوحات -&gt; شريط المهام -&gt; أيقونات الحالة، وسيقوم الشريط برسمها بهذا الترتيب. يمكن للساعة إظهار الثواني، ويمكن لمؤشر مساحات العمل إخفاء المساحات الفارغة وغير النشطة.</translation>
     </message>
     <message>
       <location line="+6"/>
       <source>Game Mode at a Tap</source>
-      <translation type="unfinished">Game Mode at a Tap</translation>
+      <translation>وضع الألعاب بنقرة واحدة</translation>
     </message>
     <message>
-      <location line="+1"/>
-      <source>The utilities panel has a game mode toggle: it stops window animations and blur, pauses a video wallpaper and stops the desktop media shapes while it is on, then puts everything back afterwards. Game mode can still switch itself on when one of your target windows opens, under Settings -&gt; Services -&gt; Game mode.</source>
-      <translation type="unfinished">The utilities panel has a game mode toggle: it stops window animations and blur, pauses a video wallpaper and stops the desktop media shapes while it is on, then puts everything back afterwards. Game mode can still switch itself on when one of your target windows opens, under Settings -&gt; Services -&gt; Game mode.</translation>
+      <location line="+3"/>
+      <source>The utilities panel has a game mode toggle: it stops window animations and blur, pauses a video wallpaper and stops the desktop media shapes while it is on, then puts everything back afterwards. Game mode can still switch itself on when one of your target windows opens, under Settings -&gt; Utilities -&gt; Game mode.</source>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+6"/>
       <source>Color Intensity</source>
-      <translation type="unfinished">Color Intensity</translation>
+      <translation>كثافة اللون</translation>
     </message>
     <message>
-      <location line="+1"/>
+      <location line="+3"/>
       <source>Advanced color settings gained a slider that scales how saturated the palette derived from your wallpaper is: 0 percent leaves the same palette in grey, 100 percent is what the color engine produces, and 200 percent is the most the accents take. It is kept with the scheme, so it survives a wallpaper change and a reboot, and &apos;caelestia scheme set -i&apos; sets it from the command line.</source>
-      <translation type="unfinished">Advanced color settings gained a slider that scales how saturated the palette derived from your wallpaper is: 0 percent leaves the same palette in grey, 100 percent is what the color engine produces, and 200 percent is the most the accents take. It is kept with the scheme, so it survives a wallpaper change and a reboot, and &apos;caelestia scheme set -i&apos; sets it from the command line.</translation>
+      <translation>اكتسبت إعدادات الألوان المتقدمة شريط تمرير يحدد مدى تشبع لوحة الألوان المستمدة من خلفية الشاشة: 0 بالمئة يترك نفس اللوحة باللون الرمادي، 100 بالمئة هو ما ينتجه محرك الألوان، و 200 بالمئة هو أقصى ما تأخذه اللمسات. يُحفظ مع السمة، لذا يستمر حتى بعد تغيير الخلفية أو إعادة التشغيل، ويقوم &apos;caelestia scheme set -i&apos; بتعيينه من سطر الأوامر.</translation>
     </message>
     <message>
       <location line="+6"/>
       <source>Dock App Badges</source>
-      <translation type="unfinished">Dock App Badges</translation>
+      <translation>شارات تطبيقات الـ Dock</translation>
     </message>
     <message>
-      <location line="+1"/>
+      <location line="+3"/>
       <source>Dock icons can now display the count, progress, and urgency published by running applications. Configure it under Settings -&gt; Panels -&gt; Taskbar -&gt; Dock.</source>
-      <translation type="unfinished">Dock icons can now display the count, progress, and urgency published by running applications. Configure it under Settings -&gt; Panels -&gt; Taskbar -&gt; Dock.</translation>
+      <translation>يمكن لأيقونات الـ Dock الآن عرض العدد والتقدم والأهمية التي تنشرها التطبيقات قيد التشغيل. قم بتكوين ذلك في الإعدادات -&gt; اللوحات -&gt; شريط المهام -&gt; الـ Dock.</translation>
     </message>
     <message>
       <location line="+6"/>
       <source>Ambient Glow</source>
-      <translation type="unfinished">Ambient Glow</translation>
+      <translation>التوهج المحيطي</translation>
     </message>
     <message>
-      <location line="+1"/>
+      <location line="+3"/>
       <source>Shell surfaces and window previews can now cast a subtle, dynamic ambient glow derived from the window content. Enable it under Settings -&gt; Appearance.</source>
-      <translation type="unfinished">Shell surfaces and window previews can now cast a subtle, dynamic ambient glow derived from the window content. Enable it under Settings -&gt; Appearance.</translation>
+      <translation>يمكن لأسطح Shell ومعاينات النوافذ الآن إلقاء توهج محيطي دقيق وديناميكي مستمد من محتوى النافذة. قم بتمكينه في الإعدادات -&gt; المظهر.</translation>
     </message>
     <message>
       <location line="+6"/>
       <source>Lock Screen Password Reveal</source>
-      <translation type="unfinished">Lock Screen Password Reveal</translation>
+      <translation>إظهار كلمة المرور في شاشة القفل</translation>
     </message>
     <message>
       <location line="+1"/>
       <source>Click or tap the lock icon inside the greeter&apos;s password pill to reveal your typed password before unlocking.</source>
-      <translation type="unfinished">Click or tap the lock icon inside the greeter&apos;s password pill to reveal your typed password before unlocking.</translation>
+      <translation>انقر أو اضغط على أيقونة القفل داخل حقل كلمة المرور في شاشة الترحيب لإظهار كلمة المرور المكتوبة قبل إلغاء القفل.</translation>
     </message>
   </context>
   <context>
     <name>EthernetDetailPage</name>
     <message>
-      <location filename="../modules/nexus/pages/network/EthernetDetailPage.qml" line="+22"/>
+      <location filename="../modules/nexus/pages/network/EthernetDetailPage.qml" line="+20"/>
       <source>Ethernet</source>
       <translation>إيثرنت</translation>
     </message>
     <message>
-      <location line="+55"/>
+      <location line="+54"/>
       <source>Disconnect</source>
       <translation>قطع الاتصال</translation>
     </message>
@@ -4200,7 +4313,7 @@
       <translation>الاتصال</translation>
     </message>
     <message>
-      <location line="+10"/>
+      <location line="+9"/>
       <source>Connection</source>
       <translation>اتصال</translation>
     </message>
@@ -4230,7 +4343,7 @@
       <location line="+6"/>
       <location line="+7"/>
       <source>—</source>
-      <translation>—</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="-21"/>
@@ -4256,7 +4369,7 @@
   <context>
     <name>EthernetSection</name>
     <message>
-      <location filename="../modules/nexus/common/EthernetSection.qml" line="+53"/>
+      <location filename="../modules/nexus/common/EthernetSection.qml" line="+52"/>
       <source>Ethernet</source>
       <translation>إيثرنت</translation>
     </message>
@@ -4276,7 +4389,7 @@
       <translation>استخدام البيانات: %1</translation>
     </message>
     <message>
-      <location line="+72"/>
+      <location line="+68"/>
       <source>Wired connection</source>
       <translation>اتصال سلكي</translation>
     </message>
@@ -4301,7 +4414,7 @@
     <message>
       <location filename="../components/widgets/ExtraIndicator.qml" line="+35"/>
       <source>+%1</source>
-      <translation>+%1</translation>
+      <translation type="unfinished"/>
     </message>
   </context>
   <context>
@@ -4328,7 +4441,7 @@
   <context>
     <name>GameMode</name>
     <message>
-      <location filename="../services/GameMode.qml" line="+169"/>
+      <location filename="../services/GameMode.qml" line="+113"/>
       <source>Game mode enabled</source>
       <translation>وضع اللعبة مفعل</translation>
     </message>
@@ -4487,9 +4600,9 @@
   <context>
     <name>Github</name>
     <message>
-      <location filename="../modules/bar/popouts/Github.qml" line="+32"/>
+      <location filename="../modules/bar/popouts/Github.qml" line="+31"/>
       <source>GitHub</source>
-      <translation>GitHub</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+33"/>
@@ -4515,7 +4628,7 @@
   <context>
     <name>GithubActivity</name>
     <message>
-      <location filename="../modules/bar/components/GithubActivity.qml" line="+85"/>
+      <location filename="../modules/bar/components/GithubActivity.qml" line="+83"/>
       <source>GitHub widget needs a token</source>
       <translation>أداة GitHub بحاجة إلى رمز</translation>
     </message>
@@ -4528,7 +4641,7 @@
   <context>
     <name>GreeterContext</name>
     <message>
-      <location filename="../modules/bar/popouts/GreeterContext.qml" line="+81"/>
+      <location filename="../modules/bar/popouts/GreeterContext.qml" line="+79"/>
       <source>Greeter settings</source>
       <translation>إعدادات الأغاني</translation>
     </message>
@@ -4577,80 +4690,80 @@
     <message>
       <location filename="../modules/nexus/common/Ipv4ConfigSection.qml" line="+98"/>
       <source>IPv4</source>
-      <translation type="unfinished">IPv4</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+9"/>
       <source>IP assignment</source>
-      <translation type="unfinished">IP assignment</translation>
+      <translation>تعيين IP</translation>
     </message>
     <message>
       <location line="+1"/>
       <location line="+8"/>
       <source>Automatic (DHCP)</source>
-      <translation type="unfinished">Automatic (DHCP)</translation>
+      <translation>تلقائي (DHCP)</translation>
     </message>
     <message>
       <location line="+6"/>
       <source>Automatic, DNS only</source>
-      <translation type="unfinished">Automatic, DNS only</translation>
+      <translation>تلقائي، DNS فقط</translation>
     </message>
     <message>
       <location line="+6"/>
       <source>Manual</source>
-      <translation type="unfinished">Manual</translation>
+      <translation>يدوي</translation>
     </message>
     <message>
       <location line="+84"/>
       <source>Address (CIDR)</source>
-      <translation type="unfinished">Address (CIDR)</translation>
+      <translation>العنوان (CIDR)</translation>
     </message>
     <message>
       <location line="+2"/>
       <source>IP and prefix, e.g. 192.168.1.50/24</source>
-      <translation type="unfinished">IP and prefix, e.g. 192.168.1.50/24</translation>
+      <translation>IP والبادئة، مثل 192.168.1.50/24</translation>
     </message>
     <message>
       <location line="+1"/>
       <source>Enter a valid address in CIDR notation</source>
-      <translation type="unfinished">Enter a valid address in CIDR notation</translation>
+      <translation>أدخل عنواناً صالحاً بتنسيق CIDR</translation>
     </message>
     <message>
       <location line="+9"/>
       <source>Gateway</source>
-      <translation type="unfinished">Gateway</translation>
+      <translation>البوابة</translation>
     </message>
     <message>
       <location line="+2"/>
       <source>Enter a valid gateway address</source>
-      <translation type="unfinished">Enter a valid gateway address</translation>
+      <translation>أدخل عنوان بوابة صالح</translation>
     </message>
     <message>
       <location line="+11"/>
       <source>DNS servers</source>
-      <translation type="unfinished">DNS servers</translation>
+      <translation>خوادم DNS</translation>
     </message>
     <message>
       <location line="+2"/>
       <source>Comma-separated</source>
-      <translation type="unfinished">Comma-separated</translation>
+      <translation>مفصولة بفواصل</translation>
     </message>
     <message>
       <location line="+1"/>
       <source>Enter valid DNS server addresses</source>
-      <translation type="unfinished">Enter valid DNS server addresses</translation>
+      <translation>أدخل عناوين خوادم DNS صالحة</translation>
     </message>
     <message>
       <location line="+45"/>
       <location line="+26"/>
       <source>Apply</source>
-      <translation type="unfinished">Apply</translation>
+      <translation>تطبيق</translation>
     </message>
   </context>
   <context>
     <name>KbLayout</name>
     <message>
-      <location filename="../modules/bar/popouts/kblayout/KbLayout.qml" line="+38"/>
+      <location filename="../modules/bar/popouts/kblayout/KbLayout.qml" line="+37"/>
       <source>Keyboard Layouts</source>
       <translation>تخطيط لوحة المفاتيح</translation>
     </message>
@@ -4676,7 +4789,7 @@
       <translation>ربط مفتاح السجل</translation>
     </message>
     <message>
-      <location line="+69"/>
+      <location line="+68"/>
       <source>Press keys now...</source>
       <translation>اضغط على المفاتيح الآن...</translation>
     </message>
@@ -4694,7 +4807,7 @@
   <context>
     <name>KeybindItem</name>
     <message>
-      <location filename="../modules/launcher/items/KeybindItem.qml" line="+68"/>
+      <location filename="../modules/launcher/items/KeybindItem.qml" line="+62"/>
       <source>No keybinds</source>
       <translation>لا توجد روابط مفتاحية</translation>
     </message>
@@ -4703,77 +4816,77 @@
     <name>KrohnkitePage</name>
     <message>
       <location filename="../modules/nexus/pages/desktop/KrohnkitePage.qml" line="+20"/>
-      <location line="+58"/>
+      <location line="+57"/>
       <source>Window Tiling</source>
       <translation>سقف النافذة</translation>
     </message>
     <message>
-      <location line="-53"/>
+      <location line="-52"/>
       <source>BTree</source>
       <translation>شجرة</translation>
     </message>
     <message>
       <location line="+1"/>
-      <location line="+272"/>
+      <location line="+271"/>
       <source>Monocle</source>
       <translation>أحادي</translation>
     </message>
     <message>
-      <location line="-271"/>
-      <location line="+264"/>
+      <location line="-270"/>
+      <location line="+263"/>
       <source>Floating</source>
       <translation>عائم</translation>
     </message>
     <message>
-      <location line="-263"/>
-      <location line="+277"/>
+      <location line="-262"/>
+      <location line="+276"/>
       <source>Quarter</source>
       <translation>ربع</translation>
     </message>
     <message>
-      <location line="-276"/>
-      <location line="+290"/>
+      <location line="-275"/>
+      <location line="+289"/>
       <source>Spread</source>
       <translation>الإنتشار</translation>
     </message>
     <message>
-      <location line="-289"/>
-      <location line="+296"/>
+      <location line="-288"/>
+      <location line="+295"/>
       <source>Stacked</source>
       <translation>مكدس</translation>
     </message>
     <message>
-      <location line="-295"/>
-      <location line="+302"/>
+      <location line="-294"/>
+      <location line="+301"/>
       <source>Stair</source>
-      <translation>Stair</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
-      <location line="-301"/>
-      <location line="+330"/>
+      <location line="-300"/>
+      <location line="+329"/>
       <source>Columns</source>
       <translation>الأعمدة</translation>
     </message>
     <message>
-      <location line="-329"/>
-      <location line="+307"/>
+      <location line="-328"/>
+      <location line="+306"/>
       <source>Three Column</source>
       <translation>العمود الثالث</translation>
     </message>
     <message>
-      <location line="-306"/>
-      <location line="+278"/>
+      <location line="-305"/>
+      <location line="+277"/>
       <source>Spiral</source>
       <translation>حلزوني</translation>
     </message>
     <message>
-      <location line="-277"/>
-      <location line="+312"/>
+      <location line="-276"/>
+      <location line="+311"/>
       <source>Tile</source>
       <translation>البلاط</translation>
     </message>
     <message>
-      <location line="-302"/>
+      <location line="-301"/>
       <source>Save Changes</source>
       <translation>حفظ التغييرات</translation>
     </message>
@@ -4783,7 +4896,7 @@
       <translation>تسجيل الخروج لتطبيق التغييرات</translation>
     </message>
     <message>
-      <location line="+24"/>
+      <location line="+23"/>
       <source>Automatically tile windows using Krohnkite</source>
       <translation>اربط النوافذ تلقائياً باستخدام Krohnkite</translation>
     </message>
@@ -4935,7 +5048,7 @@
     <message>
       <location line="+6"/>
       <source>Cascade</source>
-      <translation>Cascade</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
@@ -4951,7 +5064,7 @@
   <context>
     <name>KrohnkitePreview</name>
     <message>
-      <location filename="../modules/nexus/pages/desktop/KrohnkitePreview.qml" line="+268"/>
+      <location filename="../modules/nexus/pages/desktop/KrohnkitePreview.qml" line="+262"/>
       <source>Layout Preview</source>
       <translation>معاينة التخطيط</translation>
     </message>
@@ -5022,13 +5135,13 @@
   <context>
     <name>LanguageAndRegion</name>
     <message>
-      <location filename="../modules/nexus/pages/LanguageAndRegion.qml" line="+45"/>
-      <location line="+44"/>
+      <location filename="../modules/nexus/pages/LanguageAndRegion.qml" line="+44"/>
+      <location line="+41"/>
       <source>Auto</source>
-      <translation type="unfinished">Auto</translation>
+      <translation>تلقائي</translation>
     </message>
     <message>
-      <location line="-40"/>
+      <location line="-37"/>
       <source>°C</source>
       <translation>درجة س</translation>
     </message>
@@ -5043,23 +5156,23 @@
       <translation>ك</translation>
     </message>
     <message>
-      <location line="+8"/>
+      <location line="+7"/>
       <source>Binary (KiB, MiB)</source>
       <translation>ثنائي (KiB, MiB)</translation>
     </message>
     <message>
       <location line="+4"/>
       <source>Decimal (KB, MB)</source>
-      <translation>Decimal (KB, MB)</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
-      <location line="+9"/>
-      <location line="+62"/>
+      <location line="+8"/>
+      <location line="+60"/>
       <source>System language</source>
       <translation>لغة النظام</translation>
     </message>
     <message>
-      <location line="-47"/>
+      <location line="-46"/>
       <source>12-hour</source>
       <translation>12 ساعة</translation>
     </message>
@@ -5074,7 +5187,7 @@
       <translation>اللغة والمنطقة</translation>
     </message>
     <message>
-      <location line="+11"/>
+      <location line="+10"/>
       <source>Language</source>
       <translation>اللغة</translation>
     </message>
@@ -5094,7 +5207,7 @@
       <translation>النص غير المترجم يعود إلى الإنكليزية</translation>
     </message>
     <message>
-      <location line="+10"/>
+      <location line="+9"/>
       <source>Weather</source>
       <translation>الطقس</translation>
     </message>
@@ -5139,7 +5252,7 @@
       <translation>لم يتم تحديد أي موقع</translation>
     </message>
     <message>
-      <location line="+19"/>
+      <location line="+18"/>
       <source>Units</source>
       <translation>الوحدات</translation>
     </message>
@@ -5174,7 +5287,7 @@
       <translation>وحدات لحجم البيانات وسرعات الشبكة</translation>
     </message>
     <message>
-      <location line="+8"/>
+      <location line="+7"/>
       <source>Time &amp; date</source>
       <translation>الوقت والتاريخ</translation>
     </message>
@@ -5197,7 +5310,7 @@
       <translation>المشغل</translation>
     </message>
     <message>
-      <location line="+12"/>
+      <location line="+11"/>
       <source>General</source>
       <translation>عام</translation>
     </message>
@@ -5249,7 +5362,7 @@
     <message>
       <location line="+20"/>
       <source>Tint custom logo</source>
-      <translation>Tint custom logo</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
@@ -5272,7 +5385,7 @@
       <translation>كشف عندما يصل المؤشر إلى حافة الشاشة</translation>
     </message>
     <message>
-      <location line="+7"/>
+      <location line="+6"/>
       <source>Display</source>
       <translation>عرض</translation>
     </message>
@@ -5309,7 +5422,7 @@
     <message>
       <location line="+9"/>
       <source>Hover trigger depth</source>
-      <translation>Hover trigger depth</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
@@ -5319,7 +5432,7 @@
     <message>
       <location line="+9"/>
       <source>Hover trigger width</source>
-      <translation>Hover trigger width</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
@@ -5337,7 +5450,7 @@
       <translation>سحب البكسل قبل فتح المشغل</translation>
     </message>
     <message>
-      <location line="+10"/>
+      <location line="+9"/>
       <source>Clipboard</source>
       <translation>الحافظة</translation>
     </message>
@@ -5362,7 +5475,7 @@
       <translation>السؤال قبل مسح سجل الحافظة</translation>
     </message>
     <message>
-      <location line="+7"/>
+      <location line="+6"/>
       <source>Behavior</source>
       <translation>السلوك</translation>
     </message>
@@ -5387,7 +5500,7 @@
       <translation>السماح بالإجراءات التي أغلقت أو سجلت الخروج</translation>
     </message>
     <message>
-      <location line="+7"/>
+      <location line="+6"/>
       <source>Fuzzy search</source>
       <translation>بحث غامض</translation>
     </message>
@@ -5462,7 +5575,7 @@
     <message>
       <location line="+5"/>
       <source>Pill</source>
-      <translation>Pill</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+5"/>
@@ -5476,12 +5589,12 @@
     </message>
     <message>
       <location line="+5"/>
-      <location line="+160"/>
+      <location line="+157"/>
       <source>Pentagon</source>
-      <translation>Pentagon</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
-      <location line="-155"/>
+      <location line="-152"/>
       <source>Gem</source>
       <translation>جوهرة</translation>
     </message>
@@ -5516,7 +5629,7 @@
       <translation>قفل الشاشة</translation>
     </message>
     <message>
-      <location line="+26"/>
+      <location line="+25"/>
       <source>Wallpaper</source>
       <translation>الخلفية</translation>
     </message>
@@ -5561,7 +5674,7 @@
       <translation>طمس الخلفية بأكملها، ليس فقط خلف الأدوات</translation>
     </message>
     <message>
-      <location line="+10"/>
+      <location line="+9"/>
       <source>Authentication</source>
       <translation>المصادقة</translation>
     </message>
@@ -5586,7 +5699,7 @@
       <translation>حاول قبل العودة إلى كلمة المرور</translation>
     </message>
     <message>
-      <location line="+17"/>
+      <location line="+16"/>
       <source>General</source>
       <translation>عام</translation>
     </message>
@@ -5641,7 +5754,7 @@
       <translation>تلميح بالأعمال الفنية لشاشة القفل لتطابق اللوحة</translation>
     </message>
     <message>
-      <location line="+10"/>
+      <location line="+9"/>
       <source>Session icons</source>
       <translation>أيقونات الجلسة</translation>
     </message>
@@ -5658,7 +5771,7 @@
     <message>
       <location line="+10"/>
       <source>Hibernate</source>
-      <translation>Hibernate</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
@@ -5709,7 +5822,7 @@
   <context>
     <name>LockStatus</name>
     <message>
-      <location filename="../modules/bar/popouts/LockStatus.qml" line="+22"/>
+      <location filename="../modules/bar/popouts/LockStatus.qml" line="+21"/>
       <source>Keyboard Locks</source>
       <translation>أقفال لوحة المفاتيح</translation>
     </message>
@@ -5770,7 +5883,7 @@
     <message>
       <location line="+12"/>
       <source>Selected candidate: %1 | %2 | %3</source>
-      <translation>المرشح المختار: %1 &lt;unk> %2 &lt;unk> %3</translation>
+      <translation>المرشح المختار: %1 &lt;unk&gt; %2 &lt;unk&gt; %3</translation>
     </message>
     <message>
       <location line="+19"/>
@@ -5926,7 +6039,7 @@
   <context>
     <name>NavPane</name>
     <message>
-      <location filename="../modules/nexus/NavPane.qml" line="+37"/>
+      <location filename="../modules/nexus/NavPane.qml" line="+35"/>
       <source>Search settings</source>
       <translation>إعدادات البحث</translation>
     </message>
@@ -5951,7 +6064,7 @@
     <message>
       <location line="+1"/>
       <source>DNS</source>
-      <translation>DNS</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
@@ -5959,12 +6072,12 @@
       <translation>عنوان MAC</translation>
     </message>
     <message>
-      <location line="+21"/>
+      <location line="+20"/>
       <source>Network</source>
       <translation>الشبكة</translation>
     </message>
     <message>
-      <location line="+38"/>
+      <location line="+37"/>
       <source>Wireless</source>
       <translation>لاسلكي</translation>
     </message>
@@ -5979,14 +6092,14 @@
       <translation>تتوفر شبكات %1</translation>
     </message>
     <message>
-      <location line="+146"/>
+      <location line="+143"/>
       <source>Rescan networks</source>
       <translation>إعادة مسح الشبكات</translation>
     </message>
     <message>
       <location line="+29"/>
       <source>VPN</source>
-      <translation>VPN</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+6"/>
@@ -5999,7 +6112,7 @@
       <translation>لا توجد ملفات تعريف VPN</translation>
     </message>
     <message>
-      <location line="+12"/>
+      <location line="+11"/>
       <source>Ethernet</source>
       <translation>إيثرنت</translation>
     </message>
@@ -6014,7 +6127,7 @@
       <translation>غير معروف</translation>
     </message>
     <message>
-      <location line="+47"/>
+      <location line="+46"/>
       <source>Connection details</source>
       <translation>تفاصيل الاتصال</translation>
     </message>
@@ -6027,22 +6140,22 @@
       <translation>الشبكة</translation>
     </message>
     <message>
-      <location line="+56"/>
+      <location line="+54"/>
       <source>Collecting data...</source>
       <translation>جاري جمع البيانات...</translation>
     </message>
     <message>
-      <location line="+19"/>
+      <location line="+18"/>
       <source>Download</source>
       <translation>تنزيل</translation>
     </message>
     <message>
-      <location line="+28"/>
+      <location line="+27"/>
       <source>Upload</source>
       <translation>تحميل</translation>
     </message>
     <message>
-      <location line="+28"/>
+      <location line="+27"/>
       <source>Total</source>
       <translation>المجموع</translation>
     </message>
@@ -6055,17 +6168,22 @@
       <translation>الشبكة</translation>
     </message>
     <message>
-      <location line="+53"/>
+      <location line="+22"/>
       <source>Forget</source>
       <translation>نسيت</translation>
     </message>
     <message>
-      <location line="+39"/>
+      <location line="+12"/>
+      <source>Connect</source>
+      <translation>اتصال</translation>
+    </message>
+    <message>
+      <location line="+10"/>
       <source>Disconnect</source>
       <translation>قطع الاتصال</translation>
     </message>
     <message>
-      <location line="+10"/>
+      <location line="+11"/>
       <source>Connection</source>
       <translation>اتصال</translation>
     </message>
@@ -6077,7 +6195,7 @@
     <message>
       <location line="+1"/>
       <source>%1%</source>
-      <translation>%1%</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+0"/>
@@ -6086,7 +6204,7 @@
       <location line="+7"/>
       <location line="+8"/>
       <source>—</source>
-      <translation>—</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="-30"/>
@@ -6106,7 +6224,7 @@
     <message>
       <location line="+1"/>
       <source>%1 MHz</source>
-      <translation>%1 MHz</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+6"/>
@@ -6124,7 +6242,7 @@
       <translation>عنوان MAC</translation>
     </message>
     <message>
-      <location line="+8"/>
+      <location line="+7"/>
       <source>Behaviour</source>
       <translation>السلوك</translation>
     </message>
@@ -6152,7 +6270,7 @@
       <translation>Wi-Fi معطل</translation>
     </message>
     <message>
-      <location line="+126"/>
+      <location line="+119"/>
       <source>Security: %1%2</source>
       <translation>الأمن: %1%2</translation>
     </message>
@@ -6177,15 +6295,15 @@
     <message>
       <location line="+47"/>
       <source>Wi-Fi</source>
-      <translation>Wi-Fi</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
-      <location line="+51"/>
+      <location line="+50"/>
       <source>Show all networks (%1)</source>
       <translation>إظهار جميع الشبكات (%1)</translation>
     </message>
     <message>
-      <location line="+40"/>
+      <location line="+39"/>
       <source>Saved networks</source>
       <translation>الشبكات المحفوظة</translation>
     </message>
@@ -6206,17 +6324,17 @@
     </message>
     <message>
       <location line="+80"/>
-      <location line="+146"/>
+      <location line="+145"/>
       <source>Connected</source>
       <translation>متصل</translation>
     </message>
     <message>
-      <location line="-146"/>
+      <location line="-145"/>
       <source>Available</source>
       <translation>متوفر</translation>
     </message>
     <message>
-      <location line="+44"/>
+      <location line="+43"/>
       <source>VPN providers</source>
       <translation>موفري VPN</translation>
     </message>
@@ -6284,22 +6402,22 @@
   <context>
     <name>News</name>
     <message>
-      <location filename="../modules/sidebar/News.qml" line="+94"/>
+      <location filename="../modules/sidebar/News.qml" line="+90"/>
       <source>Failed to fetch news (Status: %1)</source>
       <translation>فشل في جلب الأخبار (الحالة: %1)</translation>
     </message>
     <message>
-      <location line="+42"/>
+      <location line="+40"/>
       <source>No news articles found.</source>
       <translation>لم يتم العثور على مقالات إخبارية.</translation>
     </message>
     <message>
-      <location line="+20"/>
+      <location line="+19"/>
       <source>Arch Linux News</source>
       <translation>أرش لينكس أخبار</translation>
     </message>
     <message>
-      <location line="+28"/>
+      <location line="+26"/>
       <source>Fetching latest news...</source>
       <translation>جلب أحدث الأخبار...</translation>
     </message>
@@ -6307,7 +6425,7 @@
   <context>
     <name>Nexus</name>
     <message>
-      <location filename="../modules/nexus/Nexus.qml" line="+170"/>
+      <location filename="../modules/nexus/Nexus.qml" line="+162"/>
       <source>Update in progress</source>
       <translation>جارٍ التحديث</translation>
     </message>
@@ -6330,7 +6448,7 @@
   <context>
     <name>NightLight</name>
     <message>
-      <location filename="../modules/bar/popouts/NightLight.qml" line="+27"/>
+      <location filename="../modules/bar/popouts/NightLight.qml" line="+26"/>
       <source>Night Light</source>
       <translation>ضوء ليلي</translation>
     </message>
@@ -6345,12 +6463,12 @@
       <translation>دليل</translation>
     </message>
     <message>
-      <location line="+13"/>
+      <location line="+12"/>
       <source>Daylight Temperature (%1K)</source>
       <translation>درجة الحرارة الصيفية (%1K)</translation>
     </message>
     <message>
-      <location line="+38"/>
+      <location line="+37"/>
       <source>Nightlight Temperature (%1K)</source>
       <translation>درجة حرارة الإضاءة الليلية (%1K)</translation>
     </message>
@@ -6363,7 +6481,7 @@
   <context>
     <name>Nmcli</name>
     <message>
-      <location filename="../services/Nmcli.qml" line="+426"/>
+      <location filename="../services/Nmcli.qml" line="+409"/>
       <source>Open</source>
       <translation>فتح</translation>
     </message>
@@ -6390,7 +6508,7 @@
     <name>NotifData</name>
     <message>
       <location filename="../services/NotifData.qml" line="+19"/>
-      <location line="+150"/>
+      <location line="+149"/>
       <source>now</source>
       <translation>الآن</translation>
     </message>
@@ -6410,7 +6528,7 @@
     <message>
       <location line="+112"/>
       <source>Caelestia Mode</source>
-      <translation>Caelestia Mode</translation>
+      <translation type="unfinished"/>
     </message>
   </context>
   <context>
@@ -6637,7 +6755,7 @@
   <context>
     <name>Notifications</name>
     <message>
-      <location filename="../modules/bar/popouts/Notifications.qml" line="+27"/>
+      <location filename="../modules/bar/popouts/Notifications.qml" line="+26"/>
       <source>Notifications</source>
       <translation>الإشعارات</translation>
     </message>
@@ -6722,7 +6840,7 @@
   <context>
     <name>Notifs</name>
     <message>
-      <location filename="../services/Notifs.qml" line="+150"/>
+      <location filename="../services/Notifs.qml" line="+133"/>
       <source>Do not disturb enabled</source>
       <translation>تفعيل وضع عدم الإزعاج</translation>
     </message>
@@ -6742,7 +6860,7 @@
       <translation>الإشعارات المنبثقة مفعلة الآن</translation>
     </message>
     <message>
-      <location line="+103"/>
+      <location line="+97"/>
       <source>Clear all notifications</source>
       <translation>مسح كافة الإشعارات</translation>
     </message>
@@ -6750,7 +6868,7 @@
   <context>
     <name>OptionsToolbar</name>
     <message>
-      <location filename="../modules/screenshot/regionSelector/OptionsToolbar.qml" line="+43"/>
+      <location filename="../modules/screenshot/regionSelector/OptionsToolbar.qml" line="+40"/>
       <source>Window Selector</source>
       <translation>محدد النافذة</translation>
     </message>
@@ -6868,7 +6986,7 @@
     <message>
       <location filename="../modules/nexus/pages/panels/OverviewPanel.qml" line="+18"/>
       <source>KDE Grid</source>
-      <translation>KDE Grid</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+5"/>
@@ -7106,7 +7224,7 @@
   <context>
     <name>PageCompRegistry</name>
     <message>
-      <location filename="../modules/nexus/PageCompRegistry.qml" line="+354"/>
+      <location filename="../modules/nexus/PageCompRegistry.qml" line="+325"/>
       <source>Page under construction</source>
       <translation>الصفحة قيد الإنشاء</translation>
     </message>
@@ -7119,7 +7237,7 @@
   <context>
     <name>PageDictionary</name>
     <message>
-      <location filename="../modules/nexus/PageDictionary.qml" line="+10"/>
+      <location filename="../modules/nexus/PageDictionary.qml" line="+9"/>
       <source>Appearance</source>
       <translation>المظهر</translation>
     </message>
@@ -7136,12 +7254,12 @@
     <message>
       <location line="+1"/>
       <source>Font</source>
-      <translation>Font</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>Monospace font</source>
-      <translation>Monospace font</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
@@ -7156,12 +7274,12 @@
     <message>
       <location line="+1"/>
       <source>Advanced color settings</source>
-      <translation type="unfinished">Advanced color settings</translation>
+      <translation>إعدادات الألوان المتقدمة</translation>
     </message>
     <message>
       <location line="+1"/>
       <source>Color intensity</source>
-      <translation type="unfinished">Color intensity</translation>
+      <translation>كثافة اللون</translation>
     </message>
     <message>
       <location line="+1"/>
@@ -7171,7 +7289,7 @@
     <message>
       <location line="+1"/>
       <source>Corner Radius</source>
-      <translation>Corner Radius</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
@@ -7191,7 +7309,7 @@
     <message>
       <location line="+1"/>
       <source>Slideshow &amp; Order</source>
-      <translation>Slideshow &amp; Order</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
@@ -7281,7 +7399,7 @@
     <message>
       <location line="+1"/>
       <source>Sidebar</source>
-      <translation>Sidebar</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
@@ -7346,7 +7464,7 @@
     <message>
       <location line="+1"/>
       <source>GitHub</source>
-      <translation>GitHub</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
@@ -7394,7 +7512,7 @@
       <translation>مبدل النافذة</translation>
     </message>
     <message>
-      <location line="+5"/>
+      <location line="+4"/>
       <source>Network</source>
       <translation>الشبكة</translation>
     </message>
@@ -7406,17 +7524,17 @@
     <message>
       <location line="+3"/>
       <source>Wi-Fi</source>
-      <translation>Wi-Fi</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>VPN</source>
-      <translation>VPN</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>IPv4</source>
-      <translation>IPv4</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
@@ -7456,7 +7574,7 @@
     <message>
       <location line="+1"/>
       <source>Pairing</source>
-      <translation>Pairing</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+4"/>
@@ -7476,7 +7594,7 @@
     <message>
       <location line="+1"/>
       <source>Microphones</source>
-      <translation>Microphones</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
@@ -7494,7 +7612,7 @@
       <translation>تطبيقات التنبيهات المكتملة</translation>
     </message>
     <message>
-      <location line="+5"/>
+      <location line="+4"/>
       <source>Notifications</source>
       <translation>الإشعارات</translation>
     </message>
@@ -7546,7 +7664,7 @@
     <message>
       <location line="+1"/>
       <source>Quick Toggles</source>
-      <translation>Quick Toggles</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
@@ -7557,31 +7675,6 @@
       <location line="+1"/>
       <source>Auto-enable rules</source>
       <translation>تمكين تلقائي للقواعد</translation>
-    </message>
-    <message>
-      <location line="+4"/>
-      <source>Power</source>
-      <translation>القوة</translation>
-    </message>
-    <message>
-      <location line="+3"/>
-      <source>Battery indicators, idle suspend</source>
-      <translation>مؤشرات البطارية، تعليق الخمول</translation>
-    </message>
-    <message>
-      <location line="+3"/>
-      <source>Battery Status</source>
-      <translation>حالة البطارية</translation>
-    </message>
-    <message>
-      <location line="+1"/>
-      <source>Power Saving</source>
-      <translation>توفير الطاقة</translation>
-    </message>
-    <message>
-      <location line="+1"/>
-      <source>Screen Timeout</source>
-      <translation>مهلة الشاشة</translation>
     </message>
     <message>
       <location line="+4"/>
@@ -7634,7 +7727,7 @@
       <translation>ربط المفاتيح المخصصة</translation>
     </message>
     <message>
-      <location line="+5"/>
+      <location line="+4"/>
       <source>Apps</source>
       <translation>التطبيقات</translation>
     </message>
@@ -7691,7 +7784,7 @@
     <message>
       <location line="+3"/>
       <source>Locale, timezone, formats</source>
-      <translation>Locale, timezone, formats</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+3"/>
@@ -7709,7 +7802,7 @@
       <translation>موقع الطقس</translation>
     </message>
     <message>
-      <location line="+5"/>
+      <location line="+4"/>
       <source>Updates</source>
       <translation>التحديثات</translation>
     </message>
@@ -7781,6 +7874,11 @@
     </message>
     <message>
       <location line="+1"/>
+      <source>Let the CLI run its own tools</source>
+      <translation>السماح لـ CLI بتشغيل أدواته الخاصة</translation>
+    </message>
+    <message>
+      <location line="+1"/>
       <source>Accounts</source>
       <translation>الحسابات</translation>
     </message>
@@ -7793,7 +7891,7 @@
   <context>
     <name>PageRegistry</name>
     <message>
-      <location filename="../modules/nexus/PageRegistry.qml" line="+23"/>
+      <location filename="../modules/nexus/PageRegistry.qml" line="+22"/>
       <source>Main Page</source>
       <translation>الصفحة الرئيسية</translation>
     </message>
@@ -7857,7 +7955,7 @@
     <message>
       <location line="+6"/>
       <source>Sidebar</source>
-      <translation>Sidebar</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+6"/>
@@ -7913,20 +8011,20 @@
     <message>
       <location line="+19"/>
       <source>GPU</source>
-      <translation>GPU</translation>
+      <translation type="unfinished"/>
     </message>
   </context>
   <context>
     <name>Players</name>
     <message>
-      <location filename="../services/Players.qml" line="+64"/>
+      <location filename="../services/Players.qml" line="+63"/>
       <source>Now Playing</source>
       <translation>تشغيل الآن</translation>
     </message>
     <message>
       <location line="+0"/>
       <source>%1 - %2</source>
-      <translation>%1 - %2</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+33"/>
@@ -7957,7 +8055,7 @@
       <translation>الإعدادات</translation>
     </message>
     <message>
-      <location line="+52"/>
+      <location line="+51"/>
       <source>Done</source>
       <translation>تم</translation>
     </message>
@@ -7965,7 +8063,7 @@
   <context>
     <name>PluginsPage</name>
     <message>
-      <location filename="../modules/nexus/pages/PluginsPage.qml" line="+60"/>
+      <location filename="../modules/nexus/pages/PluginsPage.qml" line="+59"/>
       <source>Plugins</source>
       <translation>الإضافات</translation>
     </message>
@@ -7981,12 +8079,12 @@
     </message>
     <message>
       <location line="+34"/>
-      <location line="+335"/>
+      <location line="+333"/>
       <source>Installed</source>
       <translation>مثبت</translation>
     </message>
     <message>
-      <location line="-326"/>
+      <location line="-324"/>
       <source>Store</source>
       <translation>المتجر</translation>
     </message>
@@ -7996,7 +8094,7 @@
       <translation>مطلوب إعادة تشغيل قذيفة لكي تصبح التغييرات نافذة المفعول</translation>
     </message>
     <message>
-      <location line="+15"/>
+      <location line="+14"/>
       <source>Shell Plugins</source>
       <translation>إضافات قذيفة</translation>
     </message>
@@ -8011,7 +8109,7 @@
       <translation>لا توجد إضافات مثبتة</translation>
     </message>
     <message>
-      <location line="+39"/>
+      <location line="+38"/>
       <source>Loading store...</source>
       <translation>جاري تحميل المتجر...</translation>
     </message>
@@ -8034,12 +8132,12 @@
   <context>
     <name>PolkitDialog</name>
     <message>
-      <location filename="../components/PolkitDialog.qml" line="+124"/>
+      <location filename="../components/PolkitDialog.qml" line="+122"/>
       <source>Enter your password</source>
       <translation>أدخل كلمة المرور</translation>
     </message>
     <message>
-      <location line="+99"/>
+      <location line="+96"/>
       <source>Authentication Required</source>
       <translation>المصادقة مطلوبة</translation>
     </message>
@@ -8055,102 +8153,6 @@
       <location line="+2"/>
       <source>Opens the power, restart, and logout menu</source>
       <translation>يفتح قائمة الطاقة وإعادة التشغيل وتسجيل الخروج</translation>
-    </message>
-  </context>
-  <context>
-    <name>PowerDevil</name>
-    <message>
-      <location filename="../services/PowerDevil.qml" line="+53"/>
-      <source>KDE&apos;s suspend timer was not updated</source>
-      <translation type="unfinished">KDE&apos;s suspend timer was not updated</translation>
-    </message>
-    <message>
-      <location line="+0"/>
-      <source>Its own timer in System Settings &gt; Power Management can still suspend before the timeout set here.</source>
-      <translation type="unfinished">Its own timer in System Settings &gt; Power Management can still suspend before the timeout set here.</translation>
-    </message>
-  </context>
-  <context>
-    <name>PowerPage</name>
-    <message>
-      <location filename="../modules/nexus/pages/PowerPage.qml" line="+65"/>
-      <source>Power</source>
-      <translation>القوة</translation>
-    </message>
-    <message>
-      <location line="+10"/>
-      <source>Idle &amp; sleep</source>
-      <translation>الخمول والنوم</translation>
-    </message>
-    <message>
-      <location line="+5"/>
-      <source>Idle suspend</source>
-      <translation>تعليق الخمول</translation>
-    </message>
-    <message>
-      <location line="+1"/>
-      <source>Suspend the system after inactivity</source>
-      <translation>تعليق النظام بعد عدم النشاط</translation>
-    </message>
-    <message>
-      <location line="+7"/>
-      <source>Idle suspend timer</source>
-      <translation>إيقاف مؤقت الخمول</translation>
-    </message>
-    <message>
-      <location line="+2"/>
-      <source>Suspend after %1 minute(s) of inactivity</source>
-      <translation>تعليق بعد %1 دقيقة من عدم النشاط</translation>
-    </message>
-    <message>
-      <location line="+1"/>
-      <source>Enable idle suspend to apply a timer</source>
-      <translation>تمكين تعليق الخمول لتطبيق المؤقت</translation>
-    </message>
-    <message>
-      <location line="+12"/>
-      <source>Lock before sleep</source>
-      <translation>قفل قبل السكون</translation>
-    </message>
-    <message>
-      <location line="+1"/>
-      <source>Lock the session before suspending</source>
-      <translation>قفل الجلسة قبل تعليق</translation>
-    </message>
-    <message>
-      <location line="+6"/>
-      <source>Inhibit while audio</source>
-      <translation>منع أثناء الصوت</translation>
-    </message>
-    <message>
-      <location line="+1"/>
-      <source>Prevent idle actions while audio is playing</source>
-      <translation>منع الإجراءات العاطلة أثناء تشغيل الصوت</translation>
-    </message>
-    <message>
-      <location line="+7"/>
-      <source>Inhibit while charging</source>
-      <translation>منع أثناء الشحن</translation>
-    </message>
-    <message>
-      <location line="+1"/>
-      <source>Prevent idle actions while charging</source>
-      <translation>منع إجراءات الخمول أثناء الشحن</translation>
-    </message>
-    <message>
-      <location line="+6"/>
-      <source>Battery warnings</source>
-      <translation>تحذيرات البطارية</translation>
-    </message>
-    <message>
-      <location line="+6"/>
-      <source>Critical battery level</source>
-      <translation>مستوى البطارية الحرج</translation>
-    </message>
-    <message>
-      <location line="+1"/>
-      <source>Percentage at which the critical warning fires</source>
-      <translation>النسبة المئوية للإنذار الحرج</translation>
     </message>
   </context>
   <context>
@@ -8171,7 +8173,7 @@
     <message>
       <location filename="../modules/nexus/pages/utilities/QuickTogglesPage.qml" line="+13"/>
       <source>Wi-Fi</source>
-      <translation>Wi-Fi</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
@@ -8181,7 +8183,7 @@
     <message>
       <location line="+1"/>
       <source>VPN</source>
-      <translation>VPN</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+3"/>
@@ -8241,7 +8243,7 @@
     <message>
       <location line="+3"/>
       <source>Quick toggles</source>
-      <translation>Quick toggles</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+11"/>
@@ -8362,7 +8364,7 @@
   <context>
     <name>RecordingDeleteModal</name>
     <message>
-      <location filename="../modules/utilities/RecordingDeleteModal.qml" line="+170"/>
+      <location filename="../modules/utilities/RecordingDeleteModal.qml" line="+168"/>
       <source>Delete recording?</source>
       <translation>حذف التسجيل؟</translation>
     </message>
@@ -8403,17 +8405,17 @@
   <context>
     <name>RegionSelection</name>
     <message>
-      <location filename="../modules/screenshot/regionSelector/RegionSelection.qml" line="+581"/>
+      <location filename="../modules/screenshot/regionSelector/RegionSelection.qml" line="+543"/>
       <source>Full Screen Screenshot</source>
       <translation>لقطة شاشة كاملة</translation>
     </message>
     <message>
-      <location line="+14"/>
+      <location line="+13"/>
       <source>Snip selected region (Enter)</source>
       <translation>قنص المنطقة المحددة (المؤسسة)</translation>
     </message>
     <message>
-      <location line="+21"/>
+      <location line="+20"/>
       <source>Clear selection</source>
       <translation>مسح التحديد</translation>
     </message>
@@ -8426,7 +8428,7 @@
   <context>
     <name>RegionSelector</name>
     <message>
-      <location filename="../modules/screenshot/regionSelector/RegionSelector.qml" line="+90"/>
+      <location filename="../modules/screenshot/regionSelector/RegionSelector.qml" line="+85"/>
       <source>Takes a screenshot of the selected region</source>
       <translation>يأخذ لقطة شاشة للمنطقة المختارة</translation>
     </message>
@@ -8454,7 +8456,7 @@
   <context>
     <name>SavedNetworksPage</name>
     <message>
-      <location filename="../modules/nexus/pages/network/SavedNetworksPage.qml" line="+15"/>
+      <location filename="../modules/nexus/pages/network/SavedNetworksPage.qml" line="+16"/>
       <source>Saved networks</source>
       <translation>الشبكات المحفوظة</translation>
     </message>
@@ -8464,7 +8466,12 @@
       <translation>لا توجد شبكات محفوظة</translation>
     </message>
     <message>
-      <location line="+61"/>
+      <location line="+48"/>
+      <source>%1 (%2)</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+10"/>
       <source>Open</source>
       <translation>فتح</translation>
     </message>
@@ -8482,7 +8489,7 @@
   <context>
     <name>SearchResults</name>
     <message>
-      <location filename="../modules/nexus/navpane/SearchResults.qml" line="+149"/>
+      <location filename="../modules/nexus/navpane/SearchResults.qml" line="+148"/>
       <source>in </source>
       <translation>في </translation>
     </message>
@@ -8490,16 +8497,16 @@
   <context>
     <name>ServicesPage</name>
     <message>
-      <location filename="../modules/nexus/pages/ServicesPage.qml" line="+18"/>
-      <location line="+16"/>
-      <location line="+108"/>
+      <location filename="../modules/nexus/pages/ServicesPage.qml" line="+17"/>
+      <location line="+15"/>
+      <location line="+105"/>
       <source>Auto</source>
       <translation>تلقائي</translation>
     </message>
     <message>
-      <location line="-102"/>
+      <location line="-99"/>
       <source>Generic</source>
-      <translation>Generic</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+3"/>
@@ -8512,7 +8519,7 @@
       <translation>الخدمات</translation>
     </message>
     <message>
-      <location line="+26"/>
+      <location line="+24"/>
       <source>Polling</source>
       <translation>اقتراع</translation>
     </message>
@@ -8547,7 +8554,7 @@
       <translation>كم عدد المرات التي يتم فيها إعادة فحص الشبكات المتاحة (بالثواني)</translation>
     </message>
     <message>
-      <location line="+10"/>
+      <location line="+9"/>
       <source>Media &amp; lyrics</source>
       <translation>الوسائط والكلمات</translation>
     </message>
@@ -8572,7 +8579,7 @@
       <translation>مشغل الوسائط المفضل عند فتح عدة مرات</translation>
     </message>
     <message>
-      <location line="+10"/>
+      <location line="+9"/>
       <source>Input increments</source>
       <translation>زيادات الإدخال</translation>
     </message>
@@ -8607,7 +8614,7 @@
       <translation>الحد الأعلى لحجم الإخراج (%)</translation>
     </message>
     <message>
-      <location line="+10"/>
+      <location line="+9"/>
       <source>Service tuning</source>
       <translation>ضبط الخدمة</translation>
     </message>
@@ -8634,7 +8641,7 @@
     <message>
       <location line="+11"/>
       <source>GPU</source>
-      <translation>GPU</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
@@ -8655,7 +8662,7 @@
       <translation>الجلسة</translation>
     </message>
     <message>
-      <location line="+11"/>
+      <location line="+10"/>
       <source>General</source>
       <translation>عام</translation>
     </message>
@@ -8690,33 +8697,33 @@
       <translation>بكسل للسحب قبل انتقال القائمة</translation>
     </message>
     <message>
-      <location line="+10"/>
+      <location line="+9"/>
       <source>Icons</source>
       <translation>أيقونات</translation>
     </message>
     <message>
       <location line="+5"/>
-      <location line="+31"/>
+      <location line="+30"/>
       <source>Logout</source>
       <translation>تسجيل الخروج</translation>
     </message>
     <message>
-      <location line="-25"/>
-      <location line="+31"/>
+      <location line="-24"/>
+      <location line="+30"/>
       <source>Shutdown</source>
       <translation>إيقاف</translation>
     </message>
     <message>
-      <location line="-25"/>
-      <location line="+31"/>
+      <location line="-24"/>
+      <location line="+30"/>
       <source>Hibernate</source>
-      <translation>Hibernate</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
-      <location line="-24"/>
-      <location line="+31"/>
+      <location line="-23"/>
+      <location line="+30"/>
       <source>Reboot</source>
-      <translation>Reboot</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="-24"/>
@@ -8765,7 +8772,7 @@
   <context>
     <name>ShortcutRow</name>
     <message>
-      <location filename="../modules/nexus/common/ShortcutRow.qml" line="+124"/>
+      <location filename="../modules/nexus/common/ShortcutRow.qml" line="+119"/>
       <source>Collides with: </source>
       <translation>تصادمات مع: </translation>
     </message>
@@ -8773,7 +8780,7 @@
   <context>
     <name>Shortcuts</name>
     <message>
-      <location filename="../modules/Shortcuts.qml" line="+29"/>
+      <location filename="../modules/Shortcuts.qml" line="+28"/>
       <source>Open nexus</source>
       <translation>فتح رابط</translation>
     </message>
@@ -8858,7 +8865,7 @@
       <translation>فتح مبدل النافذة</translation>
     </message>
     <message>
-      <location line="+22"/>
+      <location line="+21"/>
       <source>Open window switcher (reverse)</source>
       <translation>فتح مبدل النافذة (عكسي)</translation>
     </message>
@@ -8953,7 +8960,7 @@
       <translation>التبديل إلى مساحة العمل 10</translation>
     </message>
     <message>
-      <location line="+90"/>
+      <location line="+89"/>
       <source>Focus the window above</source>
       <translation>تركيز النافذة أعلاه</translation>
     </message>
@@ -9159,7 +9166,7 @@
     <message>
       <location filename="../modules/nexus/pages/panels/SidebarPanel.qml" line="+15"/>
       <source>Sidebar</source>
-      <translation>Sidebar</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+11"/>
@@ -9184,7 +9191,7 @@
     <message>
       <location line="+12"/>
       <source>Grab width</source>
-      <translation>Grab width</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
@@ -9192,9 +9199,9 @@
       <translation>بكسل حافة الشاشة المحجوزة لأخذ الشريط الجانبي</translation>
     </message>
     <message>
-      <location line="+10"/>
+      <location line="+9"/>
       <source>Sidebar Tabs</source>
-      <translation>Sidebar Tabs</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+6"/>
@@ -9209,7 +9216,7 @@
     <message>
       <location line="+9"/>
       <source>Show Caelestia Mode</source>
-      <translation>Show Caelestia Mode</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
@@ -9222,7 +9229,7 @@
     <message>
       <location filename="../modules/nexus/pages/wallandstyle/SlideshowAndOrderPage.qml" line="+16"/>
       <source>Slideshow &amp; Order</source>
-      <translation>Slideshow &amp; Order</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+20"/>
@@ -9319,6 +9326,14 @@
     </message>
   </context>
   <context>
+    <name>StatusIconsContext</name>
+    <message>
+      <location filename="../modules/bar/popouts/StatusIconsContext.qml" line="+83"/>
+      <source>Status icons settings</source>
+      <translation>إعدادات أيقونات الحالة</translation>
+    </message>
+  </context>
+  <context>
     <name>StorageCard</name>
     <message>
       <location filename="../modules/dashboard/performance/StorageCard.qml" line="+74"/>
@@ -9349,7 +9364,7 @@
       <translation>مبدل النافذة</translation>
     </message>
     <message>
-      <location line="+38"/>
+      <location line="+37"/>
       <source>General</source>
       <translation>عام</translation>
     </message>
@@ -9374,7 +9389,7 @@
       <translation>الخلف</translation>
     </message>
     <message>
-      <location line="+11"/>
+      <location line="+10"/>
       <source>Behavior</source>
       <translation>السلوك</translation>
     </message>
@@ -9399,7 +9414,7 @@
       <translation>تسليط الضوء وإظهار النافذة نفسها على مساحة العمل أثناء تدوير Alt+Tab</translation>
     </message>
     <message>
-      <location line="+14"/>
+      <location line="+13"/>
       <source>Display</source>
       <translation>عرض</translation>
     </message>
@@ -9499,7 +9514,7 @@
     <message>
       <location line="+6"/>
       <source>GitHub</source>
-      <translation>GitHub</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
@@ -9520,7 +9535,7 @@
   <context>
     <name>TaskbarPanel</name>
     <message>
-      <location filename="../modules/nexus/pages/panels/TaskbarPanel.qml" line="+18"/>
+      <location filename="../modules/nexus/pages/panels/TaskbarPanel.qml" line="+19"/>
       <source>Top</source>
       <translation>أعلى</translation>
     </message>
@@ -9545,19 +9560,19 @@
       <translation>استخدام الموضع العام</translation>
     </message>
     <message>
-      <location line="+13"/>
+      <location line="+24"/>
       <source>Taskbar</source>
       <translation>شريط المهام</translation>
     </message>
     <message>
-      <location line="+12"/>
+      <location line="+11"/>
       <source>Behavior</source>
       <translation>السلوك</translation>
     </message>
     <message>
       <location line="+5"/>
       <source>Persistent</source>
-      <translation>Persistent</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
@@ -9595,7 +9610,7 @@
       <translation>حافة الشاشة لوضع الشريط على</translation>
     </message>
     <message>
-      <location line="+7"/>
+      <location line="+10"/>
       <source>Show on hover</source>
       <translation>إظهار على الشاشة</translation>
     </message>
@@ -9630,7 +9645,7 @@
       <translation>استخدام الموقع العالمي</translation>
     </message>
     <message>
-      <location line="+15"/>
+      <location line="+13"/>
       <source>Scaling</source>
       <translation>القياس</translation>
     </message>
@@ -9695,7 +9710,7 @@
       <translation>تخصيص المقياس والخطوط لكل نوع منبثق</translation>
     </message>
     <message>
-      <location line="+6"/>
+      <location line="+5"/>
       <source>Components</source>
       <translation>المكونات</translation>
     </message>
@@ -9720,7 +9735,7 @@
       <translation>مساحات العمل، الصورة، أيقونات الحالة، الساعة، الساعة والمزيد</translation>
     </message>
     <message>
-      <location line="+6"/>
+      <location line="+5"/>
       <source>Scroll actions</source>
       <translation>إجراءات التمرير</translation>
     </message>
@@ -9810,7 +9825,7 @@
     <message>
       <location line="+6"/>
       <source>Input</source>
-      <translation>Input</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+5"/>
@@ -9929,15 +9944,15 @@
   <context>
     <name>Toggles</name>
     <message>
-      <location filename="../modules/utilities/cards/Toggles.qml" line="+97"/>
+      <location filename="../modules/utilities/cards/Toggles.qml" line="+95"/>
       <source>Quick Toggles</source>
-      <translation>Quick Toggles</translation>
+      <translation type="unfinished"/>
     </message>
   </context>
   <context>
     <name>TrayItem</name>
     <message>
-      <location filename="../modules/bar/components/TrayItem.qml" line="+46"/>
+      <location filename="../modules/bar/components/TrayItem.qml" line="+34"/>
       <source>Left-click activates, right-click opens the menu, middle-click runs the secondary action.</source>
       <translation>تفعيل النقر الأيسر ، يفتح القائمة ، النقر الأوسط يدير الإجراء الثانوي.</translation>
     </message>
@@ -9950,7 +9965,7 @@
   <context>
     <name>TrayMenu</name>
     <message>
-      <location filename="../modules/bar/popouts/TrayMenu.qml" line="+335"/>
+      <location filename="../modules/bar/popouts/TrayMenu.qml" line="+330"/>
       <source>Back</source>
       <translation>الرجوع</translation>
     </message>
@@ -9958,22 +9973,22 @@
   <context>
     <name>Units</name>
     <message>
-      <location filename="../services/Units.qml" line="+26"/>
+      <location filename="../services/Units.qml" line="+22"/>
       <source>%1°</source>
       <comment>temperature</comment>
-      <translation>%1°</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+3"/>
       <source>%1°F</source>
       <comment>temperature</comment>
-      <translation>%1°F</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+2"/>
       <source>%1 K</source>
       <comment>temperature</comment>
-      <translation>%1 K</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
@@ -9982,10 +9997,10 @@
       <translation>%1ْ س</translation>
     </message>
     <message>
-      <location line="+12"/>
+      <location line="+10"/>
       <source>%1 B</source>
       <comment>data unit</comment>
-      <translation>%1 B</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
@@ -10009,37 +10024,37 @@
       <location line="+1"/>
       <source>%1 TB</source>
       <comment>data unit</comment>
-      <translation type="unfinished">%1 TB</translation>
+      <translation>%1 تيرابايت</translation>
     </message>
     <message>
       <location line="+1"/>
       <source>%1 KiB</source>
       <comment>data unit</comment>
-      <translation>%1 KiB</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>%1 MiB</source>
       <comment>data unit</comment>
-      <translation>%1 MiB</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>%1 GiB</source>
       <comment>data unit</comment>
-      <translation>%1 GiB</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>%1 TiB</source>
       <comment>data unit</comment>
-      <translation>%1 TiB</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>%1 B/s</source>
       <comment>data unit</comment>
-      <translation>%1 B/s</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
@@ -10057,19 +10072,19 @@
       <location line="+1"/>
       <source>%1 GB/s</source>
       <comment>data unit</comment>
-      <translation>%1 GB/s</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>%1 TB/s</source>
       <comment>data unit</comment>
-      <translation>%1 TB/s</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>%1 KiB/s</source>
       <comment>data unit</comment>
-      <translation>%1 KiB/s</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
@@ -10081,31 +10096,31 @@
       <location line="+1"/>
       <source>%1 GiB/s</source>
       <comment>data unit</comment>
-      <translation>%1 GiB/s</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
       <source>%1 TiB/s</source>
       <comment>data unit</comment>
-      <translation>%1 TiB/s</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+2"/>
       <source>%1 %2</source>
       <comment>value and data unit</comment>
-      <translation>%1 %2</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
-      <location line="+36"/>
+      <location line="+34"/>
       <source>%1 / %2</source>
       <comment>used / total amount</comment>
-      <translation>%1 / %2</translation>
+      <translation type="unfinished"/>
     </message>
   </context>
   <context>
     <name>UpdateChecker</name>
     <message>
-      <location filename="../services/UpdateChecker.qml" line="+375"/>
+      <location filename="../services/UpdateChecker.qml" line="+363"/>
       <source>Done!</source>
       <translation>تم!</translation>
     </message>
@@ -10121,28 +10136,28 @@
     </message>
     <message>
       <location line="+15"/>
-      <location line="+397"/>
+      <location line="+379"/>
       <source>Canceled</source>
       <translation>ملغاة</translation>
     </message>
     <message>
-      <location line="-310"/>
-      <location line="+22"/>
+      <location line="-294"/>
+      <location line="+21"/>
       <source>Release</source>
       <translation>الإصدار</translation>
     </message>
     <message>
-      <location line="-20"/>
+      <location line="-19"/>
       <source>GitHub release</source>
       <translation>إصدار GitHub</translation>
     </message>
     <message>
-      <location line="+22"/>
+      <location line="+21"/>
       <source>Tag</source>
       <translation>وسم</translation>
     </message>
     <message>
-      <location line="+290"/>
+      <location line="+275"/>
       <source>Update Successful</source>
       <translation>تم التحديث بنجاح</translation>
     </message>
@@ -10172,7 +10187,7 @@
     <message>
       <location filename="../modules/bar/components/UpdateIndicator.qml" line="+49"/>
       <source>Caelestia updates</source>
-      <translation>Caelestia updates</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+2"/>
@@ -10183,7 +10198,7 @@
   <context>
     <name>UpdateTimeline</name>
     <message>
-      <location filename="../modules/nexus/common/UpdateTimeline.qml" line="+35"/>
+      <location filename="../modules/nexus/common/UpdateTimeline.qml" line="+27"/>
       <source>feat</source>
       <translation>الأجرام</translation>
     </message>
@@ -10195,7 +10210,7 @@
     <message>
       <location line="+1"/>
       <source>perf</source>
-      <translation>perf</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
@@ -10225,7 +10240,7 @@
     <message>
       <location line="+1"/>
       <source>ci</source>
-      <translation>ci</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
@@ -10238,7 +10253,7 @@
       <translation>العودة</translation>
     </message>
     <message>
-      <location line="+260"/>
+      <location line="+230"/>
       <source>merge</source>
       <translation>دمج</translation>
     </message>
@@ -10246,7 +10261,7 @@
   <context>
     <name>Updates</name>
     <message>
-      <location filename="../modules/bar/popouts/Updates.qml" line="+35"/>
+      <location filename="../modules/bar/popouts/Updates.qml" line="+34"/>
       <source>Updating…</source>
       <translation>جارٍ تحديث…</translation>
     </message>
@@ -10278,16 +10293,16 @@
     <message>
       <location line="+0"/>
       <source>%1s</source>
-      <translation>%1s</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+69"/>
-      <location line="+80"/>
+      <location line="+78"/>
       <source>Checking…</source>
       <translation>التحقق…</translation>
     </message>
     <message>
-      <location line="-78"/>
+      <location line="-76"/>
       <source>Last check: not yet</source>
       <translation>التحقق الأخير: ليس بعد</translation>
     </message>
@@ -10302,17 +10317,17 @@
       <translation>التحقق التالي في %1</translation>
     </message>
     <message>
-      <location line="+57"/>
+      <location line="+55"/>
       <source>Check for updates</source>
       <translation>التحقق من وجود تحديثات</translation>
     </message>
     <message>
-      <location line="+41"/>
+      <location line="+40"/>
       <source>Open Updates</source>
       <translation>فتح التحديثات</translation>
     </message>
     <message>
-      <location line="+38"/>
+      <location line="+37"/>
       <source>Hide from bar</source>
       <translation>إخفاء من الشريط</translation>
     </message>
@@ -10320,7 +10335,7 @@
   <context>
     <name>UpdatesPage</name>
     <message>
-      <location filename="../modules/nexus/pages/UpdatesPage.qml" line="+162"/>
+      <location filename="../modules/nexus/pages/UpdatesPage.qml" line="+136"/>
       <source>Updates</source>
       <translation>التحديثات</translation>
     </message>
@@ -10330,7 +10345,7 @@
       <translation>مساعدة</translation>
     </message>
     <message>
-      <location line="+99"/>
+      <location line="+97"/>
       <source>Update complete - log out to apply</source>
       <translation>اكتمل التحديث - سجل الخروج للتطبيق</translation>
     </message>
@@ -10347,7 +10362,7 @@
     <message>
       <location line="+1"/>
       <source>Reinstall %1?</source>
-      <translation>Reinstall %1?</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+2"/>
@@ -10385,7 +10400,7 @@
       <translation>القناة: %1</translation>
     </message>
     <message>
-      <location line="+26"/>
+      <location line="+22"/>
       <source>Log Out</source>
       <translation>تسجيل الخروج</translation>
     </message>
@@ -10410,7 +10425,7 @@
       <translation>تثبيت التحديث</translation>
     </message>
     <message>
-      <location line="+44"/>
+      <location line="+40"/>
       <source>Stop</source>
       <translation>توقف</translation>
     </message>
@@ -10430,7 +10445,7 @@
       <translation>تحقق</translation>
     </message>
     <message>
-      <location line="+35"/>
+      <location line="+31"/>
       <source>General</source>
       <translation>عام</translation>
     </message>
@@ -10460,7 +10475,7 @@
       <translation>إظهار رمز الإشعار في شريط المهام عندما تكون التحديثات متوفرة</translation>
     </message>
     <message>
-      <location line="+67"/>
+      <location line="+63"/>
       <source>Customize Installation</source>
       <translation>تخصيص التثبيت</translation>
     </message>
@@ -10500,7 +10515,7 @@
       <translation>التبديل إلى %1…</translation>
     </message>
     <message>
-      <location line="+8"/>
+      <location line="+7"/>
       <source>Version History</source>
       <translation>تاريخ الإصدار</translation>
     </message>
@@ -10510,7 +10525,7 @@
       <translation>تاريخ الإرسال</translation>
     </message>
     <message>
-      <location line="+62"/>
+      <location line="+54"/>
       <source>Loading…</source>
       <translation>جاري التحميل…</translation>
     </message>
@@ -10520,7 +10535,7 @@
       <translation>تحميل 10 المزيد</translation>
     </message>
     <message>
-      <location line="+12"/>
+      <location line="+11"/>
       <source>Update Log</source>
       <translation>تحديث السجل</translation>
     </message>
@@ -10570,7 +10585,7 @@
     <message>
       <location line="+7"/>
       <source>Quick toggles</source>
-      <translation>Quick toggles</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
@@ -10623,7 +10638,7 @@
     <message>
       <location line="+8"/>
       <source>Hover trigger depth</source>
-      <translation>Hover trigger depth</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
@@ -10633,7 +10648,7 @@
     <message>
       <location line="+11"/>
       <source>Hover trigger width</source>
-      <translation>Hover trigger width</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
@@ -10696,7 +10711,7 @@
     <message>
       <location line="+7"/>
       <source>Quick Toggles</source>
-      <translation>Quick Toggles</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
@@ -10707,7 +10722,7 @@
   <context>
     <name>VPN</name>
     <message>
-      <location filename="../services/VPN.qml" line="+209"/>
+      <location filename="../services/VPN.qml" line="+174"/>
       <source>VPN connection failed</source>
       <translation>فشل اتصال VPN</translation>
     </message>
@@ -10717,7 +10732,7 @@
       <translation>فشل قطع اتصال VPN</translation>
     </message>
     <message>
-      <location line="+241"/>
+      <location line="+221"/>
       <source>VPN connected</source>
       <translation>VPN متصل</translation>
     </message>
@@ -10745,7 +10760,7 @@
       <location line="+0"/>
       <location line="+5"/>
       <source>%1: %2</source>
-      <translation type="unfinished">%1: %2</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+0"/>
@@ -10753,13 +10768,13 @@
       <translation>خطأ VPN</translation>
     </message>
     <message>
-      <location line="+196"/>
-      <location line="+69"/>
+      <location line="+184"/>
+      <location line="+68"/>
       <source>Could not start %1. Is it installed?</source>
       <translation>لا يمكن بدء %1. هل هو مثبت؟</translation>
     </message>
     <message>
-      <location line="-55"/>
+      <location line="-54"/>
       <source>Could not connect to %1</source>
       <translation>تعذر الاتصال بـ %1</translation>
     </message>
@@ -10772,7 +10787,7 @@
       <translation>خلفيات الفيديو</translation>
     </message>
     <message>
-      <location line="+13"/>
+      <location line="+12"/>
       <source>Pause video wallpapers</source>
       <translation>إيقاف خلفيات الفيديو</translation>
     </message>
@@ -10823,12 +10838,12 @@
       <translation>البحث والمعاينة وتعيين الخلفيات على الفور</translation>
     </message>
     <message>
-      <location line="+22"/>
+      <location line="+21"/>
       <source>Search wallpapers...</source>
       <translation>البحث عن الخلفية ...</translation>
     </message>
     <message>
-      <location line="+39"/>
+      <location line="+38"/>
       <source>Found %1 wallpapers (page %2 of %3)</source>
       <translation>تم العثور على خلفية %1 (صفحة %2 من %3)</translation>
     </message>
@@ -10843,7 +10858,7 @@
       <translation>تحميل المزيد</translation>
     </message>
     <message>
-      <location line="+140"/>
+      <location line="+138"/>
       <source>Downloading...</source>
       <translation>تنزيل...</translation>
     </message>
@@ -10859,18 +10874,18 @@
     </message>
     <message>
       <location line="+16"/>
-      <location line="+102"/>
+      <location line="+101"/>
       <source>Wallpaper applied</source>
       <translation>تم تطبيق الخلفية</translation>
     </message>
     <message>
-      <location line="-100"/>
-      <location line="+113"/>
+      <location line="-99"/>
+      <location line="+112"/>
       <source>Download failed</source>
       <translation>فشل التحميل</translation>
     </message>
     <message>
-      <location line="-112"/>
+      <location line="-111"/>
       <source>Downloading... %1%</source>
       <translation>تنزيل... %1%</translation>
     </message>
@@ -10990,7 +11005,7 @@
     <message>
       <location line="+6"/>
       <source>Slideshow &amp; Order</source>
-      <translation>Slideshow &amp; Order</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
@@ -11011,7 +11026,7 @@
   <context>
     <name>WallpaperSelect</name>
     <message>
-      <location filename="../modules/nexus/pages/wallandstyle/WallpaperSelect.qml" line="+116"/>
+      <location filename="../modules/nexus/pages/wallandstyle/WallpaperSelect.qml" line="+122"/>
       <source>Select wallpaper</source>
       <translation>حدد الخلفية</translation>
     </message>
@@ -11041,12 +11056,12 @@
       <translation>فتح المجلد</translation>
     </message>
     <message>
-      <location line="+20"/>
+      <location line="+16"/>
       <source>Featured wallpaper</source>
       <translation>خلفية مميزة</translation>
     </message>
     <message>
-      <location line="+175"/>
+      <location line="+168"/>
       <location line="+7"/>
       <source>All</source>
       <translation>الكل</translation>
@@ -11072,7 +11087,7 @@
       <translation>خلفيات محلية</translation>
     </message>
     <message>
-      <location line="+101"/>
+      <location line="+100"/>
       <source>No local wallpapers found</source>
       <translation>لا توجد خلفيات محلية</translation>
     </message>
@@ -11184,32 +11199,37 @@
   <context>
     <name>WhatsNewWindow</name>
     <message>
-      <location filename="../modules/whatsnew/WhatsNewWindow.qml" line="+114"/>
-      <location line="+151"/>
+      <location filename="../modules/whatsnew/WhatsNewWindow.qml" line="+110"/>
+      <location line="+148"/>
       <source>What&apos;s New in Caelestia</source>
       <translation>ماذا&apos;s جديد في كايلستا</translation>
     </message>
     <message>
-      <location line="-99"/>
+      <location line="-97"/>
       <source>What&apos;s New</source>
       <translation>ماذا&apos;s جديد</translation>
+    </message>
+    <message>
+      <location line="+421"/>
+      <source>Open in Settings</source>
+      <translation type="unfinished"/>
     </message>
   </context>
   <context>
     <name>WirelessPassword</name>
     <message>
-      <location filename="../modules/bar/popouts/WirelessPassword.qml" line="+58"/>
-      <location line="+22"/>
-      <location line="+460"/>
-      <location line="+32"/>
-      <location line="+12"/>
-      <location line="+51"/>
+      <location filename="../modules/bar/popouts/WirelessPassword.qml" line="+52"/>
+      <location line="+21"/>
+      <location line="+449"/>
+      <location line="+28"/>
+      <location line="+10"/>
+      <location line="+48"/>
       <location line="+44"/>
       <source>Connect</source>
       <translation>الاتصال</translation>
     </message>
     <message>
-      <location line="-454"/>
+      <location line="-439"/>
       <source>Enter password</source>
       <translation>أدخل كلمة المرور</translation>
     </message>
@@ -11230,12 +11250,12 @@
     </message>
     <message>
       <location line="+3"/>
-      <location line="+273"/>
+      <location line="+265"/>
       <source>Connecting...</source>
       <translation>جاري الاتصال...</translation>
     </message>
     <message>
-      <location line="-140"/>
+      <location line="-138"/>
       <source>Password</source>
       <translation>كلمة المرور</translation>
     </message>
@@ -11250,12 +11270,12 @@
     <message>
       <location filename="../services/WorkspaceTrackerGuard.qml" line="+36"/>
       <source>Workspace tracker effect is not running</source>
-      <translation type="unfinished">Workspace tracker effect is not running</translation>
+      <translation>تأثير متتبع مساحة العمل لا يعمل</translation>
     </message>
     <message>
       <location line="+0"/>
       <source>KWin stopped loading it after a KDE update. Run caelestia update, then log out and back in.</source>
-      <translation type="unfinished">KWin stopped loading it after a KDE update. Run caelestia update, then log out and back in.</translation>
+      <translation>أوقف KWin تحميله بعد تحديث KDE. قم بتشغيل caelestia update، ثم سجل الخروج وسجل الدخول مجدداً.</translation>
     </message>
   </context>
   <context>

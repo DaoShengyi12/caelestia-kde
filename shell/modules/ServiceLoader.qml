@@ -5,8 +5,6 @@ import qs.services
 
 Scope {
     Component.onCompleted: {
-        // Keep configuration migration and notification registration ahead of
-        // other applications, then defer the rest until the shell has started.
         ConfigMigrations;
         Notifs;
     }
@@ -25,7 +23,6 @@ Scope {
             Brightness;
             Weather.reload();
             WorkspaceTrackerGuard;
-            PowerDevil;
 
             if (GlobalConfig.utilities.vpn.enabled)
                 VPN;

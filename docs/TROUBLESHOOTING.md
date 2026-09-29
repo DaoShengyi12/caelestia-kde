@@ -120,7 +120,7 @@ The project enables ccache in both `installer/CMakeLists.txt` and `shell/CMakeLi
 
 **RPM Fusion requirement:** `ffmpeg` with H264 support requires RPM Fusion. The script auto-enables it, but this may fail behind a proxy or on air-gapped systems.
 
-**matugen on Fedora:** there is no package for it, and it is what generates the palette. The installer reports it when it is missing; `cargo install matugen` fixes it.
+**matugen on Fedora:** available from the `avengemedia/danklinux` COPR repository. The installer auto-enables it and installs `matugen` via DNF.
 
 ### 2.3 CRLF / dos2unix Failure
 
@@ -460,15 +460,19 @@ The recording patch restarts `plasma-xdg-desktop-portal-kde` before each recordi
 
 ### 7.3 ydotoold (On-Screen Keyboard)
 
-`ydotoold` needs access to `/dev/uinput`. The installer:
-1. Creates `/etc/udev/rules.d/80-uinput.rules`
-2. Adds user to `input` group
-3. Creates sudoers NOPASSWD rule
+`ydotoold` needs access to `/dev/uinput`. The installer writes
+`/etc/udev/rules.d/70-uinput.rules`, which tags the device for the active session
+(`TAG+="uaccess"`). Nothing is added to a group, and the device stays closed to
+programs running outside your session.
 
 **If ydotoold doesn't work:**
-- Re-login (group changes take effect on next login)
-- Verify: `groups $USER` should include `input`
+- Check the rule exists and `/dev/uinput` is present (`sudo modprobe uinput` if not)
 - Verify: `ls -la /run/user/$(id -u)/.ydotool_socket`
+- Restart it: `systemctl --user restart ydotoold.service`
+
+Installs older than this rule put your user in the `input` group instead. The
+installer removes that membership when it replaces the old rule, and the change
+takes effect on your next login.
 
 ### 7.4 Krohnkite Tiling Disabled on Uninstall
 
@@ -651,20 +655,36 @@ the files on disk.
 Choosing **ignore** at the prompt continues anyway. The plugin build may then fail with Wayland or
 ABI errors that look unrelated to the upgrade.
 
-### 8.7 Prebuilt Shell Download Is Rejected
+### 8.7 Checksums on Downloaded Artifacts
 
-`08-build-shell.sh` extracts the release tarball straight over `$HOME`, so it first checks the
-download against the `.sha256` published beside it:
+Three artifacts the installer fetches are checked against the `.sha256` published beside them. A
+mismatch always means the file is not used. What happens when a release publishes no checksum at
+all depends on what the artifact is for:
+
+| Artifact | No published checksum | On mismatch |
+|---|---|---|
+| Prebuilt shell tarball (`08-build-shell.sh`, extracted over `$HOME`) | Warns and extracts | Builds the shell locally instead |
+| Prebuilt installer binary (executed straight away) | Compiles the installer locally instead | Same |
+| Prebuilt CAVA SDK (unpacked into `/usr` as root) | Warns and unpacks | Not unpacked; `libcava` comes from the repositories instead |
+
+Messages to expect:
 
 | Message | Meaning |
 |---|---|
 | `Prebuilt shell artifacts match the published checksum.` | Normal: the prebuilt archive is installed. |
 | `No published checksum for ... - extracting without verification.` | The release predates checksums. The install continues. |
+| `No published checksum for the prebuilt installer - compiling locally.` | The release predates checksums. The installer is built from source instead. |
+| `No published checksum for ... - unpacking without verification.` | The CAVA release publishes no checksums. The SDK is unpacked anyway. |
 | `No prebuilt shell artifacts published for <tag> (Qt <abi>) - falling back to a local build.` | The release carries no archive for this Qt feature version. The step builds locally instead. |
-| `Checksum mismatch for ...` | The download was truncated or tampered with. The step falls back to building the shell locally. |
+| `Checksum mismatch for ...` | The download was truncated or tampered with. That artifact is not used. |
 
-A mismatch is not fatal: the installer builds from source instead, which takes longer but cannot
-unpack a damaged tree into `~/.local/lib/qt6/qml`.
+A mismatch is not fatal for any of the three: each one has somewhere else to get what it needs,
+and none of them is used in a damaged state.
+
+The CAVA SDK is the one artifact that still installs without verification. Its releases come from
+a separate repository that publishes no checksums, and refusing them would only move the same work
+to the `libcava` package. Publishing an `<asset>.sha256` in that repository turns verification on
+with no change here.
 
 The archive is also only used for the revision it was built from: `main` sitting on its remote
 tip, or a checkout that is exactly the released tag (an update pinned to a version). A branch, a
@@ -700,9 +720,12 @@ Package removal is optional. It uses `yay -Rns` / `dnf remove` which does NOT re
 - Packages installed outside the defined lists
 - `base-devel` or build tools that existed before install
 
-### 9.5 Input Group Membership Persists
+### 9.5 Legacy Input Group Membership
 
-The uninstaller runs `sudo gpasswd -d $USER input`. This only works if the user was added to the group during installation, and takes effect on next login.
+Installs from before the `/dev/uinput` rule moved to `TAG+="uaccess"` added the
+user to the `input` group. The installer removes that membership when it finds the
+old `/etc/udev/rules.d/80-uinput.rules`, and the uninstaller runs
+`sudo gpasswd -d $USER input`. Either way it takes effect on next login.
 
 ### 9.6 Failed Patches Tracking
 

@@ -2,6 +2,7 @@ pragma ComponentBehavior: Bound
 
 import QtQuick
 import QtQuick.Layouts
+import Quickshell
 import Caelestia.Config
 import qs.components.controls
 import qs.services
@@ -41,12 +42,23 @@ PageBase {
         }
     ]
 
+    readonly property list<ShellScreen> perMonitorRows: {
+        if (Screens.screens.length > 1)
+            return Screens.screens;
+        return Screens.screens.filter(s => GlobalConfig.forScreen(s.name).bar.overrides.includes("position"));
+    }
+
     function itemForPosition(pos: string): MenuItem {
         for (let i = 0; i < root.positionItems.length; i++) {
             if (root.positionItems[i].value === pos)
                 return root.positionItems[i];
         }
         return root.positionItems[0];
+    }
+
+    function resetScreenPositionOverrides(): void {
+        for (let i = 0; i < Quickshell.screens.length; i++)
+            GlobalConfig.forScreen(Quickshell.screens[i].name).bar.resetOption("position");
     }
 
     title: qsTr("Taskbar")
@@ -58,7 +70,6 @@ PageBase {
         width: root.cappedWidth
         spacing: Tokens.spacing.extraSmall / 2
 
-        // Behaviour
         SectionHeader {
             first: true
             text: qsTr("Behavior")
@@ -94,7 +105,10 @@ PageBase {
             subtext: qsTr("Screen edge to place the bar on")
             active: root.itemForPosition(GlobalConfig.bar.position)
             menuItems: root.positionItems
-            onSelected: item => GlobalConfig.bar.position = item.value
+            onSelected: item => {
+                GlobalConfig.bar.position = item.value;
+                root.resetScreenPositionOverrides();
+            }
         }
 
         ToggleRow {
@@ -116,32 +130,30 @@ PageBase {
         }
 
         SectionHeader {
-            visible: Screens.screens.length > 1
+            visible: root.perMonitorRows.length > 0
             text: qsTr("Per-monitor position")
         }
 
         Repeater {
             id: perMonitorRepeater
 
-            model: Screens.screens.length > 1 ? Screens.screens : []
+            model: root.perMonitorRows
 
             SelectRow {
                 required property var modelData
                 required property int index
 
                 readonly property var screenConfig: GlobalConfig.forScreen(modelData.name)
-                readonly property bool hasOverride: screenConfig ? screenConfig.bar.isOverride("position") : false
+                readonly property bool hasOverride: screenConfig.bar.overrides.includes("position")
 
                 first: index === 0
                 last: index === perMonitorRepeater.count - 1
                 Layout.fillWidth: true
                 label: modelData.name
                 subtext: hasOverride ? qsTr("Overridden for this monitor") : qsTr("Using global position")
-                active: root.itemForPosition(screenConfig ? screenConfig.bar.position : GlobalConfig.bar.position)
+                active: root.itemForPosition(screenConfig.bar.position)
                 menuItems: hasOverride ? root.positionItems.concat(root.useGlobalItems) : root.positionItems
                 onSelected: item => {
-                    if (!screenConfig)
-                        return;
                     if (item === root.useGlobalItems[0])
                         screenConfig.bar.resetOption("position");
                     else
@@ -205,7 +217,6 @@ PageBase {
             onClicked: root.nState.openSubPage(14)
         }
 
-        // Components
         SectionHeader {
             text: qsTr("Components")
         }
@@ -226,7 +237,6 @@ PageBase {
             onClicked: root.nState.openSubPage(15)
         }
 
-        // Scroll actions
         SectionHeader {
             text: qsTr("Scroll actions")
         }

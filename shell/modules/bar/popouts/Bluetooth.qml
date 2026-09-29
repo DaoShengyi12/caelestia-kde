@@ -15,7 +15,6 @@ ColumnLayout {
 
     required property PopoutState popouts
 
-    // Injected by Content.qml's Popout.
     property real scaleOffset: 1.0
     property real fontScale: 1.0
     property bool _isSidebarOpen: false
@@ -91,13 +90,14 @@ ColumnLayout {
                     values: [...Bluetooth.devices.values].sort((a, b) => (b.connected - a.connected) || (b.paired - a.paired) || a.name.localeCompare(b.name)).slice(0, 5) // qmllint disable unresolved-type
                 }
 
-                ListRow {
+                Item {
                     id: device
 
                     required property BluetoothDevice modelData
                     readonly property bool loading: modelData.state === BluetoothDeviceState.Connecting || modelData.state === BluetoothDeviceState.Disconnecting // qmllint disable unresolved-type
 
-                    rowScale: root.scaleOffset
+                    Layout.fillWidth: true
+                    implicitHeight: deviceRow.implicitHeight
 
                     StateLayer {
                         anchors.fill: parent
@@ -107,77 +107,84 @@ ColumnLayout {
                         onClicked: device.modelData.connected = !device.modelData.connected
                     }
 
-                    MaterialIcon {
-                        text: Icons.getBluetoothIcon(device.modelData.icon)
-                        fontStyle.pointSize: Tokens.font.icon.medium.pointSize * root.fontScale
-                    }
+                    ListRow {
+                        id: deviceRow
 
-                    StyledText {
-                        Layout.leftMargin: Tokens.spacing.extraSmall * root.scaleOffset
-                        Layout.rightMargin: Tokens.spacing.extraSmall * root.scaleOffset
-                        Layout.fillWidth: true
-                        text: device.modelData.name
-                        elide: Text.ElideRight
-                        font.pointSize: Tokens.font.body.medium.pointSize * root.fontScale
-                    }
-
-                    RowLayout {
-                        visible: device.modelData.state === BluetoothDeviceState.Connected  // qmllint disable unresolved-type
-                        spacing: Tokens.spacing.extraSmall * root.scaleOffset
+                        anchors.fill: parent
+                        rowScale: root.scaleOffset
 
                         MaterialIcon {
-                            text: device.modelData.batteryAvailable ? Icons.getBatteryIcon(device.modelData.battery) : "battery_alert"
-                            color: device.modelData.batteryAvailable && device.modelData.battery < 0.2 ? Colours.palette.m3error : Colours.palette.m3onSurfaceVariant
+                            text: Icons.getBluetoothIcon(device.modelData.icon)
                             fontStyle.pointSize: Tokens.font.icon.medium.pointSize * root.fontScale
                         }
 
                         StyledText {
-                            visible: device.modelData.batteryAvailable // qmllint disable unresolved-type
-                            text: device.modelData.batteryAvailable ? qsTr("%1%").arg(Math.round(device.modelData.battery * 100)) : "" // qmllint disable unresolved-type
-                            font.pointSize: Tokens.font.body.small.pointSize * root.fontScale
-                            color: device.modelData.batteryAvailable && device.modelData.battery < 0.2 ? Colours.palette.m3error : Colours.palette.m3onSurfaceVariant
-                        }
-                    }
-
-                    Item {
-                        id: connectBtn
-
-                        Layout.preferredWidth: Tokens.font.icon.medium.pointSize * root.scaleOffset
-                        Layout.preferredHeight: width
-                        visible: device.modelData.state === BluetoothDeviceState.Connected || device.loading
-
-                        CircularIndicator {
-                            anchors.fill: parent
-                            running: device.loading
+                            Layout.leftMargin: Tokens.spacing.extraSmall * root.scaleOffset
+                            Layout.rightMargin: Tokens.spacing.extraSmall * root.scaleOffset
+                            Layout.fillWidth: true
+                            text: device.modelData.name
+                            elide: Text.ElideRight
+                            font.pointSize: Tokens.font.body.medium.pointSize * root.fontScale
                         }
 
-                        MaterialIcon {
-                            anchors.centerIn: parent
-                            animate: true
-                            text: device.modelData.state === BluetoothDeviceState.Connected ? "link_off" : "link"
-                            color: device.modelData.state === BluetoothDeviceState.Connected ? Colours.palette.m3onSurface : Colours.palette.m3onSurfaceVariant
-                            fontStyle.pointSize: Tokens.font.icon.medium.pointSize * root.fontScale
-                            opacity: device.loading ? 0 : 1
+                        RowLayout {
+                            visible: device.modelData.state === BluetoothDeviceState.Connected  // qmllint disable unresolved-type
+                            spacing: Tokens.spacing.extraSmall * root.scaleOffset
+
+                            MaterialIcon {
+                                text: device.modelData.batteryAvailable ? Icons.getBatteryIcon(device.modelData.battery) : "battery_alert"
+                                color: device.modelData.batteryAvailable && device.modelData.battery < 0.2 ? Colours.palette.m3error : Colours.palette.m3onSurfaceVariant
+                                fontStyle.pointSize: Tokens.font.icon.medium.pointSize * root.fontScale
+                            }
+
+                            StyledText {
+                                visible: device.modelData.batteryAvailable // qmllint disable unresolved-type
+                                text: device.modelData.batteryAvailable ? qsTr("%1%").arg(Math.round(device.modelData.battery * 100)) : "" // qmllint disable unresolved-type
+                                font.pointSize: Tokens.font.body.small.pointSize * root.fontScale
+                                color: device.modelData.batteryAvailable && device.modelData.battery < 0.2 ? Colours.palette.m3error : Colours.palette.m3onSurfaceVariant
+                            }
                         }
-                    }
 
-                    Loader {
-                        visible: status === Loader.Ready
-                        asynchronous: true
-                        active: device.modelData.bonded
-                        sourceComponent: Item {
-                            implicitWidth: connectBtn.implicitWidth
-                            implicitHeight: connectBtn.implicitHeight
+                        Item {
+                            id: connectBtn
 
-                            StateLayer {
-                                radius: Tokens.rounding.full * root.scaleOffset
-                                onClicked: device.modelData.forget()
+                            Layout.preferredWidth: Tokens.font.icon.medium.pointSize * root.scaleOffset
+                            Layout.preferredHeight: width
+                            visible: device.modelData.state === BluetoothDeviceState.Connected || device.loading
+
+                            CircularIndicator {
+                                anchors.fill: parent
+                                running: device.loading
                             }
 
                             MaterialIcon {
                                 anchors.centerIn: parent
-                                text: "delete"
+                                animate: true
+                                text: device.modelData.state === BluetoothDeviceState.Connected ? "link_off" : "link"
+                                color: device.modelData.state === BluetoothDeviceState.Connected ? Colours.palette.m3onSurface : Colours.palette.m3onSurfaceVariant
                                 fontStyle.pointSize: Tokens.font.icon.medium.pointSize * root.fontScale
+                                opacity: device.loading ? 0 : 1
+                            }
+                        }
+
+                        Loader {
+                            visible: status === Loader.Ready
+                            asynchronous: true
+                            active: device.modelData.bonded
+                            sourceComponent: Item {
+                                implicitWidth: connectBtn.implicitWidth
+                                implicitHeight: connectBtn.implicitHeight
+
+                                StateLayer {
+                                    radius: Tokens.rounding.full * root.scaleOffset
+                                    onClicked: device.modelData.forget()
+                                }
+
+                                MaterialIcon {
+                                    anchors.centerIn: parent
+                                    text: "delete"
+                                    fontStyle.pointSize: Tokens.font.icon.medium.pointSize * root.fontScale
+                                }
                             }
                         }
                     }

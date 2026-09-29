@@ -19,7 +19,7 @@ Searcher {
         // The scheme command derives the preview from whatever is in effect: the
         // wallpaper for a dynamic scheme, the shipped colors otherwise. It prints
         // the palette instead of applying it, which is what a preview is.
-        getPreviewColoursProc.command = ["caelestia", "scheme", "set", "--preview", "-v", variant];
+        getPreviewColoursProc.command = ["caelestia", "scheme", "set", "--preview", "-v", variant, ...Colours.smartArg];
         getPreviewColoursProc.running = true;
     }
 
@@ -103,7 +103,7 @@ Searcher {
                 list.visibilities.launcher = false;
             }
             GlobalConfig.services.smartScheme = false;
-            Quickshell.execDetached(["caelestia", "scheme", "set", "-v", variant]);
+            Quickshell.execDetached(["caelestia", "scheme", "set", "--no-smart", "-v", variant]);
         }
     }
 }

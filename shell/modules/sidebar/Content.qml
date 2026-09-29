@@ -90,7 +90,6 @@ Item {
                 anchors.fill: parent
                 spacing: 0
 
-                // Tab Switcher Header
                 Item {
                     id: headerContainer
 
@@ -168,7 +167,6 @@ Item {
                         }
                     }
 
-                    // Sliding Indicator
                     Item {
                         id: indicator
 
@@ -199,7 +197,6 @@ Item {
                     }
                 }
 
-                // Divider
                 StyledRect {
                     Layout.fillWidth: true
                     implicitHeight: 1
@@ -207,7 +204,6 @@ Item {
                     color: Colours.palette.m3outlineVariant
                 }
 
-                // Content Panel Stack
                 Item {
                     property int activeIndex: indicator.activeIndex
 
@@ -265,7 +261,6 @@ Item {
             }
         }
 
-        // Utilities Separator
         StyledRect {
             visible: utilities && utilities.offsetScale < 1
             Layout.row: Config.bar.position === "bottom" ? 0 : (Config.bar.position === "top" ? 2 : 1)
@@ -277,7 +272,6 @@ Item {
             color: Colours.tPalette.m3outlineVariant
         }
 
-        // Popout Separator
         StyledRect {
             visible: showPopoutSeparator
             Layout.row: Config.bar.position === "bottom" ? 2 : 0

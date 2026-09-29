@@ -13,7 +13,7 @@
 </div>
 
 <!-- markdownlint-disable-next-line MD034 -- a bare URL is what GitHub turns into an inline video player -->
-https://github.com/user-attachments/assets/4c3e20c9-5050-4cc8-8e9c-32fd0594ac8b
+https://github.com/user-attachments/assets/38b24e7f-fdd9-43db-872b-8c0ac23a44fd
 
 > [!NOTE]
 > This repo is the KDE Plasma port of [`caelestia-dots/shell`](https://github.com/caelestia-dots/shell).
@@ -123,7 +123,9 @@ assets/        the logo and screenshots used by the docs
 - [Bali10050](https://github.com/Bali10050/Darkly) - Darkly Qt
 - [wrymt](https://github.com/wrymt/darkly-gtk) - Darkly GTK
 - [Haidir](https://bitbucket.org/dirn-typo/yet-another-monochrome-icon-set) - icon set
-
+- [dim-ghub](https://github.com/dim-ghub/caelestia-shell) - v2.0.0 features
+- [dharmx](https://github.com/dharmx/walls) - default wallpapers
+  
 ## License
 
 GPL-3.0-or-later - see [LICENSE](LICENSE).

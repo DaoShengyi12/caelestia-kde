@@ -157,13 +157,14 @@ if is_plasmalogin_active; then
     PLASMALOGIN_CONFIG="$PLASMALOGIN_HOME/.config"
     PLASMALOGIN_SCHEMES="$PLASMALOGIN_HOME/.local/share/color-schemes"
     PLASMALOGIN_WALLPAPERS="$PLASMALOGIN_HOME/wallpapers/caelestia"
+    MAX_LOGIN_SCHEME_BYTES=$((1024 * 1024))
     MAX_LOGIN_WALLPAPER_BYTES=$((50 * 1024 * 1024))
 
     install -d -o root -g root -m 0755 "$PLASMALOGIN_CONFIG" "$PLASMALOGIN_SCHEMES" "$PLASMALOGIN_WALLPAPERS"
 
     for scheme in "$REAL_HOME"/.local/share/color-schemes/Matugen*.colors; do
-        [[ -f "$scheme" ]] || continue
-        install -o root -g root -m 0644 "$scheme" "$PLASMALOGIN_SCHEMES/$(basename -- "$scheme")"
+        [[ -e "$scheme" ]] || continue
+        copy_user_file "$scheme" "$PLASMALOGIN_SCHEMES/$(basename -- "$scheme")" "$MAX_LOGIN_SCHEME_BYTES" || true
     done
 
     for file in kdeglobals plasmarc kxkbrc kcminputrc plasma-localerc; do

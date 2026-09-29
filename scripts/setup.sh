@@ -19,6 +19,8 @@ flock -n 9 || { echo "Another Caelestia setup is already running."; exit 1; }
 source "$SCRIPTS_DIR/lib/privileges.sh"
 # shellcheck source=scripts/lib/packages.sh
 source "$SCRIPTS_DIR/lib/packages.sh"
+# shellcheck source=scripts/lib/download.sh
+source "$SCRIPTS_DIR/lib/download.sh"
 
 run_arch_pacman_install() {
     local -a pkgs=("$@")
@@ -118,19 +120,31 @@ try_download_prebuilt_installer() {
         *) return 1 ;;
     esac
 
-    local version tag tmp_bin url
+    local version tag tmp_bin url status=0
     version="$(tui_version)"
     tag="$(release_tag)"
     [[ -n "$version" && -n "$tag" ]] || return 1
     tmp_bin="$(mktemp)"
     url="https://github.com/ladybug-me/caelestia-kde/releases/download/${tag}/caelestia-install-${arch}-v${version}"
-    if curl -fsSL --connect-timeout 10 --max-time 30 "$url" -o "$tmp_bin" 2>/dev/null; then
-        chmod +x "$tmp_bin"
-        printf '%s\n' "$tmp_bin"
-        return 0
+    if ! fetch_asset "$url" "$tmp_bin" --max-time 30 2>/dev/null; then
+        rm -f "$tmp_bin"
+        return 1
     fi
-    rm -f "$tmp_bin"
-    return 1
+
+    verify_download "$url" "$tmp_bin" || status=$?
+    if [[ "$status" -eq 1 ]]; then
+        echo "[WARN]  Checksum mismatch for the prebuilt installer - compiling locally." >&2
+    elif [[ "$status" -eq 2 ]]; then
+        echo "[WARN]  No published checksum for the prebuilt installer - compiling locally." >&2
+    fi
+    if [[ "$status" -ne 0 ]]; then
+        rm -f "$tmp_bin"
+        return 1
+    fi
+
+    chmod +x "$tmp_bin"
+    printf '%s\n' "$tmp_bin"
+    return 0
 }
 
 start_spinner() {
@@ -160,6 +174,11 @@ start_spinner
 PREBUILT_BIN=""
 if [[ -z "${CAELESTIA_FORCE_BUILD_INSTALLER:-}" ]] && command -v curl >/dev/null 2>&1; then
     PREBUILT_BIN="$(try_download_prebuilt_installer || true)"
+fi
+
+if [[ -n "$PREBUILT_BIN" && ! -x "$PREBUILT_BIN" ]]; then
+    echo "[WARN]  The prebuilt installer download did not produce a binary; compiling locally." >&2
+    PREBUILT_BIN=""
 fi
 
 if [[ -n "$PREBUILT_BIN" ]]; then

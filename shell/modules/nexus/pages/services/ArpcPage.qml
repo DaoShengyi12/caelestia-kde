@@ -20,11 +20,17 @@ PageBase {
     isSubPage: true
 
     function saveToken(token) {
+        saveTokenProc.environment = ({ CAELESTIA_STEAMGRIDDB_KEY: token });
         if (!token) {
-            Quickshell.execDetached(["secret-tool", "clear", "service", "caelestia-shell", "account", "steamgriddb"]);
+            saveTokenProc.command = ["secret-tool", "clear", "service", "caelestia-shell", "account", "steamgriddb"];
         } else {
-            Quickshell.execDetached(["bash", "-c", "secret-tool store --label=\"Caelestia SteamGridDB Key\" service caelestia-shell account steamgriddb <<< \"$1\"", "--", token]);
+            saveTokenProc.command = ["bash", "-c", "printf %s \"$CAELESTIA_STEAMGRIDDB_KEY\" | secret-tool store --label=\"Caelestia SteamGridDB Key\" service caelestia-shell account steamgriddb"];
         }
+        saveTokenProc.running = true;
+    }
+
+    property Process saveTokenProc: Process {
+        id: saveTokenProc
     }
 
     property Process readTokenProc: Process {

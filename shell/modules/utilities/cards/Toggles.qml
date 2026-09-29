@@ -26,6 +26,9 @@ StyledRect {
 
         const builtIn = [
             {
+                id: "hotspot"
+            },
+            {
                 id: "restartShell"
             },
             {
@@ -54,8 +57,10 @@ StyledRect {
                 return GlobalConfig.utilities.vpn.selectedProvider.length > 0;
             }
 
-            // Nothing to toggle if it is not installed, and a dead button is
-            // worse than no button.
+            if (item.id === "hotspot") {
+                return Nmcli.hotspot.supported;
+            }
+
             if (item.id === "easyeffects") {
                 return EasyEffects.available;
             }
@@ -126,6 +131,14 @@ StyledRect {
                         icon: "wifi"
                         checked: Nmcli.wifiEnabled
                         onClicked: Nmcli.toggleWifi()
+                    }
+                }
+                DelegateChoice {
+                    roleValue: "hotspot"
+                    delegate: Toggle {
+                        icon: "wifi_tethering"
+                        checked: Nmcli.hotspot.enabled
+                        onClicked: HotspotSwitch.toggle()
                     }
                 }
                 DelegateChoice {

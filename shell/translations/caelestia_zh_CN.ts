@@ -92,7 +92,7 @@
 <context>
     <name>Actions</name>
     <message>
-        <location filename="../modules/launcher/services/Actions.qml" line="+31"/>
+        <location filename="../modules/launcher/services/Actions.qml" line="+34"/>
         <source>Unnamed</source>
         <translation>未命名</translation>
     </message>
@@ -328,27 +328,37 @@
     <message>
         <location filename="../modules/nexus/pages/wallandstyle/AdvancedColorsPage.qml" line="+19"/>
         <source>Sunrise and sunset</source>
-        <translation type="unfinished">日出与日落</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Fixed times</source>
-        <translation type="unfinished">固定时间</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+19"/>
+        <location line="+7"/>
+        <source>Light</source>
+        <translation type="unfinished">浅色</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Dark</source>
+        <translation type="unfinished">深色</translation>
+    </message>
+    <message>
+        <location line="+28"/>
         <source>Advanced Colors</source>
-        <translation type="unfinished">高级颜色</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+16"/>
+        <location line="+25"/>
         <source>Theme Automation</source>
-        <translation type="unfinished">主题自动化</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Smart color scheme</source>
-        <translation type="unfinished">智能配色</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+1"/>
@@ -358,54 +368,94 @@
     <message>
         <location line="+7"/>
         <source>Automatic light and dark</source>
-        <translation type="unfinished">自动浅色与深色</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Switch the theme mode on a schedule</source>
-        <translation type="unfinished">按计划切换主题模式</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Schedule</source>
-        <translation type="unfinished">计划安排</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Sunrise and sunset use your weather location</source>
-        <translation type="unfinished">日出与日落使用你的天气位置</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Set a weather location to use sunrise and sunset</source>
-        <translation type="unfinished">设置天气位置以使用日出与日落</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Light mode hour</source>
-        <translation type="unfinished">浅色模式时段</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Switches at %1</source>
-        <translation type="unfinished">在 %1 时切换</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Dark mode hour</source>
-        <translation type="unfinished">深色模式时段</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Switches at %1, also used when sunrise and sunset are unavailable</source>
-        <translation type="unfinished">在 %1 时切换；不可用日出日落时也使用此时间</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+9"/>
+        <source>Theme mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+11"/>
+        <source>Mode</source>
+        <translation type="unfinished">模式</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Switch the color scheme between light and dark</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>Managed by the automatic light and dark schedule</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>Palette</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>Color intensity</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Chroma of the wallpaper-derived palette, at 100% by default</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>%1 keeps its own colors, so this does not apply</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>AiAssistant</name>
     <message>
-        <location filename="../modules/sidebar/AiAssistant.qml" line="+789"/>
-        <location line="+1352"/>
+        <location filename="../modules/sidebar/AiAssistant.qml" line="+792"/>
+        <location line="+1360"/>
         <source>Rate limited - retrying in %1s…</source>
         <translation>触发限流——%1 秒后重试…</translation>
     </message>
@@ -473,7 +523,7 @@
         <translation>存储在你的会话密钥环中，而非 shell.json。%1 环境变量会覆盖它。</translation>
     </message>
     <message>
-        <location line="+92"/>
+        <location line="+96"/>
         <source>API key saved</source>
         <translation type="unfinished"></translation>
     </message>
@@ -513,7 +563,7 @@
         <translation>登录完成了？可以关闭此窗口。</translation>
     </message>
     <message>
-        <location line="+69"/>
+        <location line="+81"/>
         <location line="+40"/>
         <source>Installed.</source>
         <translation>已安装。</translation>
@@ -551,14 +601,24 @@
     </message>
     <message>
         <location line="+5"/>
-        <location line="+106"/>
+        <location line="+114"/>
         <source>Claude Code</source>
         <translation>Claude Code</translation>
     </message>
     <message>
-        <location line="-105"/>
+        <location line="-113"/>
         <source>Uses the Claude CLI and your Claude login</source>
         <translation>使用 Claude CLI 与你的 Claude 登录</translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>Let the CLI run its own tools</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Off by default; the assistant&apos;s own tools do not need it</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+7"/>
@@ -631,14 +691,29 @@
         <translation>API 密钥</translation>
     </message>
     <message>
-        <location line="-88"/>
-        <location line="+138"/>
+        <location line="+203"/>
+        <source>History</source>
+        <translation type="unfinished">历史记录</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Save chat history</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Keep conversations between sessions; the sidebar&apos;s clear button removes what was already saved</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-305"/>
+        <location line="+146"/>
         <source>Status</source>
         <translation>状态</translation>
     </message>
     <message>
-        <location line="-497"/>
-        <location line="+500"/>
+        <location line="-517"/>
+        <location line="+520"/>
         <source>Not installed</source>
         <translation>未安装</translation>
     </message>
@@ -658,16 +733,16 @@
         <translation>检查更新</translation>
     </message>
     <message>
-        <location line="-148"/>
+        <location line="-156"/>
         <location line="+5"/>
-        <location line="+147"/>
+        <location line="+155"/>
         <location line="+19"/>
         <source>Installing…</source>
         <translation>正在安装…</translation>
     </message>
     <message>
-        <location line="-542"/>
-        <location line="+525"/>
+        <location line="-562"/>
+        <location line="+545"/>
         <source>Checking…</source>
         <translation>正在检查…</translation>
     </message>
@@ -1033,7 +1108,27 @@
         <translation>需要重启 Shell</translation>
     </message>
     <message>
-        <location line="+55"/>
+        <location line="+8"/>
+        <source>Ambient color mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Ambient glow is unavailable in light mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>Ambient light glow in window info panel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+8"/>
+        <source>Ambient glow opacity</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+22"/>
         <source>Background Blur</source>
         <translation>背景模糊</translation>
     </message>
@@ -1212,7 +1307,7 @@
         <translation>Discord 富媒体状态</translation>
     </message>
     <message>
-        <location line="+34"/>
+        <location line="+43"/>
         <source>Broadcast settings</source>
         <translation>广播设置</translation>
     </message>
@@ -1530,23 +1625,23 @@
 <context>
     <name>AudioPopout</name>
     <message>
-        <location filename="../modules/bar/popouts/AudioPopout.qml" line="+36"/>
+        <location filename="../modules/bar/popouts/AudioPopout.qml" line="+39"/>
         <source>Output device</source>
         <translation>输出设备</translation>
     </message>
     <message>
-        <location line="+15"/>
-        <location line="+19"/>
+        <location line="+16"/>
+        <location line="+20"/>
         <source>Unknown</source>
         <translation>未知</translation>
     </message>
     <message>
-        <location line="-13"/>
+        <location line="-14"/>
         <source>Input device</source>
         <translation>输入设备</translation>
     </message>
     <message>
-        <location line="+19"/>
+        <location line="+20"/>
         <source>Volume (%1)</source>
         <translation>音量（%1）</translation>
     </message>
@@ -1584,13 +1679,23 @@
         <translation>显示图标</translation>
     </message>
     <message>
-        <location line="+7"/>
+        <location line="+6"/>
         <source>Show seconds</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Add a seconds line to the clock</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>Calendar popout</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Show a mini calendar when hovering the clock</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1827,6 +1932,16 @@
     </message>
     <message>
         <location line="+7"/>
+        <source>Show app badges</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Show the count, progress and urgency an app publishes for its dock icon</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+7"/>
         <source>Filter by current desktop</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1884,7 +1999,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+49"/>
+        <location line="+53"/>
         <source>Configuration</source>
         <translation>配置</translation>
     </message>
@@ -2225,6 +2340,11 @@
     </message>
     <message>
         <location line="+13"/>
+        <source>Clock</source>
+        <translation type="unfinished">时钟</translation>
+    </message>
+    <message>
+        <location line="+13"/>
         <source>Dock</source>
         <translation>底座</translation>
     </message>
@@ -2517,13 +2637,13 @@
     </message>
     <message>
         <location line="+12"/>
-        <source>Per-monitor workspaces</source>
-        <translation>每显示器工作区</translation>
+        <source>Per monitor</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+1"/>
-        <source>Show each monitor&apos;s workspaces independently</source>
-        <translation>独立显示每个显示器的工作区</translation>
+        <source>Hide workspaces not on the current monitor</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2583,7 +2703,7 @@
 <context>
     <name>BatteryMonitor</name>
     <message>
-        <location filename="../modules/BatteryMonitor.qml" line="+17"/>
+        <location filename="../modules/BatteryMonitor.qml" line="+19"/>
         <source>Charger unplugged</source>
         <translation>充电器已拔出</translation>
     </message>
@@ -2611,16 +2731,6 @@
         <location line="+0"/>
         <source>Battery level is low</source>
         <translation>电量偏低</translation>
-    </message>
-    <message>
-        <location line="+5"/>
-        <source>Hibernating in 5 seconds</source>
-        <translation>5 秒后将休眠</translation>
-    </message>
-    <message>
-        <location line="+0"/>
-        <source>Hibernating to prevent data loss</source>
-        <translation>即将休眠以防止数据丢失</translation>
     </message>
 </context>
 <context>
@@ -2669,12 +2779,12 @@
         <translation>（已连接 %1 台）</translation>
     </message>
     <message>
-        <location line="+54"/>
+        <location line="+61"/>
         <source>%1%</source>
         <translation>%1%</translation>
     </message>
     <message>
-        <location line="+58"/>
+        <location line="+59"/>
         <source>Open settings</source>
         <translation>打开设置</translation>
     </message>
@@ -2894,7 +3004,7 @@
         <translation>最大化</translation>
     </message>
     <message>
-        <location line="+15"/>
+        <location line="+13"/>
         <source>Unminimize</source>
         <translation>取消最小化</translation>
     </message>
@@ -3042,6 +3152,14 @@
     </message>
 </context>
 <context>
+    <name>ClockContext</name>
+    <message>
+        <location filename="../modules/bar/popouts/ClockContext.qml" line="+81"/>
+        <source>Clock settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>ColourSelect</name>
     <message>
         <location filename="../modules/nexus/pages/wallandstyle/ColourSelect.qml" line="+40"/>
@@ -3072,14 +3190,6 @@
         <location line="+19"/>
         <source>Variants</source>
         <translation>变体</translation>
-    </message>
-</context>
-<context>
-    <name>CommitRow</name>
-    <message>
-        <location filename="../modules/nexus/common/CommitRow.qml" line="+50"/>
-        <source>%1 • %2</source>
-        <translation>%1 • %2</translation>
     </message>
 </context>
 <context>
@@ -3830,7 +3940,7 @@
 <context>
     <name>DesktopLyrics</name>
     <message>
-        <location filename="../modules/background/DesktopLyrics.qml" line="+287"/>
+        <location filename="../modules/background/DesktopLyrics.qml" line="+286"/>
         <source>Loading lyrics...</source>
         <translation>加载歌词中...</translation>
     </message>
@@ -4039,7 +4149,7 @@
         <translation>固定到底座</translation>
     </message>
     <message>
-        <location line="+40"/>
+        <location line="+34"/>
         <source>Open new window</source>
         <translation>打开新窗口</translation>
     </message>
@@ -4061,92 +4171,82 @@
     <name>Entries</name>
     <message>
         <location filename="../modules/whatsnew/Entries.qml" line="+23"/>
-        <source>Window Switcher Add-ons</source>
+        <source>Window Rules Out of the Box</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+1"/>
-        <source>The window switcher now runs on a KWin-native backend, and window previews are cached so they appear instantly. Its own page under Settings -&gt; Panels -&gt; Window Switcher adds filtering by current desktop, minimized windows, windows from all screens, a live preview on the workspace, and a switch to turn it off entirely.</source>
+        <source>The installer now writes three KWin rules: unfocused windows and dialogs dim to 95 percent, dialogs open centered, and picture-in-picture windows stay above others. Only Caelestia&apos;s own groups are written, so your rules keep their names and their order. Edit or remove them under System Settings -&gt; Window Rules, or let uninstall.sh take them out again.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+6"/>
-        <source>Notifications on Any Screen</source>
+        <source>Right-Click Any App</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+1"/>
-        <source>Notification popups can now follow the screen they belong to instead of always using the focused one, and the shell can stay quiet while a fullscreen app is focused. Both live in Settings -&gt; Services -&gt; Notifications, as &apos;Display on screen&apos; and &apos;Show in fullscreen&apos;.</source>
+        <source>An app in the launcher or its app browser now opens a context menu on right click: pin it to the dock, add it to the desktop, hide it from the launcher, or open it in the menu editor. The dock&apos;s pinned list is its own setting now (bar.dock.pinnedApps) instead of borrowing the launcher&apos;s favorites, and an existing list is carried over.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+6"/>
-        <source>GIF Recording</source>
+        <source>Status Icons You Can Arrange</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+1"/>
-        <source>The screen recorder can capture a region straight to an animated GIF. Choose Record GIF from the recorder menu - it is enabled by default and can be switched off under Settings -&gt; Utilities -&gt; Utilities panel.</source>
+        <source>The bar&apos;s status icons are an ordered list now instead of a wall of switches: add one, switch it off, or drag it into place under Settings -&gt; Panels -&gt; Taskbar -&gt; Status icons, and the bar draws them in that order. The clock can show seconds, and the workspace indicator can hide the ones that are empty and inactive.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+6"/>
-        <source>SDDM Theme Out of the Box</source>
+        <source>Game Mode at a Tap</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+1"/>
-        <source>The Material You login screen, with wallpaper and color sync, is now installed by default, so the greeter matches your desktop from the first boot. It remains optional in the installer for anyone who prefers the stock theme.</source>
+        <source>The utilities panel has a game mode toggle: it stops window animations and blur, pauses a video wallpaper and stops the desktop media shapes while it is on, then puts everything back afterwards. Game mode can still switch itself on when one of your target windows opens, under Settings -&gt; Services -&gt; Game mode.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+6"/>
-        <source>Audio-Reactive Desktop Shapes</source>
+        <source>Color Intensity</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+1"/>
-        <source>The media visualiser is now a set of audio-reactive material shapes, and it can live on the wallpaper as well as in the dashboard. Turn on &apos;Desktop media shapes&apos; under Settings -&gt; Desktop -&gt; Desktop Addons and let it auto-hide while a window is open.</source>
+        <source>Advanced color settings gained a slider that scales how saturated the palette derived from your wallpaper is: 0 percent leaves the same palette in grey, 100 percent is what the color engine produces, and 200 percent is the most the accents take. It is kept with the scheme, so it survives a wallpaper change and a reboot, and &apos;caelestia scheme set -i&apos; sets it from the command line.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+6"/>
-        <source>Chinese Translations</source>
+        <source>Dock App Badges</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+1"/>
-        <source>The shell now ships Simplified and Traditional Chinese catalogues, so the interface follows your language instead of staying English. Pick one from Settings -&gt; Language &amp; region.</source>
+        <source>Dock icons can now display the count, progress, and urgency published by running applications. Configure it under Settings -&gt; Panels -&gt; Taskbar -&gt; Dock.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+6"/>
-        <source>A New Name and Look</source>
+        <source>Ambient Glow</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+1"/>
-        <source>The project is now caelestia-kde. The repository, its references and the artwork have been renamed and brought onto one palette and one logo. Your configuration and settings are untouched.</source>
+        <source>Shell surfaces and window previews can now cast a subtle, dynamic ambient glow derived from the window content. Enable it under Settings -&gt; Appearance.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+6"/>
-        <source>Dock Desktop Filtering &amp; Live Previews</source>
+        <source>Lock Screen Password Reveal</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+1"/>
-        <source>The taskbar dock now supports filtering applications and open windows to the active virtual desktop, alongside live window highlighting on your workspace when hovering over dock thumbnails. Configure both under Settings -&gt; Panels -&gt; Taskbar -&gt; Dock.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+6"/>
-        <source>Color Engine &amp; Theme Automation</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Caelestia now features a high-performance native color pipeline using matugen. Kde-material-you-color has been removed. Color variants automatically switching to Tonal Spot under certain conditions has been fixed.</source>
+        <source>Click or tap the lock icon inside the greeter&apos;s password pill to reveal your typed password before unlocking.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -4545,23 +4645,23 @@
     <message>
         <location filename="../modules/nexus/common/Ipv4ConfigSection.qml" line="+98"/>
         <source>IPv4</source>
-        <translation type="unfinished">IPv4</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+9"/>
         <source>IP assignment</source>
-        <translation type="unfinished">IP 分配</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+1"/>
         <location line="+8"/>
         <source>Automatic (DHCP)</source>
-        <translation type="unfinished">自动 (DHCP)</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Automatic, DNS only</source>
-        <translation type="unfinished">仅 DNS 自动</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+6"/>
@@ -4571,17 +4671,17 @@
     <message>
         <location line="+84"/>
         <source>Address (CIDR)</source>
-        <translation type="unfinished">地址 (CIDR)</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+2"/>
         <source>IP and prefix, e.g. 192.168.1.50/24</source>
-        <translation type="unfinished">IP 及前缀，例如 192.168.1.50/24</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Enter a valid address in CIDR notation</source>
-        <translation type="unfinished">请输入有效的 CIDR 格式地址</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+9"/>
@@ -4591,28 +4691,28 @@
     <message>
         <location line="+2"/>
         <source>Enter a valid gateway address</source>
-        <translation type="unfinished">请输入有效的网关地址</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+11"/>
         <source>DNS servers</source>
-        <translation type="unfinished">DNS 服务器</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Comma-separated</source>
-        <translation type="unfinished">逗号分隔</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Enter valid DNS server addresses</source>
-        <translation type="unfinished">请输入有效的 DNS 服务器地址</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+45"/>
         <location line="+26"/>
         <source>Apply</source>
-        <translation type="unfinished">应用</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4934,52 +5034,52 @@
     <message>
         <location filename="../services/Kwin.qml" line="+477"/>
         <source>Caps lock enabled</source>
-        <translation type="unfinished">大写锁定已启用</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Caps lock disabled</source>
-        <translation type="unfinished">大写锁定已禁用</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Caps lock is currently enabled</source>
-        <translation type="unfinished">大写锁定当前已启用</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Caps lock is currently disabled</source>
-        <translation type="unfinished">大写锁定当前已禁用</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Num lock enabled</source>
-        <translation type="unfinished">数字锁定已启用</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Num lock disabled</source>
-        <translation type="unfinished">数字锁定已禁用</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Num lock is currently enabled</source>
-        <translation type="unfinished">数字锁定当前已启用</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Num lock is currently disabled</source>
-        <translation type="unfinished">数字锁定当前已禁用</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Keyboard layout changed</source>
-        <translation type="unfinished">键盘布局已更改</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Layout changed to: %1</source>
-        <translation type="unfinished">布局已切换为：%1</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+56"/>
@@ -4990,7 +5090,7 @@
 <context>
     <name>LanguageAndRegion</name>
     <message>
-        <location filename="../modules/nexus/pages/LanguageAndRegion.qml" line="+45"/>
+        <location filename="../modules/nexus/pages/LanguageAndRegion.qml" line="+49"/>
         <source>°C</source>
         <translation type="unfinished"></translation>
     </message>
@@ -5016,22 +5116,28 @@
     </message>
     <message>
         <location line="+9"/>
-        <location line="+56"/>
+        <location line="+62"/>
         <source>System language</source>
         <translation>系统语言</translation>
     </message>
     <message>
-        <location line="-45"/>
+        <location line="-43"/>
         <source>24-hour</source>
         <translation>24 小时制</translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="-4"/>
         <source>12-hour</source>
         <translation>12 小时制</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="-48"/>
+        <location line="+44"/>
+        <source>Auto</source>
+        <translation type="unfinished">自动</translation>
+    </message>
+    <message>
+        <location line="+13"/>
         <source>Language &amp; region</source>
         <translation>语言与地区</translation>
     </message>
@@ -5699,7 +5805,7 @@
 <context>
     <name>LyricList</name>
     <message>
-        <location filename="../modules/dashboard/media/LyricList.qml" line="+213"/>
+        <location filename="../modules/dashboard/media/LyricList.qml" line="+203"/>
         <source>Loading lyrics...</source>
         <translation>加载歌词中...</translation>
     </message>
@@ -5842,24 +5948,22 @@
 <context>
     <name>Media</name>
     <message>
-        <location filename="../modules/dashboard/dash/Media.qml" line="+86"/>
-        <location line="+17"/>
-        <location line="+17"/>
+        <location filename="../modules/dashboard/dash/Media.qml" line="+91"/>
         <source>No media</source>
         <translation>无媒体</translation>
     </message>
     <message>
-        <location line="-34"/>
+        <location line="+0"/>
         <source>Unknown title</source>
         <translation>未知标题</translation>
     </message>
     <message>
-        <location line="+17"/>
+        <location line="+14"/>
         <source>Unknown album</source>
         <translation>未知专辑</translation>
     </message>
     <message>
-        <location line="+17"/>
+        <location line="+14"/>
         <source>Unknown artist</source>
         <translation>未知艺术家</translation>
     </message>
@@ -5943,7 +6047,7 @@
         <translation>%1 个可用网络</translation>
     </message>
     <message>
-        <location line="+141"/>
+        <location line="+146"/>
         <source>Rescan networks</source>
         <translation>重新扫描网络</translation>
     </message>
@@ -5958,7 +6062,7 @@
         <translation>有 %1 个配置文件可用</translation>
     </message>
     <message>
-        <location line="+81"/>
+        <location line="+85"/>
         <source>No VPN profiles found</source>
         <translation>没有找到 VPN 配置文件</translation>
     </message>
@@ -5973,12 +6077,12 @@
         <translation>%1 个可用设备</translation>
     </message>
     <message>
-        <location line="+55"/>
+        <location line="+48"/>
         <source>Unknown</source>
         <translation>未知</translation>
     </message>
     <message>
-        <location line="+36"/>
+        <location line="+47"/>
         <source>Connection details</source>
         <translation>连接详情</translation>
     </message>
@@ -6014,22 +6118,27 @@
 <context>
     <name>NetworkDetailPage</name>
     <message>
-        <location filename="../modules/nexus/pages/network/NetworkDetailPage.qml" line="+40"/>
+        <location filename="../modules/nexus/pages/network/NetworkDetailPage.qml" line="+52"/>
         <source>Network</source>
         <translation>网络</translation>
     </message>
     <message>
-        <location line="+53"/>
+        <location line="+23"/>
         <source>Forget</source>
         <translation>忘记</translation>
     </message>
     <message>
-        <location line="+39"/>
+        <location line="+14"/>
+        <source>Connect</source>
+        <translation type="unfinished">连接</translation>
+    </message>
+    <message>
+        <location line="+14"/>
         <source>Disconnect</source>
         <translation>断开</translation>
     </message>
     <message>
-        <location line="+10"/>
+        <location line="+12"/>
         <source>Connection</source>
         <translation>连接</translation>
     </message>
@@ -6116,7 +6225,7 @@
         <translation>Wi-Fi 已禁用</translation>
     </message>
     <message>
-        <location line="+126"/>
+        <location line="+127"/>
         <source>Security: %1%2</source>
         <translation>安全性：%1%2</translation>
     </message>
@@ -6170,12 +6279,12 @@
     </message>
     <message>
         <location line="+80"/>
-        <location line="+145"/>
+        <location line="+146"/>
         <source>Connected</source>
         <translation>已连接</translation>
     </message>
     <message>
-        <location line="-145"/>
+        <location line="-146"/>
         <source>Available</source>
         <translation>可用</translation>
     </message>
@@ -6195,7 +6304,7 @@
         <translation>未配置 VPN 服务商</translation>
     </message>
     <message>
-        <location line="+68"/>
+        <location line="+69"/>
         <source>Tap to select</source>
         <translation>单击选择</translation>
     </message>
@@ -6327,7 +6436,7 @@
 <context>
     <name>Nmcli</name>
     <message>
-        <location filename="../services/Nmcli.qml" line="+426"/>
+        <location filename="../services/Nmcli.qml" line="+432"/>
         <source>Open</source>
         <translation>开放</translation>
     </message>
@@ -6686,7 +6795,7 @@
 <context>
     <name>Notifs</name>
     <message>
-        <location filename="../services/Notifs.qml" line="+144"/>
+        <location filename="../services/Notifs.qml" line="+150"/>
         <source>Do not disturb enabled</source>
         <translation>免打扰已启用</translation>
     </message>
@@ -7070,7 +7179,7 @@
 <context>
     <name>PageCompRegistry</name>
     <message>
-        <location filename="../modules/nexus/PageCompRegistry.qml" line="+354"/>
+        <location filename="../modules/nexus/PageCompRegistry.qml" line="+346"/>
         <source>Page under construction</source>
         <translation>此页面正在建设中</translation>
     </message>
@@ -7120,7 +7229,12 @@
     <message>
         <location line="+1"/>
         <source>Advanced color settings</source>
-        <translation type="unfinished">高级颜色设置</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Color intensity</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+1"/>
@@ -7375,7 +7489,7 @@
     <message>
         <location line="+1"/>
         <source>IPv4</source>
-        <translation type="unfinished">IPv4</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+1"/>
@@ -7519,31 +7633,6 @@
     </message>
     <message>
         <location line="+4"/>
-        <source>Power</source>
-        <translation>电源</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Battery indicators, idle suspend</source>
-        <translation>电池指示器与空闲挂起</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Battery Status</source>
-        <translation>电池状态</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Power Saving</source>
-        <translation>省电</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Screen Timeout</source>
-        <translation>屏幕超时</translation>
-    </message>
-    <message>
-        <location line="+4"/>
         <source>Session</source>
         <translation>会话</translation>
     </message>
@@ -7623,7 +7712,7 @@
         <translation>收藏与隐藏</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+7"/>
         <source>Services</source>
         <translation>服务</translation>
     </message>
@@ -7737,6 +7826,11 @@
         <location line="+3"/>
         <source>Claude Code</source>
         <translation>Claude Code</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Let the CLI run its own tools</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+1"/>
@@ -8017,105 +8111,9 @@
     </message>
 </context>
 <context>
-    <name>PowerDevil</name>
-    <message>
-        <location filename="../services/PowerDevil.qml" line="+53"/>
-        <source>KDE&apos;s suspend timer was not updated</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+0"/>
-        <source>Its own timer in System Settings &gt; Power Management can still suspend before the timeout set here.</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>PowerPage</name>
-    <message>
-        <location filename="../modules/nexus/pages/PowerPage.qml" line="+94"/>
-        <source>Power</source>
-        <translation>电源</translation>
-    </message>
-    <message>
-        <location line="+10"/>
-        <source>Idle &amp; sleep</source>
-        <translation>空闲与睡眠</translation>
-    </message>
-    <message>
-        <location line="+5"/>
-        <source>Idle suspend</source>
-        <translation>空闲挂起</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Suspend the system after inactivity</source>
-        <translation>空闲后挂起系统</translation>
-    </message>
-    <message>
-        <location line="+7"/>
-        <source>Idle suspend timer</source>
-        <translation>空闲挂起定时器</translation>
-    </message>
-    <message>
-        <location line="+2"/>
-        <source>Suspend after %1 minute(s) of inactivity</source>
-        <translation>空闲 %1 分钟后挂起</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Enable idle suspend to apply a timer</source>
-        <translation>启用空闲挂起以应用定时器</translation>
-    </message>
-    <message>
-        <location line="+12"/>
-        <source>Lock before sleep</source>
-        <translation>睡眠前锁定</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Lock the session before suspending</source>
-        <translation>挂起前锁定会话</translation>
-    </message>
-    <message>
-        <location line="+6"/>
-        <source>Inhibit while audio</source>
-        <translation>播放音频时禁用挂起</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Prevent idle actions while audio is playing</source>
-        <translation>播放音频时阻止空闲操作</translation>
-    </message>
-    <message>
-        <location line="+7"/>
-        <source>Inhibit while charging</source>
-        <translation>充电时禁用挂起</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Prevent idle actions while charging</source>
-        <translation>充电时阻止空闲操作</translation>
-    </message>
-    <message>
-        <location line="+6"/>
-        <source>Battery warnings</source>
-        <translation>电池警告</translation>
-    </message>
-    <message>
-        <location line="+6"/>
-        <source>Critical battery level</source>
-        <translation>电池电量临界值</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Percentage at which the critical warning fires</source>
-        <translation>触发危急警告的百分比</translation>
-    </message>
-</context>
-<context>
     <name>Preview</name>
     <message>
-        <location filename="../modules/windowinfo/Preview.qml" line="+72"/>
+        <location filename="../modules/windowinfo/Preview.qml" line="+85"/>
         <source>No active client</source>
         <translation>无活动窗口</translation>
     </message>
@@ -8413,7 +8411,7 @@
 <context>
     <name>SavedNetworksPage</name>
     <message>
-        <location filename="../modules/nexus/pages/network/SavedNetworksPage.qml" line="+15"/>
+        <location filename="../modules/nexus/pages/network/SavedNetworksPage.qml" line="+16"/>
         <source>Saved networks</source>
         <translation>已保存的网络</translation>
     </message>
@@ -8423,7 +8421,12 @@
         <translation>没有已保存的网络</translation>
     </message>
     <message>
-        <location line="+61"/>
+        <location line="+53"/>
+        <source>%1 (%2)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+10"/>
         <source>Open</source>
         <translation>开放</translation>
     </message>
@@ -9278,6 +9281,14 @@
     </message>
 </context>
 <context>
+    <name>StatusIconsContext</name>
+    <message>
+        <location filename="../modules/bar/popouts/StatusIconsContext.qml" line="+85"/>
+        <source>Status icons settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>StorageCard</name>
     <message>
         <location filename="../modules/dashboard/performance/StorageCard.qml" line="+74"/>
@@ -9909,7 +9920,7 @@
 <context>
     <name>TrayMenu</name>
     <message>
-        <location filename="../modules/bar/popouts/TrayMenu.qml" line="+331"/>
+        <location filename="../modules/bar/popouts/TrayMenu.qml" line="+335"/>
         <source>Back</source>
         <translation>返回</translation>
     </message>
@@ -9917,7 +9928,7 @@
 <context>
     <name>Units</name>
     <message>
-        <location filename="../services/Units.qml" line="+21"/>
+        <location filename="../services/Units.qml" line="+26"/>
         <source>%1°</source>
         <comment>temperature</comment>
         <translation type="unfinished"></translation>
@@ -10666,7 +10677,7 @@
 <context>
     <name>VPN</name>
     <message>
-        <location filename="../services/VPN.qml" line="+273"/>
+        <location filename="../services/VPN.qml" line="+209"/>
         <source>VPN connection failed</source>
         <translation>VPN 连接失败</translation>
     </message>
@@ -10712,7 +10723,7 @@
         <translation>VPN 错误</translation>
     </message>
     <message>
-        <location line="+225"/>
+        <location line="+196"/>
         <location line="+69"/>
         <source>Could not start %1. Is it installed?</source>
         <translation>无法启动 %1。是否已安装？</translation>
@@ -10970,7 +10981,7 @@
 <context>
     <name>WallpaperSelect</name>
     <message>
-        <location filename="../modules/nexus/pages/wallandstyle/WallpaperSelect.qml" line="+116"/>
+        <location filename="../modules/nexus/pages/wallandstyle/WallpaperSelect.qml" line="+132"/>
         <source>Select wallpaper</source>
         <translation>选择壁纸</translation>
     </message>
@@ -11146,7 +11157,7 @@
         <location filename="../modules/whatsnew/WhatsNewWindow.qml" line="+114"/>
         <location line="+151"/>
         <source>What&apos;s New in Caelestia</source>
-        <translation type="unfinished">Caelestia 的新变化</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="-99"/>

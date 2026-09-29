@@ -26,7 +26,6 @@ PageBase {
             unavailableText: qsTr("GitHub token not detected")
         },
         "greeter": { icon: "waving_hand", name: qsTr("Greeter") },
-        "activeWindow": { icon: "waving_hand", name: qsTr("Greeter") },
         "tray": { icon: "expand_more", name: qsTr("System tray") },
         "updateIndicator": { icon: "update", name: qsTr("Updates") },
         "clock": { icon: "schedule", name: qsTr("Clock") },
@@ -362,7 +361,7 @@ PageBase {
         return [
             { id: "logo", enabled: true, zone: "left" },
             { id: "workspaces", enabled: true, zone: "left" },
-            { id: "activeWindow", enabled: true, zone: "left" },
+            { id: "greeter", enabled: true, zone: "left" },
             { id: "dock", enabled: true, zone: "middle" },
             { id: "tray", enabled: true, zone: "right" },
             { id: "updateIndicator", enabled: true, zone: "right" },
@@ -450,7 +449,6 @@ PageBase {
         ListModel { id: rightModel }
         ListModel { id: libraryModel }
 
-        // Left Side: Active Components Zones
         ColumnLayout {
             Layout.fillWidth: true
             Layout.preferredWidth: 1
@@ -469,7 +467,6 @@ PageBase {
                 color: Colours.palette.m3onSurfaceVariant
             }
 
-            // Left Zone
             StyledRect {
                 Layout.fillWidth: true
                 implicitHeight: Math.max(root.emptyZoneHeight, leftList.contentHeight + root.zonePadding * 2)
@@ -525,7 +522,6 @@ PageBase {
                 }
             }
 
-            // Middle Zone
             StyledRect {
                 Layout.fillWidth: true
                 implicitHeight: Math.max(root.emptyZoneHeight, middleList.contentHeight + root.zonePadding * 2)
@@ -581,7 +577,6 @@ PageBase {
                 }
             }
 
-            // Right Zone
             StyledRect {
                 Layout.fillWidth: true
                 implicitHeight: Math.max(root.emptyZoneHeight, rightList.contentHeight + root.zonePadding * 2)
@@ -638,7 +633,6 @@ PageBase {
             }
         }
 
-        // Right Side: Library
         ColumnLayout {
             Layout.fillWidth: true
             Layout.preferredWidth: 1

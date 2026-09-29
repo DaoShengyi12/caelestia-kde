@@ -92,8 +92,35 @@ as_root() {
 
 # 1. Install Ollama. The upstream installer writes to /usr/local, so it needs
 # root even when the pipeline itself runs as the caller.
+#
+# The script is downloaded first rather than piped into a shell, so a transfer that
+# stops halfway cannot leave half a script executing as root. The hash is printed, and
+# it is enforced when the caller pins one: set OLLAMA_INSTALL_SHA256 to what this
+# reports to make an unexpected upstream change fail instead of run.
 echo "Installing Ollama..."
-curl -fsSL https://ollama.com/install.sh | as_root sh  # ci:allow-curl-pipe
+installer_script="$(mktemp)"
+trap 'rm -f "$installer_script"' EXIT
+
+if ! curl -fsSL --connect-timeout 10 --max-time 60 \
+        https://ollama.com/install.sh -o "$installer_script"; then
+    echo "Could not download the Ollama installer." >&2
+    exit 1
+fi
+
+installer_hash="$(sha256sum "$installer_script" | cut -d' ' -f1)"
+if [[ -n "${OLLAMA_INSTALL_SHA256:-}" ]]; then
+    if [[ "$installer_hash" != "$OLLAMA_INSTALL_SHA256" ]]; then
+        echo "Ollama installer checksum mismatch: got $installer_hash, expected $OLLAMA_INSTALL_SHA256." >&2
+        exit 1
+    fi
+    echo "Ollama installer matches the pinned SHA-256."
+else
+    echo "Ollama publishes no checksum for this script; its SHA-256 is $installer_hash."
+    echo "Set OLLAMA_INSTALL_SHA256 to that value to make a change here fatal."
+fi
+
+as_root sh "$installer_script"
+rm -f "$installer_script"
 
 # 2. Start the daemon. If something already answers on the Ollama port - a
 # user-level `ollama serve`, which is common on a dev machine - the system

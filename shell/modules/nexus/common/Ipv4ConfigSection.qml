@@ -12,7 +12,7 @@ import qs.modules.nexus.common
 ColumnLayout {
     id: root
 
-    required property string connectionName
+    required property string connectionId
 
     property string ipMethod: "auto"
     property bool ipLoaded: false
@@ -26,9 +26,9 @@ ColumnLayout {
     readonly property bool hasChanges: root.ipLoaded && (root.ipMethod !== root.origMethod || (root.ipMethod === "manual" && (addressField.text.trim() !== root.origAddress || gatewayField.text.trim() !== root.origGateway)) || (root.showDnsSettings && dnsField.text.trim() !== root.origDns))
 
     function loadIpConfig(): void {
-        if (!root.connectionName)
+        if (!root.connectionId)
             return;
-        Nmcli.getIpv4Config(root.connectionName, cfg => {
+        Nmcli.getIpv4Config(root.connectionId, cfg => {
             if (!cfg)
                 return;
             root.ipMethod = cfg.method;
@@ -45,7 +45,7 @@ ColumnLayout {
     }
 
     function saveIpConfig(): void {
-        if (!root.connectionName)
+        if (!root.connectionId)
             return;
 
         if (root.ipMethod === "manual") {
@@ -64,7 +64,7 @@ ColumnLayout {
         }
 
         root.savingIp = true;
-        Nmcli.setIpv4Config(root.connectionName, {
+        Nmcli.setIpv4Config(root.connectionId, {
             method: root.ipMethod,
             address: addressField.text.trim(),
             gateway: gatewayField.text.trim(),
@@ -85,7 +85,7 @@ ColumnLayout {
         });
     }
 
-    onConnectionNameChanged: {
+    onConnectionIdChanged: {
         root.ipLoaded = false;
         root.loadIpConfig();
     }

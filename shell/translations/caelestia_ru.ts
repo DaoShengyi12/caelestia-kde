@@ -92,7 +92,7 @@
 <context>
     <name>Actions</name>
     <message>
-        <location filename="../modules/launcher/services/Actions.qml" line="+31"/>
+        <location filename="../modules/launcher/services/Actions.qml" line="+34"/>
         <source>Unnamed</source>
         <translation>Без имени</translation>
     </message>
@@ -336,12 +336,22 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+19"/>
+        <location line="+7"/>
+        <source>Light</source>
+        <translation type="unfinished">Светлая</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Dark</source>
+        <translation type="unfinished">Тёмная</translation>
+    </message>
+    <message>
+        <location line="+28"/>
         <source>Advanced Colors</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+16"/>
+        <location line="+25"/>
         <source>Theme Automation</source>
         <translation type="unfinished"></translation>
     </message>
@@ -400,12 +410,52 @@
         <source>Switches at %1, also used when sunrise and sunset are unavailable</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location line="+9"/>
+        <source>Theme mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+11"/>
+        <source>Mode</source>
+        <translation type="unfinished">Режим</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Switch the color scheme between light and dark</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>Managed by the automatic light and dark schedule</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>Palette</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>Color intensity</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Chroma of the wallpaper-derived palette, at 100% by default</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>%1 keeps its own colors, so this does not apply</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>AiAssistant</name>
     <message>
-        <location filename="../modules/sidebar/AiAssistant.qml" line="+789"/>
-        <location line="+1352"/>
+        <location filename="../modules/sidebar/AiAssistant.qml" line="+792"/>
+        <location line="+1360"/>
         <source>Rate limited - retrying in %1s…</source>
         <translation>Лимит запросов — повтор через %1 с…</translation>
     </message>
@@ -473,7 +523,7 @@
         <translation>Хранится в связке ключей сеанса, а не в shell.json. Переменная окружения %1 имеет приоритет.</translation>
     </message>
     <message>
-        <location line="+92"/>
+        <location line="+96"/>
         <source>API key saved</source>
         <translation>Ключ API сохранён</translation>
     </message>
@@ -494,18 +544,18 @@
     </message>
     <message>
         <location line="+31"/>
-        <location line="+525"/>
+        <location line="+545"/>
         <source>Checking…</source>
         <translation>Проверка…</translation>
     </message>
     <message>
-        <location line="-523"/>
-        <location line="+500"/>
+        <location line="-543"/>
+        <location line="+520"/>
         <source>Not installed</source>
         <translation>Не установлен</translation>
     </message>
     <message>
-        <location line="-491"/>
+        <location line="-511"/>
         <source>Daemon not running - start it with: sudo systemctl start ollama</source>
         <translation>Демон не запущен — запустите: sudo systemctl start ollama</translation>
     </message>
@@ -525,7 +575,7 @@
         <translation>Вход выполнен? Это окно можно закрыть.</translation>
     </message>
     <message>
-        <location line="+69"/>
+        <location line="+81"/>
         <location line="+40"/>
         <source>Installed.</source>
         <translation>Установлено.</translation>
@@ -553,38 +603,48 @@
     </message>
     <message>
         <location line="+8"/>
-        <location line="+138"/>
+        <location line="+146"/>
         <source>Status</source>
         <translation>Статус</translation>
     </message>
     <message>
-        <location line="-129"/>
+        <location line="-137"/>
         <source>Download Ollama</source>
         <translation>Скачать Ollama</translation>
     </message>
     <message>
         <location line="+1"/>
         <location line="+5"/>
-        <location line="+147"/>
+        <location line="+155"/>
         <location line="+19"/>
         <source>Installing…</source>
         <translation>Установка…</translation>
     </message>
     <message>
-        <location line="-160"/>
+        <location line="-168"/>
         <source>Claude</source>
         <translation>Claude</translation>
     </message>
     <message>
         <location line="+5"/>
-        <location line="+106"/>
+        <location line="+114"/>
         <source>Claude Code</source>
         <translation>Claude Code</translation>
     </message>
     <message>
-        <location line="-105"/>
+        <location line="-113"/>
         <source>Uses the Claude CLI and your Claude login</source>
         <translation>Через Claude CLI и ваш вход в Claude</translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>Let the CLI run its own tools</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Off by default; the assistant&apos;s own tools do not need it</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+7"/>
@@ -711,6 +771,21 @@
         <location line="+1"/>
         <source>Log into a different Claude account</source>
         <translation>Войти в другой аккаунт Claude</translation>
+    </message>
+    <message>
+        <location line="+8"/>
+        <source>History</source>
+        <translation type="unfinished">История</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Save chat history</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Keep conversations between sessions; the sidebar&apos;s clear button removes what was already saved</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1033,7 +1108,27 @@
         <translation>Требуется перезапуск оболочки</translation>
     </message>
     <message>
-        <location line="+55"/>
+        <location line="+8"/>
+        <source>Ambient color mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Ambient glow is unavailable in light mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>Ambient light glow in window info panel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+8"/>
+        <source>Ambient glow opacity</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+22"/>
         <source>Background Blur</source>
         <translation>Размытие фона</translation>
     </message>
@@ -1212,7 +1307,7 @@
         <translation>Discord Rich Presence</translation>
     </message>
     <message>
-        <location line="+34"/>
+        <location line="+43"/>
         <source>Broadcast settings</source>
         <translation>Параметры трансляции</translation>
     </message>
@@ -1530,23 +1625,23 @@
 <context>
     <name>AudioPopout</name>
     <message>
-        <location filename="../modules/bar/popouts/AudioPopout.qml" line="+36"/>
+        <location filename="../modules/bar/popouts/AudioPopout.qml" line="+39"/>
         <source>Output device</source>
         <translation>Устройство вывода</translation>
     </message>
     <message>
-        <location line="+15"/>
-        <location line="+19"/>
+        <location line="+16"/>
+        <location line="+20"/>
         <source>Unknown</source>
         <translation>Неизвестно</translation>
     </message>
     <message>
-        <location line="-13"/>
+        <location line="-14"/>
         <source>Input device</source>
         <translation>Устройство ввода</translation>
     </message>
     <message>
-        <location line="+19"/>
+        <location line="+20"/>
         <source>Volume (%1)</source>
         <translation>Громкость (%1)</translation>
     </message>
@@ -1584,7 +1679,7 @@
         <translation>Показывать значок</translation>
     </message>
     <message>
-        <location line="+7"/>
+        <location line="+6"/>
         <source>Show seconds</source>
         <translation>Показывать секунды</translation>
     </message>
@@ -1592,6 +1687,16 @@
         <location line="+1"/>
         <source>Add a seconds line to the clock</source>
         <translation>Добавить в часы строку секунд</translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>Calendar popout</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Show a mini calendar when hovering the clock</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1827,6 +1932,16 @@
     </message>
     <message>
         <location line="+7"/>
+        <source>Show app badges</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Show the count, progress and urgency an app publishes for its dock icon</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+7"/>
         <source>Filter by current desktop</source>
         <translation>Только текущий рабочий стол</translation>
     </message>
@@ -1884,7 +1999,7 @@
         <translation>Вставьте токен ниже и сохраните, чтобы включить виджет</translation>
     </message>
     <message>
-        <location line="+49"/>
+        <location line="+53"/>
         <source>Configuration</source>
         <translation>Настройка</translation>
     </message>
@@ -2225,6 +2340,11 @@
     </message>
     <message>
         <location line="+13"/>
+        <source>Clock</source>
+        <translation type="unfinished">Часы</translation>
+    </message>
+    <message>
+        <location line="+13"/>
         <source>Dock</source>
         <translation>Док</translation>
     </message>
@@ -2517,13 +2637,13 @@
     </message>
     <message>
         <location line="+12"/>
-        <source>Per-monitor workspaces</source>
-        <translation>Рабочие столы по мониторам</translation>
+        <source>Per monitor</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+1"/>
-        <source>Show each monitor&apos;s workspaces independently</source>
-        <translation>Показывать рабочие столы каждого монитора отдельно</translation>
+        <source>Hide workspaces not on the current monitor</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2583,7 +2703,7 @@
 <context>
     <name>BatteryMonitor</name>
     <message>
-        <location filename="../modules/BatteryMonitor.qml" line="+17"/>
+        <location filename="../modules/BatteryMonitor.qml" line="+19"/>
         <source>Charger unplugged</source>
         <translation>Зарядка отключена</translation>
     </message>
@@ -2611,16 +2731,6 @@
         <location line="+0"/>
         <source>Battery level is low</source>
         <translation>Низкий заряд батареи</translation>
-    </message>
-    <message>
-        <location line="+5"/>
-        <source>Hibernating in 5 seconds</source>
-        <translation>Гибернация через 5 секунд</translation>
-    </message>
-    <message>
-        <location line="+0"/>
-        <source>Hibernating to prevent data loss</source>
-        <translation>Гибернация, чтобы не потерять данные</translation>
     </message>
 </context>
 <context>
@@ -2669,12 +2779,12 @@
         <translation> (подключено: %1)</translation>
     </message>
     <message>
-        <location line="+54"/>
+        <location line="+61"/>
         <source>%1%</source>
         <translation>%1%</translation>
     </message>
     <message>
-        <location line="+58"/>
+        <location line="+59"/>
         <source>Open settings</source>
         <translation>Открыть настройки</translation>
     </message>
@@ -2894,7 +3004,7 @@
         <translation>Развернуть</translation>
     </message>
     <message>
-        <location line="+15"/>
+        <location line="+13"/>
         <source>Unminimize</source>
         <translation>Восстановить</translation>
     </message>
@@ -3042,6 +3152,14 @@
     </message>
 </context>
 <context>
+    <name>ClockContext</name>
+    <message>
+        <location filename="../modules/bar/popouts/ClockContext.qml" line="+81"/>
+        <source>Clock settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>ColourSelect</name>
     <message>
         <location filename="../modules/nexus/pages/wallandstyle/ColourSelect.qml" line="+40"/>
@@ -3072,14 +3190,6 @@
         <location line="+19"/>
         <source>Variants</source>
         <translation>Варианты</translation>
-    </message>
-</context>
-<context>
-    <name>CommitRow</name>
-    <message>
-        <location filename="../modules/nexus/common/CommitRow.qml" line="+50"/>
-        <source>%1 • %2</source>
-        <translation>%1 • %2</translation>
     </message>
 </context>
 <context>
@@ -3830,7 +3940,7 @@
 <context>
     <name>DesktopLyrics</name>
     <message>
-        <location filename="../modules/background/DesktopLyrics.qml" line="+287"/>
+        <location filename="../modules/background/DesktopLyrics.qml" line="+286"/>
         <source>Loading lyrics...</source>
         <translation>Загрузка текста песни...</translation>
     </message>
@@ -4039,7 +4149,7 @@
         <translation>Закрепить в доке</translation>
     </message>
     <message>
-        <location line="+40"/>
+        <location line="+34"/>
         <source>Open new window</source>
         <translation>Открыть новое окно</translation>
     </message>
@@ -4061,92 +4171,82 @@
     <name>Entries</name>
     <message>
         <location filename="../modules/whatsnew/Entries.qml" line="+23"/>
-        <source>Window Switcher Add-ons</source>
-        <translation>Дополнения переключателя окон</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>The window switcher now runs on a KWin-native backend, and window previews are cached so they appear instantly. Its own page under Settings -&gt; Panels -&gt; Window Switcher adds filtering by current desktop, minimized windows, windows from all screens, a live preview on the workspace, and a switch to turn it off entirely.</source>
-        <translation>Переключатель окон теперь работает на родном бэкенде KWin, а превью окон кэшируются и появляются мгновенно. На его странице Настройки -&gt; Панели -&gt; Переключатель окон добавились фильтр по текущему рабочему столу, свёрнутые окна, окна со всех экранов, живой показ окна на рабочем столе и возможность полностью отключить переключатель.</translation>
-    </message>
-    <message>
-        <location line="+6"/>
-        <source>Notifications on Any Screen</source>
-        <translation>Уведомления на любом экране</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Notification popups can now follow the screen they belong to instead of always using the focused one, and the shell can stay quiet while a fullscreen app is focused. Both live in Settings -&gt; Services -&gt; Notifications, as &apos;Display on screen&apos; and &apos;Show in fullscreen&apos;.</source>
-        <translation>Всплывающие уведомления теперь могут появляться на том экране, к которому относятся, а не всегда на активном, а оболочка умеет молчать, пока в фокусе полноэкранное приложение. Обе настройки — в Настройки -&gt; Службы -&gt; Уведомления: «Экран показа» и «Показывать в полноэкранном режиме».</translation>
-    </message>
-    <message>
-        <location line="+6"/>
-        <source>GIF Recording</source>
-        <translation>Запись GIF</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>The screen recorder can capture a region straight to an animated GIF. Choose Record GIF from the recorder menu - it is enabled by default and can be switched off under Settings -&gt; Utilities -&gt; Utilities panel.</source>
-        <translation>Запись экрана умеет сохранять область сразу в анимированный GIF. Выберите «Запись GIF» в меню записи — функция включена по умолчанию, отключается в Настройки -&gt; Утилиты -&gt; Панель утилит.</translation>
-    </message>
-    <message>
-        <location line="+6"/>
-        <source>SDDM Theme Out of the Box</source>
-        <translation>Тема SDDM из коробки</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>The Material You login screen, with wallpaper and color sync, is now installed by default, so the greeter matches your desktop from the first boot. It remains optional in the installer for anyone who prefers the stock theme.</source>
-        <translation>Экран входа Material You с синхронизацией обоев и цветов теперь ставится по умолчанию, и экран входа совпадает с рабочим столом с первой загрузки. В установщике он остаётся необязательным — для тех, кому нужна штатная тема.</translation>
-    </message>
-    <message>
-        <location line="+6"/>
-        <source>Audio-Reactive Desktop Shapes</source>
-        <translation>Фигуры на столе, реагирующие на звук</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>The media visualiser is now a set of audio-reactive material shapes, and it can live on the wallpaper as well as in the dashboard. Turn on &apos;Desktop media shapes&apos; under Settings -&gt; Desktop -&gt; Desktop Addons and let it auto-hide while a window is open.</source>
-        <translation>Медиавизуализатор теперь — набор фигур Material, реагирующих на звук, и жить он может не только в дашборде, но и на обоях. Включите «Медиафигуры на столе» в Настройки -&gt; Рабочий стол -&gt; Дополнения стола и разрешите ему скрываться, когда открыто окно.</translation>
-    </message>
-    <message>
-        <location line="+6"/>
-        <source>Chinese Translations</source>
-        <translation>Китайские переводы</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>The shell now ships Simplified and Traditional Chinese catalogues, so the interface follows your language instead of staying English. Pick one from Settings -&gt; Language &amp; region.</source>
-        <translation>В комплекте оболочки теперь каталоги упрощённого и традиционного китайского, так что интерфейс следует вашему языку, а не остаётся английским. Выберите язык в Настройки -&gt; Язык и регион.</translation>
-    </message>
-    <message>
-        <location line="+6"/>
-        <source>A New Name and Look</source>
-        <translation>Новое имя и облик</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>The project is now caelestia-kde. The repository, its references and the artwork have been renamed and brought onto one palette and one logo. Your configuration and settings are untouched.</source>
-        <translation>Проект теперь называется caelestia-kde. Репозиторий, ссылки на него и графика переименованы и приведены к одной палитре и одному логотипу. Ваши конфигурация и настройки не затронуты.</translation>
-    </message>
-    <message>
-        <location line="+6"/>
-        <source>Dock Desktop Filtering &amp; Live Previews</source>
-        <translation>Фильтр дока по столу и живые превью</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>The taskbar dock now supports filtering applications and open windows to the active virtual desktop, alongside live window highlighting on your workspace when hovering over dock thumbnails. Configure both under Settings -&gt; Panels -&gt; Taskbar -&gt; Dock.</source>
-        <translation>Док панели задач теперь умеет показывать только приложения и окна активного виртуального рабочего стола, а при наведении на миниатюру в доке — подсвечивать само окно на рабочем столе. Обе настройки — в Настройки -&gt; Панели -&gt; Панель задач -&gt; Док.</translation>
-    </message>
-    <message>
-        <location line="+6"/>
-        <source>Color Engine &amp; Theme Automation</source>
+        <source>Window Rules Out of the Box</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+1"/>
-        <source>Caelestia now features a high-performance native color pipeline using matugen. Kde-material-you-color has been removed. Color variants automatically switching to Tonal Spot under certain conditions has been fixed.</source>
+        <source>The installer now writes three KWin rules: unfocused windows and dialogs dim to 95 percent, dialogs open centered, and picture-in-picture windows stay above others. Only Caelestia&apos;s own groups are written, so your rules keep their names and their order. Edit or remove them under System Settings -&gt; Window Rules, or let uninstall.sh take them out again.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Right-Click Any App</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>An app in the launcher or its app browser now opens a context menu on right click: pin it to the dock, add it to the desktop, hide it from the launcher, or open it in the menu editor. The dock&apos;s pinned list is its own setting now (bar.dock.pinnedApps) instead of borrowing the launcher&apos;s favorites, and an existing list is carried over.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Status Icons You Can Arrange</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>The bar&apos;s status icons are an ordered list now instead of a wall of switches: add one, switch it off, or drag it into place under Settings -&gt; Panels -&gt; Taskbar -&gt; Status icons, and the bar draws them in that order. The clock can show seconds, and the workspace indicator can hide the ones that are empty and inactive.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Game Mode at a Tap</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>The utilities panel has a game mode toggle: it stops window animations and blur, pauses a video wallpaper and stops the desktop media shapes while it is on, then puts everything back afterwards. Game mode can still switch itself on when one of your target windows opens, under Settings -&gt; Services -&gt; Game mode.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Color Intensity</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Advanced color settings gained a slider that scales how saturated the palette derived from your wallpaper is: 0 percent leaves the same palette in grey, 100 percent is what the color engine produces, and 200 percent is the most the accents take. It is kept with the scheme, so it survives a wallpaper change and a reboot, and &apos;caelestia scheme set -i&apos; sets it from the command line.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Dock App Badges</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Dock icons can now display the count, progress, and urgency published by running applications. Configure it under Settings -&gt; Panels -&gt; Taskbar -&gt; Dock.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Ambient Glow</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Shell surfaces and window previews can now cast a subtle, dynamic ambient glow derived from the window content. Enable it under Settings -&gt; Appearance.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Lock Screen Password Reveal</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Click or tap the lock icon inside the greeter&apos;s password pill to reveal your typed password before unlocking.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -4990,7 +5090,7 @@
 <context>
     <name>LanguageAndRegion</name>
     <message>
-        <location filename="../modules/nexus/pages/LanguageAndRegion.qml" line="+45"/>
+        <location filename="../modules/nexus/pages/LanguageAndRegion.qml" line="+49"/>
         <source>°C</source>
         <translation>°C</translation>
     </message>
@@ -5016,22 +5116,28 @@
     </message>
     <message>
         <location line="+9"/>
-        <location line="+56"/>
+        <location line="+62"/>
         <source>System language</source>
         <translation>Язык системы</translation>
     </message>
     <message>
-        <location line="-45"/>
+        <location line="-43"/>
         <source>24-hour</source>
         <translation>24-часовой</translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="-4"/>
         <source>12-hour</source>
         <translation>12-часовой</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="-48"/>
+        <location line="+44"/>
+        <source>Auto</source>
+        <translation type="unfinished">Авто</translation>
+    </message>
+    <message>
+        <location line="+13"/>
         <source>Language &amp; region</source>
         <translation>Язык и регион</translation>
     </message>
@@ -5699,7 +5805,7 @@
 <context>
     <name>LyricList</name>
     <message>
-        <location filename="../modules/dashboard/media/LyricList.qml" line="+213"/>
+        <location filename="../modules/dashboard/media/LyricList.qml" line="+203"/>
         <source>Loading lyrics...</source>
         <translation>Загрузка текста песни...</translation>
     </message>
@@ -5842,24 +5948,22 @@
 <context>
     <name>Media</name>
     <message>
-        <location filename="../modules/dashboard/dash/Media.qml" line="+86"/>
-        <location line="+17"/>
-        <location line="+17"/>
+        <location filename="../modules/dashboard/dash/Media.qml" line="+91"/>
         <source>No media</source>
         <translation>Нет медиа</translation>
     </message>
     <message>
-        <location line="-34"/>
+        <location line="+0"/>
         <source>Unknown title</source>
         <translation>Неизвестное название</translation>
     </message>
     <message>
-        <location line="+17"/>
+        <location line="+14"/>
         <source>Unknown album</source>
         <translation>Неизвестный альбом</translation>
     </message>
     <message>
-        <location line="+17"/>
+        <location line="+14"/>
         <source>Unknown artist</source>
         <translation>Неизвестный исполнитель</translation>
     </message>
@@ -5943,7 +6047,7 @@
         <translation>Доступно сетей: %1</translation>
     </message>
     <message>
-        <location line="+141"/>
+        <location line="+146"/>
         <source>Rescan networks</source>
         <translation>Обновить список сетей</translation>
     </message>
@@ -5958,7 +6062,7 @@
         <translation>Доступно профилей: %1</translation>
     </message>
     <message>
-        <location line="+81"/>
+        <location line="+85"/>
         <source>No VPN profiles found</source>
         <translation>Профили VPN не найдены</translation>
     </message>
@@ -5973,12 +6077,12 @@
         <translation>Доступно устройств: %1</translation>
     </message>
     <message>
-        <location line="+55"/>
+        <location line="+48"/>
         <source>Unknown</source>
         <translation>Неизвестно</translation>
     </message>
     <message>
-        <location line="+36"/>
+        <location line="+47"/>
         <source>Connection details</source>
         <translation>Сведения о подключении</translation>
     </message>
@@ -6014,22 +6118,27 @@
 <context>
     <name>NetworkDetailPage</name>
     <message>
-        <location filename="../modules/nexus/pages/network/NetworkDetailPage.qml" line="+40"/>
+        <location filename="../modules/nexus/pages/network/NetworkDetailPage.qml" line="+52"/>
         <source>Network</source>
         <translation>Сеть</translation>
     </message>
     <message>
-        <location line="+53"/>
+        <location line="+23"/>
         <source>Forget</source>
         <translation>Забыть</translation>
     </message>
     <message>
-        <location line="+39"/>
+        <location line="+14"/>
+        <source>Connect</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+14"/>
         <source>Disconnect</source>
         <translation>Отключить</translation>
     </message>
     <message>
-        <location line="+10"/>
+        <location line="+12"/>
         <source>Connection</source>
         <translation>Подключение</translation>
     </message>
@@ -6116,7 +6225,7 @@
         <translation>Wi-Fi выключен</translation>
     </message>
     <message>
-        <location line="+126"/>
+        <location line="+127"/>
         <source>Security: %1%2</source>
         <translation>Защита: %1%2</translation>
     </message>
@@ -6170,12 +6279,12 @@
     </message>
     <message>
         <location line="+80"/>
-        <location line="+145"/>
+        <location line="+146"/>
         <source>Connected</source>
         <translation>Подключено</translation>
     </message>
     <message>
-        <location line="-145"/>
+        <location line="-146"/>
         <source>Available</source>
         <translation>Доступно</translation>
     </message>
@@ -6195,7 +6304,7 @@
         <translation>VPN-провайдеры не настроены</translation>
     </message>
     <message>
-        <location line="+68"/>
+        <location line="+69"/>
         <source>Tap to select</source>
         <translation>Нажмите, чтобы выбрать</translation>
     </message>
@@ -6327,7 +6436,7 @@
 <context>
     <name>Nmcli</name>
     <message>
-        <location filename="../services/Nmcli.qml" line="+426"/>
+        <location filename="../services/Nmcli.qml" line="+432"/>
         <source>Open</source>
         <translation>Открытая</translation>
     </message>
@@ -6686,7 +6795,7 @@
 <context>
     <name>Notifs</name>
     <message>
-        <location filename="../services/Notifs.qml" line="+144"/>
+        <location filename="../services/Notifs.qml" line="+150"/>
         <source>Do not disturb enabled</source>
         <translation>«Не беспокоить» включён</translation>
     </message>
@@ -7070,7 +7179,7 @@
 <context>
     <name>PageCompRegistry</name>
     <message>
-        <location filename="../modules/nexus/PageCompRegistry.qml" line="+354"/>
+        <location filename="../modules/nexus/PageCompRegistry.qml" line="+346"/>
         <source>Page under construction</source>
         <translation>Страница в разработке</translation>
     </message>
@@ -7120,6 +7229,11 @@
     <message>
         <location line="+1"/>
         <source>Advanced color settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Color intensity</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -7519,31 +7633,6 @@
     </message>
     <message>
         <location line="+4"/>
-        <source>Power</source>
-        <translation>Питание</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Battery indicators, idle suspend</source>
-        <translation>Индикаторы батареи, сон при бездействии</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Battery Status</source>
-        <translation>Состояние батареи</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Power Saving</source>
-        <translation>Энергосбережение</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Screen Timeout</source>
-        <translation>Тайм-аут экрана</translation>
-    </message>
-    <message>
-        <location line="+4"/>
         <source>Session</source>
         <translation>Сеанс</translation>
     </message>
@@ -7623,7 +7712,7 @@
         <translation>Избранные и скрытые</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+7"/>
         <source>Services</source>
         <translation>Службы</translation>
     </message>
@@ -7737,6 +7826,11 @@
         <location line="+3"/>
         <source>Claude Code</source>
         <translation>Claude Code</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Let the CLI run its own tools</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+1"/>
@@ -8017,105 +8111,9 @@
     </message>
 </context>
 <context>
-    <name>PowerDevil</name>
-    <message>
-        <location filename="../services/PowerDevil.qml" line="+53"/>
-        <source>KDE&apos;s suspend timer was not updated</source>
-        <translation>Таймер сна KDE не обновлён</translation>
-    </message>
-    <message>
-        <location line="+0"/>
-        <source>Its own timer in System Settings &gt; Power Management can still suspend before the timeout set here.</source>
-        <translation>Собственный таймер в Параметры системы &gt; Управление питанием всё ещё может усыпить систему раньше заданного здесь.</translation>
-    </message>
-</context>
-<context>
-    <name>PowerPage</name>
-    <message>
-        <location filename="../modules/nexus/pages/PowerPage.qml" line="+94"/>
-        <source>Power</source>
-        <translation>Питание</translation>
-    </message>
-    <message>
-        <location line="+10"/>
-        <source>Idle &amp; sleep</source>
-        <translation>Бездействие и сон</translation>
-    </message>
-    <message>
-        <location line="+5"/>
-        <source>Idle suspend</source>
-        <translation>Сон при бездействии</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Suspend the system after inactivity</source>
-        <translation>Усыплять систему после бездействия</translation>
-    </message>
-    <message>
-        <location line="+7"/>
-        <source>Idle suspend timer</source>
-        <translation>Таймер сна при бездействии</translation>
-    </message>
-    <message>
-        <location line="+2"/>
-        <source>Suspend after %1 minute(s) of inactivity</source>
-        <translation>Сон через %1 мин бездействия</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Enable idle suspend to apply a timer</source>
-        <translation>Включите сон при бездействии, чтобы задать таймер</translation>
-    </message>
-    <message>
-        <location line="+12"/>
-        <source>Lock before sleep</source>
-        <translation>Блокировать перед сном</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Lock the session before suspending</source>
-        <translation>Блокировать сеанс перед уходом в сон</translation>
-    </message>
-    <message>
-        <location line="+6"/>
-        <source>Inhibit while audio</source>
-        <translation>Не засыпать при звуке</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Prevent idle actions while audio is playing</source>
-        <translation>Не выполнять действия бездействия, пока играет звук</translation>
-    </message>
-    <message>
-        <location line="+7"/>
-        <source>Inhibit while charging</source>
-        <translation>Не засыпать на зарядке</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Prevent idle actions while charging</source>
-        <translation>Не выполнять действия бездействия во время зарядки</translation>
-    </message>
-    <message>
-        <location line="+6"/>
-        <source>Battery warnings</source>
-        <translation>Предупреждения о батарее</translation>
-    </message>
-    <message>
-        <location line="+6"/>
-        <source>Critical battery level</source>
-        <translation>Критический заряд батареи</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Percentage at which the critical warning fires</source>
-        <translation>Процент, при котором срабатывает критическое предупреждение</translation>
-    </message>
-</context>
-<context>
     <name>Preview</name>
     <message>
-        <location filename="../modules/windowinfo/Preview.qml" line="+72"/>
+        <location filename="../modules/windowinfo/Preview.qml" line="+85"/>
         <source>No active client</source>
         <translation>Нет активного клиента</translation>
     </message>
@@ -8413,7 +8411,7 @@
 <context>
     <name>SavedNetworksPage</name>
     <message>
-        <location filename="../modules/nexus/pages/network/SavedNetworksPage.qml" line="+15"/>
+        <location filename="../modules/nexus/pages/network/SavedNetworksPage.qml" line="+16"/>
         <source>Saved networks</source>
         <translation>Сохранённые сети</translation>
     </message>
@@ -8423,7 +8421,12 @@
         <translation>Нет сохранённых сетей</translation>
     </message>
     <message>
-        <location line="+61"/>
+        <location line="+53"/>
+        <source>%1 (%2)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+10"/>
         <source>Open</source>
         <translation>Открытая</translation>
     </message>
@@ -9278,6 +9281,14 @@
     </message>
 </context>
 <context>
+    <name>StatusIconsContext</name>
+    <message>
+        <location filename="../modules/bar/popouts/StatusIconsContext.qml" line="+85"/>
+        <source>Status icons settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>StorageCard</name>
     <message>
         <location filename="../modules/dashboard/performance/StorageCard.qml" line="+74"/>
@@ -9909,7 +9920,7 @@
 <context>
     <name>TrayMenu</name>
     <message>
-        <location filename="../modules/bar/popouts/TrayMenu.qml" line="+331"/>
+        <location filename="../modules/bar/popouts/TrayMenu.qml" line="+335"/>
         <source>Back</source>
         <translation>Назад</translation>
     </message>
@@ -9917,7 +9928,7 @@
 <context>
     <name>Units</name>
     <message>
-        <location filename="../services/Units.qml" line="+21"/>
+        <location filename="../services/Units.qml" line="+26"/>
         <source>%1°</source>
         <comment>temperature</comment>
         <translation>%1°</translation>
@@ -10666,7 +10677,7 @@
 <context>
     <name>VPN</name>
     <message>
-        <location filename="../services/VPN.qml" line="+273"/>
+        <location filename="../services/VPN.qml" line="+209"/>
         <source>VPN connection failed</source>
         <translation>Не удалось подключить VPN</translation>
     </message>
@@ -10712,7 +10723,7 @@
         <translation>Ошибка VPN</translation>
     </message>
     <message>
-        <location line="+225"/>
+        <location line="+196"/>
         <location line="+69"/>
         <source>Could not start %1. Is it installed?</source>
         <translation>Не удалось запустить %1. Он установлен?</translation>
@@ -10970,7 +10981,7 @@
 <context>
     <name>WallpaperSelect</name>
     <message>
-        <location filename="../modules/nexus/pages/wallandstyle/WallpaperSelect.qml" line="+116"/>
+        <location filename="../modules/nexus/pages/wallandstyle/WallpaperSelect.qml" line="+132"/>
         <source>Select wallpaper</source>
         <translation>Выбрать обои</translation>
     </message>

@@ -67,7 +67,6 @@ PageBase {
             onMoved: v => GlobalConfig.sidebar.grabWidth = v
         }
 
-        // Sidebar Tabs
         SectionHeader {
             text: qsTr("Sidebar Tabs")
         }

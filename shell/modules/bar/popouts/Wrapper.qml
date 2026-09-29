@@ -24,18 +24,21 @@ Item {
     readonly property Item current: (content.item as Content)?.current ?? null
     readonly property bool isDetached: detachedMode.length > 0
     readonly property bool sidebarOpen: popoutState.sidebarOpen
-    readonly property bool isDockPopout: currentName === "dockhover" || currentName === "dockcontext" || currentName === "greeter" || currentName === "greetercontext" || currentName === "activewindow" || currentName === "github" || currentName === "updateIndicator"
+    // Popouts excluded from pushing the notification column / sidebar out of the
+    // way (Panels.qml) and from visually merging with the sidebar (ContentWindow.qml):
+    // hover previews and context menus are transient, so shoving panels around for
+    // them feels jittery. The clock popout is deliberately NOT here — the calendar
+    // is a real panel-sized popout and displaces notifications like audio/network do.
+    readonly property bool isDockPopout: currentName === "dockhover" || currentName === "dockcontext" || currentName === "greeter" || currentName === "greetercontext" || currentName === "activewindow" || currentName === "github" || currentName === "updateIndicator" || currentName === "clockcontext" || currentName === "statusiconscontext"
     property alias currentName: popoutState.currentName
     property alias hasCurrent: popoutState.hasCurrent
     property alias dockModel: popoutState.dockModel
     property alias tasksModel: popoutState.tasksModel
     property real currentCenter
     property string detachedMode
-    // Dummy object so Tokens attached prop resolves to global config
-    // Anim configs are not per-monitor
     readonly property QtObject dummy: QtObject {}
     property int animLength: dummy.Tokens.anim.durations.expressiveDefaultSpatial
-    property var animCurve: dummy.Tokens.anim.expressiveDefaultSpatial // The easingCurve type is Qt 6.11+ so we gotta use var for now
+    property var animCurve: dummy.Tokens.anim.expressiveDefaultSpatial
 
     function setAnims(detach: bool): void {
         const type = `expressive${detach ? "Slow" : "Default"}Spatial`;
@@ -48,7 +51,6 @@ Item {
             detachedMode = mode;
             focus = true;
         } else {
-            // The mode string is a page key; the registry owns the position.
             const pageIdx = PageRegistry.indexForKey(mode);
             WindowFactory.create(null, { initialPageIdx: pageIdx >= 0 ? pageIdx : 0 });
             close();
@@ -75,7 +77,6 @@ Item {
         close();
     }
     Keys.onPressed: event => {
-        // Don't intercept keys when password popout is active - let it handle them
         if (currentName === "wirelesspassword") {
             event.accepted = false;
         }
@@ -144,7 +145,6 @@ Item {
 
         active: false
         opacity: 0
-        // Makes the loader load on the same frame shouldBeActive becomes true, which ensures size is set
         states: State {
             name: "active"
             when: comp.shouldBeActive

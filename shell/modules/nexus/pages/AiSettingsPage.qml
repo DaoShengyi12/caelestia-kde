@@ -17,9 +17,6 @@ PageBase {
 
     title: qsTr("AI Assistant")
 
-    // API key entry for one provider. The value is pushed back out through
-    // committed() so each instance keeps a plain static binding to its own
-    // config field rather than looking one up by name.
     component ApiKeyField: ColumnLayout {
         id: keyField
 
@@ -71,9 +68,6 @@ PageBase {
             wrapMode: Text.Wrap
         }
 
-        // Re-read the stored value once a write attempt finishes. Typing breaks
-        // the text binding above, so without this a failed save would keep
-        // showing a key that never reached the keyring.
         Connections {
             function onKeyringRevisionChanged(): void {
                 keyInput.text = keyField.value;
@@ -83,18 +77,10 @@ PageBase {
         }
     }
 
-    // Keys are held in the session keyring, not shell.json — see AiAssistant.
     property var keyringKeys: ({})
 
-    // Bumped after every write attempt so an open field re-reads what the
-    // keyring actually holds instead of keeping whatever was typed into it.
     property int keyringRevision: 0
 
-    // The key write currently in flight, plus any that arrived while it was
-    // running. secret-tool calls are serialised because the Process below holds
-    // a single command: starting a second write mid-flight would leave the
-    // first one's exit code being applied to the second one's value, marking a
-    // key as saved that was never stored.
     property string pendingProvider: ""
 
     property string pendingKey: ""
@@ -114,8 +100,6 @@ PageBase {
     }
 
     function storeApiKey(p, key) {
-        // editingFinished also fires when the field merely loses focus, so a
-        // commit carrying the value already in the keyring is not a write.
         if (key === root.apiKeyFor(p))
             return;
 
@@ -135,9 +119,10 @@ PageBase {
         const attr = "caelestia-ai-" + p;
         const script = key === ""
             ? "secret-tool clear service caelestia key " + JSON.stringify(attr)
-            : "printf %s \"$1\" | secret-tool store --label=" + JSON.stringify("Caelestia " + p + " API key") +
+            : "printf %s \"$CAELESTIA_AI_KEY\" | secret-tool store --label=" + JSON.stringify("Caelestia " + p + " API key") +
               " service caelestia key " + JSON.stringify(attr);
-        keyStoreProc.command = key === "" ? ["sh", "-c", script] : ["sh", "-c", script, "--", key];
+        keyStoreProc.environment = ({ CAELESTIA_AI_KEY: key });
+        keyStoreProc.command = ["sh", "-c", script];
         keyStoreProc.running = true;
     }
 
@@ -155,7 +140,6 @@ PageBase {
         if (code === 0) {
             root.setApiKey(p, key);
 
-            // Removing a key is its own visible outcome; only announce saves.
             if (!clearing)
                 Toaster.toast(qsTr("API key saved"), p, "key");
         } else {
@@ -173,10 +157,6 @@ PageBase {
         }
     }
 
-    // ── Ollama ────────────────────────────────────────────────
-    // The toggle below only flips a config bool. Without a status check the
-    // assistant just fails to connect when the daemon is missing, and nothing
-    // in the UI says why (issue #654).
     property string ollamaVersion: ""
 
     property string ollamaService: ""
@@ -214,22 +194,17 @@ PageBase {
 
     property string installStatus: ""
 
-    // `claude --version` prints "2.1.220 (Claude Code)"; the bare number is what
-    // reads well next to the published one.
     readonly property string claudeVersionShort: {
         const m = (claudeVersion || "").match(/[0-9]+\.[0-9]+\.[0-9]+/);
         return m ? m[0] : claudeVersion;
     }
 
-    // Ask what the newest published version is whenever this page is opened, so
-    // the button below is offering the right action rather than a stale one.
     Component.onCompleted: {
         UpdateChecker.checkClaudeCodeUpdate();
         loadStoredKeys();
     }
 
     function loadStoredKeys() {
-        // opencode go shares the zen entry, so it is not listed separately.
         const provs = ["claude", "openai", "gemini", "openrouter", "opencode"];
         for (let i = 0; i < provs.length; i++)
             keyLoadComp.createObject(root, { provider: provs[i] });
@@ -257,7 +232,6 @@ PageBase {
         ollamaStatusProc.running = true;
     }
 
-    // Real login names / emails resolved from each account's .claude.json.
     property var resolvedNames: ({})
 
     property var resolvedEmails: ({})
@@ -280,7 +254,6 @@ PageBase {
         return resolvedNames[id] || fallback;
     }
 
-    // ---- Account helpers (mirror AiAssistant's model) ----
     function accounts() {
         const list = [{ id: "", name: qsTr("Default"), dir: "" }];
         try {
@@ -324,8 +297,6 @@ PageBase {
         GlobalConfig.ai.activeClaudeAccount = id;
         loginActive();
     }
-    // Drop any added account whose login resolves to an email already used by an
-    // earlier account (default first) — e.g. logging a new slot into the same account.
 
     function dedupAccounts() {
         const arr = rawAccounts();
@@ -356,14 +327,12 @@ PageBase {
 
     function removeAccount(id) {
         if (!id || id === "")
-            return; // the Default (~/.claude) account is the system login — not removable
+            return;
         const arr = rawAccounts().filter(a => a && a.id !== id);
         GlobalConfig.ai.claudeAccountsJson = JSON.stringify(arr);
         if ((GlobalConfig.ai.activeClaudeAccount || "") === id)
             GlobalConfig.ai.activeClaudeAccount = "";
     }
-    // Log out the Default (~/.claude) login so a different account can sign in.
-    // This clears the CLI's base credentials (WinTone01), not the Claude Desktop app.
 
     function logoutDefault() {
         logoutProc.command = ["sh", "-c", JSON.stringify(root.claudeBin()) + " auth logout"];
@@ -388,8 +357,6 @@ PageBase {
         width: root.cappedWidth
         spacing: Tokens.spacing.extraSmall / 2
 
-        // Non-visual helpers live inside the single Item child (PageBase's default
-        // property is one Item; Process objects are kept as layout resources).
         Process {
             id: keyStoreProc
 
@@ -437,7 +404,19 @@ PageBase {
         Process {
             id: installProc
 
-            command: ["sh", "-c", "curl -fsSL https://claude.ai/install.sh | bash"]
+            // Downloaded to a file and then run, rather than piped into bash: a transfer
+            // that stops halfway would otherwise execute whatever arrived, and nothing
+            // would be left behind to look at.
+            command: ["sh", "-c", `
+f="$(mktemp)"
+if curl -fsSL --connect-timeout 10 --max-time 60 https://claude.ai/install.sh -o "$f"; then
+    bash "$f"
+    status=$?
+else
+    status=1
+fi
+rm -f "$f"
+exit $status`]
             stdout: SplitParser {
                 onRead: line => root.installStatus = line
             }
@@ -448,15 +427,10 @@ PageBase {
                 root.installing = false;
                 root.installStatus = code === 0 ? qsTr("Installed.") : (qsTr("Failed") + " (" + code + ")");
                 root.refreshStatus();
-                // Re-read both versions so the button settles on "Check for
-                // updates" instead of still offering the update just applied.
                 UpdateChecker.checkClaudeCodeUpdate();
             }
         }
 
-        // Ollama is a system service with a CLI, so the status and the install
-        // both belong to the script: --status needs no privileges, and the
-        // install goes through pkexec, which is what asks for the password.
         Process {
             id: ollamaStatusProc
 
@@ -488,7 +462,7 @@ PageBase {
                 if (code === 0)
                     root.ollamaInstallStatus = qsTr("Installed.");
                 else if (code === 126)
-                    root.ollamaInstallStatus = qsTr("Cancelled."); // pkexec: prompt dismissed
+                    root.ollamaInstallStatus = qsTr("Cancelled.");
                 else
                     root.ollamaInstallStatus = qsTr("Failed") + " (" + code + ")";
                 root.refreshOllamaStatus();
@@ -505,7 +479,6 @@ PageBase {
             onExited: root.refreshStatus()
         }
 
-        // Resolve real login names from each account's .claude.json.
         Instantiator {
             model: root.accountIds()
             delegate: FileView {
@@ -585,6 +558,14 @@ PageBase {
         }
 
         ToggleRow {
+            visible: GlobalConfig.ai.enableClaudeCode
+            text: qsTr("Let the CLI run its own tools")
+            subtext: qsTr("Off by default; the assistant's own tools do not need it")
+            checked: GlobalConfig.ai.claudeCodeSkipPermissions
+            onToggled: GlobalConfig.ai.claudeCodeSkipPermissions = checked
+        }
+
+        ToggleRow {
             last: true
             text: qsTr("Claude API")
             subtext: qsTr("Pay-per-token API with an Anthropic key")
@@ -643,7 +624,6 @@ PageBase {
             text: qsTr("API keys")
         }
 
-        // Show key fields only for enabled API providers.
         ApiKeyField {
             visible: GlobalConfig.ai.enableClaude
             value: root.apiKeyFor("claude")
@@ -672,7 +652,6 @@ PageBase {
             onCommitted: v => root.storeApiKey("openrouter", v)
         }
 
-        // opencode Zen and Go share one account key.
         ApiKeyField {
             visible: GlobalConfig.ai.enableOpencode || GlobalConfig.ai.enableOpencodeGo
             value: root.apiKeyFor("opencode")
@@ -680,8 +659,6 @@ PageBase {
             onCommitted: v => root.storeApiKey("opencode", v)
         }
 
-        // ── Claude Code ────────────────────────────────────────────
-        // Everything below is only meaningful while the provider is on.
         SectionHeader {
             visible: GlobalConfig.ai.enableClaudeCode
             text: qsTr("Claude Code")
@@ -702,8 +679,6 @@ PageBase {
         NavRow {
             visible: GlobalConfig.ai.enableClaudeCode
             last: true
-            // One button, three jobs: install it, update it, or — when it is
-            // already current — re-check whether that is still true.
             icon: root.claudeInstalled && !UpdateChecker.claudeCodeHasUpdate ? "refresh" : "download"
             label: {
                 if (!root.claudeInstalled)
@@ -726,7 +701,6 @@ PageBase {
             onClicked: {
                 if (root.installing || UpdateChecker.claudeCodeChecking)
                     return;
-                // Up to date — the button is a re-check, not a reinstall.
                 if (root.claudeInstalled && !UpdateChecker.claudeCodeHasUpdate) {
                     root.installStatus = "";
                     UpdateChecker.checkClaudeCodeUpdate();
@@ -738,7 +712,6 @@ PageBase {
             }
         }
 
-        // ── Accounts ───────────────────────────────────────────────
         SectionHeader {
             visible: GlobalConfig.ai.enableClaudeCode
             text: qsTr("Claude accounts")
@@ -797,8 +770,6 @@ PageBase {
                         }
                     }
 
-                    // Named accounts get a delete button; the Default (system login)
-                    // gets a log-out button that clears its ~/.claude credentials.
                     MaterialIcon {
                         text: accRect.isDefault ? "logout" : "delete"
                         color: delMouse.containsMouse ? Colours.palette.m3error : Colours.palette.m3onSurfaceVariant
@@ -840,6 +811,18 @@ PageBase {
                 if (root.claudeInstalled)
                     root.addAndLogin();
             }
+        }
+
+        SectionHeader {
+            text: qsTr("History")
+        }
+        ToggleRow {
+            first: true
+            last: true
+            text: qsTr("Save chat history")
+            subtext: qsTr("Keep conversations between sessions; the sidebar's clear button removes what was already saved")
+            checked: GlobalConfig.ai.saveChatHistory
+            onToggled: GlobalConfig.ai.saveChatHistory = checked
         }
     }
 }
