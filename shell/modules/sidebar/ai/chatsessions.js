@@ -4,8 +4,9 @@
 // types so they can be tested on their own; ChatStore.qml owns the state.
 //
 // A session: { id, title, messages, claudeCodeCwd, claudeCodePermissionMode,
-// claudeCodeSessionId, claudeCodeSessionAccount }. A message has a stable id,
-// which is how running requests find the message they write to.
+// claudeCodeSessionId, claudeCodeSessionAccount, provider, updatedAt, pinned,
+// titleLocked }. A message has a stable id, which is how running requests find
+// the message they write to.
 
 var nextMessageSerial = 0;
 
@@ -159,4 +160,85 @@ function firstUserText(session) {
         if (msgs[i].isUser)
             return msgs[i].text || "";
     return "";
+}
+
+// Last activity time; chats saved before updatedAt existed fall back to the
+// creation time encoded in their id.
+function chatTimestamp(session) {
+    if (session.updatedAt)
+        return session.updatedAt;
+    var m = /^chat_(\d+)/.exec(session.id || "");
+    return m ? Number(m[1]) : 0;
+}
+
+// Message text as one line of plain text, with code blocks collapsed.
+function plainPreview(text) {
+    return (text || "").replace(/```[\s\S]*?(```|$)/g, " [code] ").replace(/[#*`>_~|]/g, "").replace(/\s+/g, " ").trim();
+}
+
+// Rows of the history list: chats with messages whose title or text contains
+// `query`, pinned first, then most recent. The preview is where the query hit,
+// or else the last message (previewIsUser says whether the user wrote it).
+function historyRows(sessions, query) {
+    var q = (query || "").trim().toLowerCase();
+    var rows = [];
+    for (var i = 0; i < sessions.length; i++) {
+        var s = sessions[i];
+        var msgs = s.messages || [];
+        if (msgs.length === 0)
+            continue;
+        var title = s.title || "New Chat";
+        var preview = "";
+        var previewIsUser = false;
+        var matched = !q || title.toLowerCase().indexOf(q) !== -1;
+
+        if (q) {
+            for (var j = 0; j < msgs.length; j++) {
+                var plain = plainPreview(msgs[j].text);
+                var at = plain.toLowerCase().indexOf(q);
+                if (at !== -1) {
+                    var from = Math.max(0, at - 24);
+                    preview = (from > 0 ? "…" : "") + plain.substring(from, at + q.length + 80);
+                    matched = true;
+                    break;
+                }
+            }
+        }
+        if (!matched)
+            continue;
+        if (!preview) {
+            for (var k = msgs.length - 1; k >= 0; k--) {
+                var last = plainPreview(msgs[k].text);
+                if (last) {
+                    preview = last.substring(0, 120);
+                    previewIsUser = msgs[k].isUser === true;
+                    break;
+                }
+            }
+        }
+
+        var isClaudeCode = s.provider === "claude-code" || !!s.claudeCodeSessionId;
+        rows.push({
+            "chatId": String(s.id),
+            "title": title,
+            "preview": preview,
+            "previewIsUser": previewIsUser,
+            "pinned": s.pinned === true,
+            "ts": chatTimestamp(s),
+            "msgCount": msgs.length,
+            "isClaudeCode": isClaudeCode,
+            "cwd": isClaudeCode ? (s.claudeCodeCwd || "") : ""
+        });
+    }
+    rows.sort((a, b) => (b.pinned - a.pinned) || (b.ts - a.ts));
+    return rows;
+}
+
+function asMarkdown(session) {
+    var parts = ["# " + (session.title || "Chat")];
+    var msgs = session.messages || [];
+    for (var i = 0; i < msgs.length; i++)
+        if (msgs[i].text)
+            parts.push("**" + (msgs[i].isUser ? "You" : "Assistant") + ":**\n\n" + msgs[i].text);
+    return parts.join("\n\n");
 }

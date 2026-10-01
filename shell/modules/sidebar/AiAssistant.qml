@@ -18,6 +18,7 @@ import qs.services
 import qs.utils
 import "ai"
 import "ai/attachments.js" as AttachmentPaths
+import "ai/chatsessions.js" as Sessions
 import "ai/claudecode.js" as ClaudeCode
 
 Item {
@@ -26,10 +27,31 @@ Item {
     ChatStore {
         id: chatStore
 
+        provider: root.provider
         onTitleNeeded: (chatId, firstMessage) => root.generateChatTitleAsync(chatId, firstMessage)
+        onRevisionChanged: root.markHistoryDirty()
     }
 
+    ListModel { id: historySessionsModel }
+
     property bool isHistoryTab: false
+
+    // History view: search query, pending rebuild, and the chat being renamed
+    // (rebuilds wait until the rename ends so the editor is not torn down).
+    property string historyQuery: ""
+
+    property bool historyDirty: true
+
+    property string historyRenamingId: ""
+
+    property int pinnedChatCount: 0
+
+    property int totalChatCount: 0
+
+    onIsHistoryTabChanged: {
+        if (isHistoryTab && historyDirty)
+            rebuildHistoryModel();
+    }
 
     readonly property string currentChatId: chatStore.currentChatId
 
@@ -1298,6 +1320,101 @@ Item {
         return activeReply;
     }
 
+    function markHistoryDirty() {
+        historyDirty = true;
+        if (isHistoryTab && !historyRenamingId)
+            rebuildHistoryModel();
+    }
+
+    function historySection(pinned, ts) {
+        if (pinned)
+            return qsTr("Pinned");
+        var now = new Date();
+        var today = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+        var day = 86400000;
+        if (ts >= today)
+            return qsTr("Today");
+        if (ts >= today - day)
+            return qsTr("Yesterday");
+        if (ts >= today - 6 * day)
+            return qsTr("Previous 7 days");
+        if (ts >= today - 29 * day)
+            return qsTr("Previous 30 days");
+        return qsTr("Older");
+    }
+
+    function relativeChatTime(ts) {
+        if (!ts)
+            return "";
+        var diff = Date.now() - ts;
+        if (diff < 60000)
+            return qsTr("just now");
+        if (diff < 3600000)
+            return qsTr("%1 min ago").arg(Math.floor(diff / 60000));
+        var d = new Date(ts);
+        var now = new Date();
+        if (d.toDateString() === now.toDateString())
+            return Qt.formatTime(d, "hh:mm");
+        if (diff < 6 * 86400000)
+            return Qt.formatDateTime(d, "ddd hh:mm");
+        if (d.getFullYear() === now.getFullYear())
+            return Qt.formatDate(d, "MMM d");
+        return Qt.formatDate(d, "yyyy-MM-dd");
+    }
+
+    function rebuildHistoryModel() {
+        historyDirty = false;
+        const rows = Sessions.historyRows(chatStore.sessions, historyQuery);
+        const listed = chatStore.sessions.filter(s => s.messages.length > 0);
+        pinnedChatCount = listed.filter(s => s.pinned).length;
+        totalChatCount = listed.length;
+
+        historySessionsModel.clear();
+        for (var i = 0; i < rows.length; i++) {
+            const r = rows[i];
+            historySessionsModel.append({
+                "chatId": r.chatId,
+                "title": r.title,
+                "preview": (r.previewIsUser ? qsTr("You: ") : "") + r.preview,
+                "pinned": r.pinned,
+                "timeText": relativeChatTime(r.ts),
+                "msgCount": r.msgCount,
+                "isClaudeCode": r.isClaudeCode,
+                "cwd": r.cwd ? shortPath(r.cwd) : "",
+                "section": historySection(r.pinned, r.ts)
+            });
+        }
+    }
+
+    // Escapes text for Text.StyledText and emphasises occurrences of the search query.
+    function highlightHistoryMatch(text) {
+        var esc = s => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        var out = esc(text || "");
+        var q = historyQuery.trim();
+        if (!q)
+            return out;
+        var pattern = esc(q).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+        return out.replace(new RegExp(pattern, "gi"), m => "<b><font color=\"" + Colours.palette.m3primary + "\">" + m + "</font></b>");
+    }
+
+    function togglePinChat(id) {
+        const s = chatStore.session(id);
+        if (s)
+            chatStore.setChatProps(id, { "pinned": !s.pinned });
+    }
+
+    function renameChat(id, title) {
+        chatStore.rename(id, (title || "").trim().replace(/\s+/g, " "));
+        historyRenamingId = "";
+        markHistoryDirty();
+    }
+
+    function copyChatAsMarkdown(id) {
+        const s = chatStore.session(id);
+        if (s)
+            Quickshell.clipboardText = Sessions.asMarkdown(s);
+    }
+
     function deleteChat(id) {
         cancelRateLimitRetry();
         stopClaudeCode([id]);
@@ -1309,12 +1426,13 @@ Item {
             createNewChat();
     }
 
+    // Pinned chats survive "clear"; with none pinned this wipes everything.
     function clearAllHistory() {
         cancelRateLimitRetry();
-        const ids = chatStore.sessions.map(s => s.id);
+        const ids = chatStore.sessions.filter(s => !s.pinned).map(s => s.id);
         stopClaudeCode(ids);
-        chatStore.removeChats(ids);
-        createNewChat();
+        if (chatStore.removeChats(ids))
+            createNewChat();
     }
 
     function applyGeneratedTitle(chatId, raw) {
@@ -3062,105 +3180,363 @@ Item {
              }
 
              Item {
+                 id: historyPane
+
                  anchors.fill: parent
                  opacity: isHistoryTab ? 1 : 0
                  visible: opacity > 0
 
                  Behavior on opacity { NumberAnimation { duration: 250; easing.type: Easing.InOutQuad } }
 
-                 GridView {
+                 SearchBar {
+                     id: historySearch
+
                      anchors.top: parent.top
                      anchors.left: parent.left
                      anchors.right: parent.right
-                     anchors.bottom: newChatButton.top
+                     topPadding: Tokens.padding.medium
+                     bottomPadding: Tokens.padding.medium
+                     placeholderText: qsTr("Search titles and messages")
+                     bg.color: Colours.tPalette.m3surfaceContainerHigh
+
+                     onTextChanged: {
+                         root.historyQuery = text;
+                         historySearchDebounce.restart();
+                     }
+                     Keys.onReturnPressed: {
+                         if (historySessionsModel.count > 0)
+                             root.loadChat(historySessionsModel.get(0).chatId);
+                     }
+                     Keys.onEscapePressed: event => {
+                         if (text) {
+                             clear();
+                             event.accepted = true;
+                         } else {
+                             event.accepted = false;
+                         }
+                     }
+                 }
+
+                 Timer {
+                     id: historySearchDebounce
+
+                     interval: 150
+                     onTriggered: root.rebuildHistoryModel()
+                 }
+
+                 StyledListView {
+                     id: historyList
+
+                     anchors.top: historySearch.bottom
+                     anchors.bottom: historyActions.top
+                     anchors.left: parent.left
+                     anchors.right: parent.right
+                     anchors.topMargin: Tokens.spacing.small
                      anchors.bottomMargin: Tokens.spacing.medium
-                     
-                     cellWidth: width / 2
-                     cellHeight: 90
-                     model: chatStore.chats
+                     clip: true
+                     spacing: Tokens.spacing.small
+                     model: historySessionsModel
+
+                     section.property: "section"
+                     section.delegate: StyledText {
+                         required property string section
+
+                         width: historyList.width
+                         topPadding: Tokens.spacing.medium
+                         bottomPadding: Tokens.spacing.small
+                         leftPadding: Tokens.padding.small
+                         text: section
+                         color: Colours.palette.m3primary
+                         font: Tokens.font.label.medium
+                     }
+
+                     ScrollBar.vertical: StyledScrollBar {
+                         flickable: historyList
+                     }
 
                      delegate: Item {
-                         required property var model
-                         property string chatId: model && model.id ? String(model.id) : ""
-                         property string chatTitle: model && model.title ? String(model.title) : ""
+                         id: chatRow
 
-                         width: GridView.view.cellWidth
-                         height: GridView.view.cellHeight
+                         required property string chatId
+                         required property string title
+                         required property string preview
+                         required property bool pinned
+                         required property string timeText
+                         required property int msgCount
+                         required property bool isClaudeCode
+                         required property string cwd
+
+                         readonly property bool isCurrent: chatId === root.currentChatId
+                         readonly property bool renaming: root.historyRenamingId === chatId
+                         property bool confirmDelete: false
+                         property bool copied: false
+                         readonly property bool showActions: (rowHover.hovered || confirmDelete) && !renaming
+
+                         width: historyList.width
+                         implicitHeight: card.implicitHeight
+
+                         onShowActionsChanged: {
+                             if (!showActions)
+                                 confirmDelete = false;
+                         }
+
+                         Timer {
+                             id: confirmDeleteReset
+
+                             interval: 3000
+                             onTriggered: chatRow.confirmDelete = false
+                         }
+
+                         Timer {
+                             id: copiedReset
+
+                             interval: 1500
+                             onTriggered: chatRow.copied = false
+                         }
 
                          StyledRect {
-                             anchors.fill: parent
-                             anchors.margins: Tokens.spacing.small
+                             id: card
+
+                             anchors.left: parent.left
+                             anchors.right: parent.right
+                             implicitHeight: rowContent.implicitHeight + Tokens.padding.medium * 2
                              radius: Tokens.rounding.medium
-                             color: Colours.tPalette.m3surfaceContainerHigh
+                             color: chatRow.isCurrent ? Colours.palette.m3secondaryContainer : Colours.tPalette.m3surfaceContainerHigh
+
+                             HoverHandler {
+                                 id: rowHover
+                             }
 
                              StateLayer {
                                  radius: Tokens.rounding.medium
-                                 onClicked: loadChat(chatId)
+                                 disabled: chatRow.renaming
+                                 onClicked: root.loadChat(chatRow.chatId)
                              }
 
                              RowLayout {
-                                 anchors.fill: parent
-                                 anchors.margins: Tokens.padding.small
+                                 id: rowContent
+
+                                 anchors.left: parent.left
+                                 anchors.right: parent.right
+                                 anchors.verticalCenter: parent.verticalCenter
+                                 anchors.leftMargin: Tokens.padding.medium
+                                 anchors.rightMargin: Tokens.padding.medium
                                  spacing: Tokens.spacing.medium
 
                                  StyledRect {
+                                     Layout.alignment: Qt.AlignTop
                                      Layout.preferredWidth: 32
                                      Layout.preferredHeight: 32
-                                     radius: 16
-                                     color: Colours.tPalette.m3surfaceContainerHighest
+                                     radius: Tokens.rounding.full
+                                     color: chatRow.isCurrent ? Colours.palette.m3primary : Colours.tPalette.m3surfaceContainerHighest
 
                                      MaterialIcon {
                                          anchors.centerIn: parent
-                                         text: "chat"
-                                         color: Colours.palette.m3onSurfaceVariant
+                                         text: chatRow.isClaudeCode ? "terminal" : "chat"
+                                         color: chatRow.isCurrent ? Colours.palette.m3onPrimary : Colours.palette.m3onSurfaceVariant
                                          font: Tokens.font.icon.small
                                      }
                                  }
 
                                  ColumnLayout {
                                      Layout.fillWidth: true
-                                     spacing: 0
+                                     spacing: 2
 
-                                     Text {
+                                     RowLayout {
                                          Layout.fillWidth: true
-                                         Layout.alignment: Qt.AlignVCenter
-                                         text: chatTitle ? chatTitle : "New Chat"
-                                         color: Colours.palette.m3onSurface
-                                         font: Tokens.font.label.small
+                                         Layout.preferredHeight: Math.max(titleText.implicitHeight, rowActions.implicitHeight)
+                                         spacing: Tokens.spacing.small
+
+                                         MaterialIcon {
+                                             visible: chatRow.pinned && !chatRow.renaming
+                                             text: "keep"
+                                             fill: 1
+                                             color: Colours.palette.m3primary
+                                             fontStyle: Tokens.font.icon.builders.small.scale(0.85).build()
+                                         }
+
+                                         StyledText {
+                                             id: titleText
+
+                                             Layout.fillWidth: true
+                                             visible: !chatRow.renaming
+                                             text: root.highlightHistoryMatch(chatRow.title)
+                                             textFormat: Text.StyledText
+                                             color: chatRow.isCurrent ? Colours.palette.m3onSecondaryContainer : Colours.palette.m3onSurface
+                                             font: Tokens.font.title.small
+                                             elide: Text.ElideRight
+                                             maximumLineCount: 1
+                                         }
+
+                                         TextFieldBase {
+                                             id: renameField
+
+                                             Layout.fillWidth: true
+                                             visible: chatRow.renaming
+                                             leftPadding: Tokens.padding.small
+                                             rightPadding: Tokens.padding.small
+                                             topPadding: 2
+                                             bottomPadding: 2
+                                             font: Tokens.font.title.small
+
+                                             background: StyledRect {
+                                                 radius: Tokens.rounding.small
+                                                 color: Colours.tPalette.m3surfaceContainerHighest
+                                                 border.width: 1
+                                                 border.color: Colours.palette.m3primary
+                                             }
+
+                                             onVisibleChanged: {
+                                                 if (visible) {
+                                                     text = chatRow.title;
+                                                     forceActiveFocus();
+                                                     selectAll();
+                                                 }
+                                             }
+                                             onActiveFocusChanged: {
+                                                 if (!activeFocus && chatRow.renaming)
+                                                     root.renameChat(chatRow.chatId, text);
+                                             }
+                                             Keys.onReturnPressed: root.renameChat(chatRow.chatId, text)
+                                             Keys.onEnterPressed: root.renameChat(chatRow.chatId, text)
+                                             Keys.onEscapePressed: {
+                                                 root.historyRenamingId = "";
+                                                 root.markHistoryDirty();
+                                             }
+                                         }
+
+                                         Row {
+                                             id: rowActions
+
+                                             visible: chatRow.showActions
+
+                                             IconButton {
+                                                 id: pinButton
+
+                                                 type: IconButton.Text
+                                                 font: Tokens.font.icon.small
+                                                 icon: chatRow.pinned ? "keep_off" : "keep"
+                                                 onClicked: root.togglePinChat(chatRow.chatId)
+
+                                                 Tooltip {
+                                                     target: pinButton
+                                                     text: chatRow.pinned ? qsTr("Unpin") : qsTr("Pin to top")
+                                                 }
+                                             }
+
+                                             IconButton {
+                                                 id: renameButton
+
+                                                 type: IconButton.Text
+                                                 font: Tokens.font.icon.small
+                                                 icon: "edit"
+                                                 onClicked: root.historyRenamingId = chatRow.chatId
+
+                                                 Tooltip {
+                                                     target: renameButton
+                                                     text: qsTr("Rename")
+                                                 }
+                                             }
+
+                                             IconButton {
+                                                 id: copyButton
+
+                                                 type: IconButton.Text
+                                                 font: Tokens.font.icon.small
+                                                 icon: chatRow.copied ? "check" : "content_copy"
+                                                 onClicked: {
+                                                     root.copyChatAsMarkdown(chatRow.chatId);
+                                                     chatRow.copied = true;
+                                                     copiedReset.restart();
+                                                 }
+
+                                                 Tooltip {
+                                                     target: copyButton
+                                                     text: qsTr("Copy as Markdown")
+                                                 }
+                                             }
+
+                                             IconButton {
+                                                 id: deleteButton
+
+                                                 type: IconButton.Text
+                                                 font: Tokens.font.icon.small
+                                                 icon: chatRow.confirmDelete ? "delete_forever" : "delete"
+                                                 inactiveOnColour: chatRow.confirmDelete ? Colours.palette.m3error : Colours.palette.m3onSurfaceVariant
+                                                 onClicked: {
+                                                     if (chatRow.confirmDelete) {
+                                                         root.deleteChat(chatRow.chatId);
+                                                     } else {
+                                                         chatRow.confirmDelete = true;
+                                                         confirmDeleteReset.restart();
+                                                     }
+                                                 }
+
+                                                 Tooltip {
+                                                     target: deleteButton
+                                                     text: chatRow.confirmDelete ? qsTr("Click again to delete") : qsTr("Delete")
+                                                 }
+                                             }
+                                         }
+                                     }
+
+                                     StyledText {
+                                         Layout.fillWidth: true
+                                         visible: chatRow.preview !== ""
+                                         text: root.highlightHistoryMatch(chatRow.preview)
+                                         textFormat: Text.StyledText
+                                         color: chatRow.isCurrent ? Colours.palette.m3onSecondaryContainer : Colours.palette.m3onSurfaceVariant
+                                         opacity: chatRow.isCurrent ? 0.8 : 1
+                                         font: Tokens.font.body.small
+                                         wrapMode: Text.Wrap
+                                         maximumLineCount: 2
                                          elide: Text.ElideRight
-                                          wrapMode: Text.Wrap
-                                          maximumLineCount: 3
-                                     }
-                                 }
-
-                                 Item {
-                                     Layout.alignment: Qt.AlignTop | Qt.AlignRight
-                                     Layout.preferredWidth: 24
-                                     Layout.preferredHeight: 24
-                                     
-                                     StyledRect {
-                                         anchors.fill: parent
-                                         radius: 12
-                                         color: Colours.palette.m3onSurfaceVariant
-                                         opacity: deleteMouseArea.containsMouse ? 0.12 : 0.0
-
-                                         Behavior on opacity { NumberAnimation { duration: 150 } }
                                      }
 
-                                     MaterialIcon {
-                                         anchors.centerIn: parent
-                                         text: "close"
-                                         font: Tokens.font.icon.small
-                                         color: Colours.palette.m3onSurfaceVariant
-                                     }
+                                     RowLayout {
+                                         Layout.fillWidth: true
+                                         Layout.topMargin: 2
+                                         spacing: Tokens.spacing.small
 
-                                     MouseArea {
-                                         id: deleteMouseArea
+                                         StyledText {
+                                             text: chatRow.timeText
+                                             color: Colours.palette.m3outline
+                                             font: Tokens.font.label.small
+                                         }
 
-                                         anchors.fill: parent
-                                         hoverEnabled: true
-                                         cursorShape: Qt.PointingHandCursor
-                                         onClicked: deleteChat(chatId)
+                                         StyledText {
+                                             text: "·"
+                                             color: Colours.palette.m3outline
+                                             font: Tokens.font.label.small
+                                         }
+
+                                         StyledText {
+                                             text: chatRow.msgCount === 1 ? qsTr("1 message") : qsTr("%1 messages").arg(chatRow.msgCount)
+                                             color: Colours.palette.m3outline
+                                             font: Tokens.font.label.small
+                                         }
+
+                                         MaterialIcon {
+                                             visible: chatRow.cwd !== ""
+                                             Layout.leftMargin: Tokens.spacing.small
+                                             text: "folder"
+                                             color: Colours.palette.m3outline
+                                             fontStyle: Tokens.font.icon.builders.small.scale(0.8).build()
+                                         }
+
+                                         StyledText {
+                                             Layout.fillWidth: true
+                                             visible: chatRow.cwd !== ""
+                                             text: chatRow.cwd
+                                             color: Colours.palette.m3outline
+                                             font: Tokens.font.label.small
+                                             elide: Text.ElideMiddle
+                                         }
+
+                                         Item {
+                                             Layout.fillWidth: true
+                                             visible: chatRow.cwd === ""
+                                         }
                                      }
                                  }
                              }
@@ -3168,70 +3544,144 @@ Item {
                      }
                  }
 
-                 StyledRect {
-                     id: clearAllButton
+                 ColumnLayout {
+                     anchors.centerIn: historyList
+                     width: historyList.width - Tokens.padding.large * 2
+                     visible: historySessionsModel.count === 0
+                     spacing: Tokens.spacing.small
 
-                     anchors.bottom: parent.bottom
-                     anchors.left: parent.left
-                     width: clearAllLayout.implicitWidth + Tokens.padding.large * 2
-                     height: 32
-                     radius: 16
-                     color: Colours.palette.m3errorContainer
-
-                     StateLayer {
-                         radius: 16
-                         onClicked: clearAllHistory()
+                     MaterialIcon {
+                         Layout.alignment: Qt.AlignHCenter
+                         text: root.historyQuery.trim() ? "search_off" : "forum"
+                         color: Colours.palette.m3outline
+                         font: Tokens.font.icon.extraLarge
                      }
 
-                     RowLayout {
-                         id: clearAllLayout
+                     StyledText {
+                         Layout.fillWidth: true
+                         horizontalAlignment: Text.AlignHCenter
+                         text: root.historyQuery.trim() ? qsTr("No chats match \"%1\"").arg(root.historyQuery.trim()) : qsTr("No saved chats yet")
+                         color: Colours.palette.m3onSurfaceVariant
+                         font: Tokens.font.body.medium
+                         wrapMode: Text.Wrap
+                     }
 
-                         anchors.centerIn: parent
-                         spacing: Tokens.spacing.small
-
-                         MaterialIcon {
-                             text: "delete"
-                             color: Colours.palette.m3onErrorContainer
-                             font: Tokens.font.icon.small
-                         }
-                         Text {
-                             text: qsTr("Clear All")
-                             color: Colours.palette.m3onErrorContainer
-                             font: Tokens.font.body.small
-                         }
+                     StyledText {
+                         Layout.fillWidth: true
+                         horizontalAlignment: Text.AlignHCenter
+                         visible: !GlobalConfig.ai.saveChatHistory && !root.historyQuery.trim()
+                         text: qsTr("Saving chat history is turned off in AI settings")
+                         color: Colours.palette.m3outline
+                         font: Tokens.font.body.small
+                         wrapMode: Text.Wrap
                      }
                  }
 
-                 StyledRect {
-                     id: newChatButton
+                 RowLayout {
+                     id: historyActions
+
+                     property bool confirmClear: false
+                     readonly property int clearableCount: root.totalChatCount - root.pinnedChatCount
 
                      anchors.bottom: parent.bottom
+                     anchors.left: parent.left
                      anchors.right: parent.right
-                     width: newChatLayout.implicitWidth + Tokens.padding.large * 2
-                     height: 32
-                     radius: 16
-                     color: Colours.palette.m3primaryContainer
+                     spacing: Tokens.spacing.small
 
-                     StateLayer {
-                         radius: 16
-                         onClicked: createNewChat()
+                     Timer {
+                         id: confirmClearReset
+
+                         interval: 3000
+                         onTriggered: historyActions.confirmClear = false
                      }
 
-                     RowLayout {
-                         id: newChatLayout
+                     StyledRect {
+                         id: clearAllButton
 
-                         anchors.centerIn: parent
-                         spacing: Tokens.spacing.small
+                         Layout.preferredWidth: clearAllLayout.implicitWidth + Tokens.padding.large * 2
+                         Layout.preferredHeight: 32
+                         radius: 16
+                         visible: historyActions.clearableCount > 0
+                         color: historyActions.confirmClear ? Colours.palette.m3error : Colours.palette.m3errorContainer
 
-                         MaterialIcon {
-                             text: "add"
-                             color: Colours.palette.m3onPrimaryContainer
-                             font: Tokens.font.icon.small
+                         StateLayer {
+                             radius: 16
+                             onClicked: {
+                                 if (historyActions.confirmClear) {
+                                     historyActions.confirmClear = false;
+                                     root.clearAllHistory();
+                                 } else {
+                                     historyActions.confirmClear = true;
+                                     confirmClearReset.restart();
+                                 }
+                             }
                          }
-                         Text {
-                             text: qsTr("New Chat")
-                             color: Colours.palette.m3onPrimaryContainer
-                             font: Tokens.font.body.small
+
+                         RowLayout {
+                             id: clearAllLayout
+
+                             anchors.centerIn: parent
+                             spacing: Tokens.spacing.small
+
+                             MaterialIcon {
+                                 text: historyActions.confirmClear ? "delete_forever" : "delete_sweep"
+                                 color: historyActions.confirmClear ? Colours.palette.m3onError : Colours.palette.m3onErrorContainer
+                                 font: Tokens.font.icon.small
+                             }
+                             Text {
+                                 text: {
+                                     if (historyActions.confirmClear)
+                                         return qsTr("Delete %1?").arg(historyActions.clearableCount);
+                                     return root.pinnedChatCount > 0 ? qsTr("Clear unpinned") : qsTr("Clear all");
+                                 }
+                                 color: historyActions.confirmClear ? Colours.palette.m3onError : Colours.palette.m3onErrorContainer
+                                 font: Tokens.font.body.small
+                             }
+                         }
+                     }
+
+                     StyledText {
+                         Layout.fillWidth: true
+                         horizontalAlignment: Text.AlignHCenter
+                         text: {
+                             if (root.historyQuery.trim())
+                                 return qsTr("%1 of %2").arg(historySessionsModel.count).arg(root.totalChatCount);
+                             return root.totalChatCount === 1 ? qsTr("1 chat") : qsTr("%1 chats").arg(root.totalChatCount);
+                         }
+                         color: Colours.palette.m3outline
+                         font: Tokens.font.label.small
+                         elide: Text.ElideRight
+                     }
+
+                     StyledRect {
+                         id: newChatButton
+
+                         Layout.preferredWidth: newChatLayout.implicitWidth + Tokens.padding.large * 2
+                         Layout.preferredHeight: 32
+                         radius: 16
+                         color: Colours.palette.m3primaryContainer
+
+                         StateLayer {
+                             radius: 16
+                             onClicked: createNewChat()
+                         }
+
+                         RowLayout {
+                             id: newChatLayout
+
+                             anchors.centerIn: parent
+                             spacing: Tokens.spacing.small
+
+                             MaterialIcon {
+                                 text: "add"
+                                 color: Colours.palette.m3onPrimaryContainer
+                                 font: Tokens.font.icon.small
+                             }
+                             Text {
+                                 text: qsTr("New Chat")
+                                 color: Colours.palette.m3onPrimaryContainer
+                                 font: Tokens.font.body.small
+                             }
                          }
                      }
                  }
@@ -3258,3 +3708,4 @@ Item {
         }
     }
 }
+

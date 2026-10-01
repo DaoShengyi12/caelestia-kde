@@ -215,6 +215,34 @@ assert.strictEqual(Sessions.withoutChats(JSON.stringify(saved), ["chat_1"]), "[]
 '
 }
 
+test_history_rows() {
+    have_node || { skip_test "node is not installed"; return 0; }
+    check_js "the history list should match, order and preview chats" '
+const msg = (isUser, text) => Sessions.newMessage({ isUser, text });
+const sessions = [
+    { id: "chat_1000", title: "Old", messages: [msg(true, "find the needle here"), msg(false, "**bold** reply")] },
+    { id: "chat_2000", title: "Pinned one", pinned: true, updatedAt: 500, messages: [msg(true, "hi")] },
+    { id: "chat_3000", title: "Code", provider: "claude-code", claudeCodeCwd: "/tmp/x", updatedAt: 9000, messages: [msg(true, "a\n```js\nx()\n```")] },
+    { id: "chat_4000", title: "New Chat", messages: [] }
+];
+const all = Sessions.historyRows(sessions, "");
+assert.deepStrictEqual(all.map(r => r.chatId), ["chat_2000", "chat_3000", "chat_1000"], "pinned first, then newest; empty chats are left out");
+assert.strictEqual(all[2].ts, 1000, "without updatedAt the id gives the time");
+assert.strictEqual(all[2].preview, "bold reply");
+assert.strictEqual(all[2].previewIsUser, false);
+assert.strictEqual(all[1].preview, "a [code]");
+assert.strictEqual(all[1].cwd, "/tmp/x");
+assert.strictEqual(all[2].cwd, "", "only Claude Code chats show a directory");
+
+const hit = Sessions.historyRows(sessions, " NEEDLE ");
+assert.deepStrictEqual(hit.map(r => r.chatId), ["chat_1000"]);
+assert.strictEqual(hit[0].preview, "find the needle here");
+assert.deepStrictEqual(Sessions.historyRows(sessions, "pinned").map(r => r.chatId), ["chat_2000"], "titles match too");
+
+assert.strictEqual(Sessions.asMarkdown(sessions[1]), "# Pinned one\n\n**You:**\n\nhi");
+'
+}
+
 test_attachment_paths() {
     have_node || { skip_test "node is not installed"; return 0; }
     check_js "dropped URLs should become local paths" '
