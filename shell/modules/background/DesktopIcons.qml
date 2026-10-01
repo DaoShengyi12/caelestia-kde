@@ -30,6 +30,38 @@ Item {
 
     readonly property bool renameActive: renamingDelegate !== null
 
+    // Rewrites one key in the [Desktop Entry] group, leaving the rest of the file as is.
+    readonly property string setDesktopKeyScript: `import os, sys
+path, key, value = sys.argv[1:4]
+value = value.replace('\\\\', '\\\\\\\\').replace('\\n', '\\\\n').replace('\\t', '\\\\t').replace('\\r', '\\\\r')
+with open(path, encoding='utf-8') as f:
+    lines = f.read().split('\\n')
+group = None
+header = None
+found = False
+for i, line in enumerate(lines):
+    stripped = line.strip()
+    if stripped.startswith('['):
+        group = stripped
+        if group == '[Desktop Entry]' and header is None:
+            header = i
+        continue
+    if group == '[Desktop Entry]' and stripped.split('=', 1)[0].strip() == key:
+        lines[i] = key + '=' + value
+        found = True
+        break
+if not found:
+    if header is None:
+        sys.exit('no [Desktop Entry] group in ' + path)
+    lines.insert(header + 1, key + '=' + value)
+mode = os.stat(path).st_mode & 0o7777
+tmp = os.path.join(os.path.dirname(path), '.' + os.path.basename(path) + '.tmp')
+with open(tmp, 'w', encoding='utf-8') as f:
+    f.write('\\n'.join(lines))
+os.chmod(tmp, mode)
+os.replace(tmp, path)
+`
+
     function getIconCols(): int {
         return Math.max(1, Math.floor(gridItem.width / root.cellWidth));
     }
@@ -92,36 +124,6 @@ Item {
             return;
         runFileOp(["kioclient", "move", oldPath, dir + "/" + trimmed]);
     }
-
-    // Rewrites one key in the [Desktop Entry] group, leaving the rest of the file as is.
-    readonly property string setDesktopKeyScript: `import os, sys
-path, key, value = sys.argv[1:4]
-value = value.replace('\\\\', '\\\\\\\\').replace('\\n', '\\\\n').replace('\\t', '\\\\t').replace('\\r', '\\\\r')
-with open(path, encoding='utf-8') as f:
-    lines = f.read().split('\\n')
-group = None
-header = None
-for i, line in enumerate(lines):
-    stripped = line.strip()
-    if stripped.startswith('['):
-        group = stripped
-        if group == '[Desktop Entry]' and header is None:
-            header = i
-        continue
-    if group == '[Desktop Entry]' and stripped.split('=', 1)[0].strip() == key:
-        lines[i] = key + '=' + value
-        break
-else:
-    if header is None:
-        sys.exit('no [Desktop Entry] group in ' + path)
-    lines.insert(header + 1, key + '=' + value)
-mode = os.stat(path).st_mode & 0o7777
-tmp = os.path.join(os.path.dirname(path), '.' + os.path.basename(path) + '.tmp')
-with open(tmp, 'w', encoding='utf-8') as f:
-    f.write('\\n'.join(lines))
-os.chmod(tmp, mode)
-os.replace(tmp, path)
-`
 
     function iconAt(x: real, y: real): bool {
         if (!visible)
@@ -539,13 +541,13 @@ os.replace(tmp, path)
                         // The window only gets keyboard focus once the compositor applies the
                         // exclusive grab, after startRename() has run; focus the editor then.
                         Connections {
-                            target: renameField.Window.window
-                            enabled: delegateItem.renaming
-
                             function onActiveChanged(): void {
                                 if (renameField.Window.window.active)
                                     renameField.forceActiveFocus();
                             }
+
+                            target: renameField.Window.window
+                            enabled: delegateItem.renaming
                         }
                     }
 
