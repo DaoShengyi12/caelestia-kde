@@ -33,10 +33,13 @@ Item {
             if (content.sidebarOpen && !content.isDockPopout)
                 return parent.width - content.nonAnimWidth;
 
+            // An item left of the open sidebar gets its popout kept clear of it, so
+            // the sidebar doesn't have to be pushed out of the way.
+            const right = root.visibilities.sidebar && !content.underSidebar ? parent.width - Visibilities.sidebarWidthFor(Tokens.sizes.sidebar.width) - Tokens.spacing.extraLarge : parent.width;
             const off = content.currentCenter - parent.leftMargin - content.nonAnimWidth / 2;
-            const diff = parent.width - Math.floor(off + content.nonAnimWidth);
+            const diff = right - Math.floor(off + content.nonAnimWidth);
             if (diff < 0)
-                return off + diff;
+                return Math.max(off + diff, 0);
             return Math.max(off, 0);
         }
         if (bar.position === "right")
