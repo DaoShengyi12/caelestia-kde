@@ -75,6 +75,8 @@ Item {
         // On the desktop the editor has to fit the label row under the card.
         verticalPadding: root.desktopStyle ? Tokens.padding.small : Tokens.padding.large
         horizontalPadding: root.desktopStyle ? Tokens.padding.medium : Tokens.padding.large
+        // On the desktop it stands in for the label, so no outline either.
+        background.visible: !root.desktopStyle
         onAccepted: root.commitRename()
         onActiveFocusChanged: {
             if (!activeFocus && root.renaming)
