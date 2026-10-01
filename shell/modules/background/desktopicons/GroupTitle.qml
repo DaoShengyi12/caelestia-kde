@@ -10,6 +10,8 @@ Item {
 
     property string text
     property bool renaming: false
+    // Drawn like a desktop icon label; renamed through F2 or the menu instead of a click.
+    property bool desktopStyle: false
 
     signal renameRequested
     signal renameCommitted(string text)
@@ -36,7 +38,8 @@ Item {
         renameCancelled();
     }
 
-    implicitHeight: Math.max(label.implicitHeight, field.implicitHeight)
+    implicitWidth: renaming ? 180 : label.implicitWidth
+    implicitHeight: renaming ? field.implicitHeight : label.implicitHeight
     height: implicitHeight
 
     StyledText {
@@ -47,11 +50,14 @@ Item {
         width: Math.min(implicitWidth, parent.width)
         visible: !root.renaming
         text: root.text
-        font: Tokens.font.title.medium
+        font: root.desktopStyle ? Tokens.font.body.small : Tokens.font.title.medium
         elide: Text.ElideRight
+        style: root.desktopStyle ? Text.Outline : Text.Normal
+        styleColor: Colours.palette.m3surface
 
         MouseArea {
             anchors.fill: parent
+            enabled: !root.desktopStyle
             anchors.margins: -Tokens.padding.small
             cursorShape: Qt.IBeamCursor
             onClicked: root.renameRequested()
