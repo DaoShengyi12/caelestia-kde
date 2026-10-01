@@ -92,7 +92,7 @@ Controls.Menu {
         }
 
         root.entryByKey = nextEntryByKey;
-        root.dynamicModel = newArr;
+        root.dynamicModel = [pasteItem, arrangeItem, ...newArr];
         const buildMs = Date.now() - buildStartedAt;
         console.log("[perf][DesktopContextMenu] build model source=" + sourceName + " items=" + newArr.length + " ms=" + buildMs);
 
@@ -121,6 +121,7 @@ Controls.Menu {
 
     onExpandedChanged: {
         if (expanded) {
+            DesktopLayout.refreshClipboard();
             root.perfMenuOpenStartedAt = Date.now();
             reloadMenu(false);
         }
@@ -148,6 +149,26 @@ Controls.Menu {
         }
 
         target: ContextMenuStore
+    }
+
+    readonly property bool iconsShown: GlobalConfig.forScreen(screenName).background.wallpaperEnabled && GlobalConfig.forScreen(screenName).background.desktopIconsEnabled
+
+    Controls.MenuItem {
+        id: pasteItem
+
+        text: qsTr("Paste")
+        icon: "content_paste"
+        visible: root.iconsShown && DesktopLayout.clipboardHasFiles
+        onClicked: DesktopLayout.pasteRequested(root.screenName, root.attachTo.x, root.attachTo.y)
+    }
+
+    Controls.MenuItem {
+        id: arrangeItem
+
+        text: qsTr("Arrange Icons...")
+        icon: "sort"
+        visible: root.iconsShown
+        onClicked: DesktopLayout.viewOptionsRequested(root.screenName, root.attachTo.x, root.attachTo.y)
     }
 
     Component {
