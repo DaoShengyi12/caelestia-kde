@@ -66,19 +66,10 @@ CustomMouseArea {
         if (bar.position === "right")
             return x > screen.width - panels.rightMargin - panelWidth && withinPanelHeight(panel, x, y);
         if (bar.position === "top")
-            return y < panels.topMargin + panel.y + panelHeight && (withinPanelWidth(panel, x, y) || inPopoutBridge(panel, x));
+            return y < panels.topMargin + panel.y + panelHeight && withinPanelWidth(panel, x, y);
         if (bar.position === "bottom")
-            return y > screen.height - panels.bottomMargin - panelHeight && (withinPanelWidth(panel, x, y) || inPopoutBridge(panel, x));
+            return y > screen.height - panels.bottomMargin - panelHeight && withinPanelWidth(panel, x, y);
         return false;
-    }
-    // A popout kept clear of the open sidebar (ClipWrapper.qml) can end up beside
-    // its bar icon rather than above it; count the stretch between the two as part
-    // of the popout so moving over to it doesn't close it.
-    function inPopoutBridge(panel: Item, x: real): bool {
-        if (panel !== panels.popoutsWrapper || !popouts.sidebarOpen || !popouts.isDockPopout)
-            return false;
-        const panelRight = panels.leftMargin + panel.x + popouts.nonAnimWidth;
-        return x >= panelRight && x <= popouts.currentCenter + Config.border.rounding;
     }
     function inRightPanel(panel: Item, x: real, y: real, edge = 0, span = 100): bool {
         const onLeft = bar.position === "right";
