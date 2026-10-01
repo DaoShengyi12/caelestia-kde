@@ -13,6 +13,7 @@ import qs.components
 import qs.components.containers
 import qs.components.controls
 import qs.components.effects
+import qs.components.filedialog
 import qs.services
 import qs.utils
 
@@ -291,6 +292,276 @@ Item {
 
     property var currentClaudeCodeProc: null
 
+    // Working directory and permission mode of the current Claude Code chat. Both are
+    // stored per chat (a CLI session only resumes from the directory it was created
+    // in); a new chat inherits whatever was selected last.
+    property string claudeCodeChatCwd: Quickshell.env("HOME") || "."
+    property string claudeCodePermissionMode: defaultClaudeCodePermissionMode()
+    // Bypass is only offered once it has been allowed in the AI settings.
+    readonly property var claudeCodePermissionModes: GlobalConfig.ai.claudeCodeSkipPermissions
+        ? ["bypassPermissions", "acceptEdits", "auto", "plan", "default"]
+        : ["acceptEdits", "auto", "plan", "default"]
+    readonly property var claudeCodeSidebarAllowedTools: ["Bash", "WebFetch", "WebSearch", "Read"]
+
+    function defaultClaudeCodePermissionMode() {
+        return GlobalConfig.ai.claudeCodeSkipPermissions ? "bypassPermissions" : "default";
+    }
+
+    // The mode actually used for a request: a chat saved in bypass mode falls back
+    // to the CLI default once bypass is no longer allowed.
+    function effectiveClaudeCodePermissionMode(mode) {
+        mode = mode || defaultClaudeCodePermissionMode();
+        if (mode === "bypassPermissions" && !GlobalConfig.ai.claudeCodeSkipPermissions)
+            return "default";
+        return mode;
+    }
+
+    function permissionModeLabel(mode) {
+        switch (mode) {
+        case "bypassPermissions": return qsTr("Bypass");
+        case "acceptEdits": return qsTr("Accept edits");
+        case "auto": return qsTr("Auto");
+        case "plan": return qsTr("Plan");
+        case "default": return qsTr("Default");
+        }
+        return mode;
+    }
+
+    function sessionEntry(chatId) {
+        for (var i = 0; i < allChatSessions.length; i++)
+            if (allChatSessions[i].id === chatId)
+                return allChatSessions[i];
+        return null;
+    }
+
+    function setClaudeCodeCwd(dir) {
+        dir = (dir || "").replace(/\/+$/, "") || "/";
+        if (dir === claudeCodeChatCwd)
+            return;
+        claudeCodeChatCwd = dir;
+        // The old session lives under the previous directory's project, so --resume
+        // would fail; the next send seeds a fresh session with the transcript instead.
+        delete claudeCodeSessions[currentChatId];
+        var s = sessionEntry(currentChatId);
+        if (s) {
+            s.claudeCodeSessionId = "";
+            s.claudeCodeCwd = dir;
+            if (GlobalConfig.ai.saveChatHistory)
+                GlobalConfig.ai.ollamaHistoryJson = JSON.stringify(allChatSessions);
+        }
+    }
+
+    function setClaudeCodePermissionMode(mode) {
+        claudeCodePermissionMode = mode;
+        var s = sessionEntry(currentChatId);
+        if (s) {
+            s.claudeCodePermissionMode = mode;
+            if (GlobalConfig.ai.saveChatHistory)
+                GlobalConfig.ai.ollamaHistoryJson = JSON.stringify(allChatSessions);
+        }
+    }
+
+    // A file dialog is open (keeps the sidebar loaded, see Content.aiBusy).
+    readonly property bool dialogOpen: cwdDialog.activeAsync || attachDialog.activeAsync
+
+    function shortPath(p) {
+        var home = Quickshell.env("HOME") || "";
+        if (home !== "" && (p === home || p.indexOf(home + "/") === 0))
+            return "~" + p.substring(home.length);
+        return p;
+    }
+
+    // Files attached to the next message: [{ path, isImage }].
+    property var pendingAttachments: []
+    readonly property bool canSend: inputArea.text.length > 0 || pendingAttachments.length > 0
+    readonly property string attachmentDir: (Quickshell.env("XDG_CACHE_HOME") || ((Quickshell.env("HOME") || "") + "/.cache")) + "/caelestia/ai-attachments"
+
+    function isImagePath(p) {
+        return /\.(png|jpe?g|gif|webp|bmp)$/i.test(p || "");
+    }
+
+    function addAttachment(path) {
+        path = (path || "").trim();
+        if (path.indexOf("file://") === 0)
+            path = decodeURIComponent(path.substring(7));
+        if (path === "")
+            return;
+        for (var i = 0; i < pendingAttachments.length; i++)
+            if (pendingAttachments[i].path === path)
+                return;
+        pendingAttachments = pendingAttachments.concat([{ path: path, isImage: isImagePath(path) }]);
+    }
+
+    function removeAttachment(path) {
+        pendingAttachments = pendingAttachments.filter(a => a.path !== path);
+    }
+
+    // Save a clipboard image to the attachment cache and attach it; without an
+    // image on the clipboard this falls back to a normal text paste.
+    function pasteClipboardImage() {
+        var file = attachmentDir + "/paste-" + Date.now() + ".png";
+        var script = "t=$(wl-paste --list-types 2>/dev/null | grep -m1 '^image/') || exit 3; "
+            + "mkdir -p \"$1\" && wl-paste --no-newline --type \"$t\" > \"$2\" && echo \"$2\"";
+        var cmd = ["sh", "-c", script, "--", attachmentDir, file];
+        var qml =
+            "import QtQuick\n" +
+            "import Quickshell.Io\n" +
+            "Process {\n" +
+            "    id: pp\n" +
+            "    command: " + JSON.stringify(cmd) + "\n" +
+            "    stdout: StdioCollector { id: ppOut }\n" +
+            "    onExited: code => { root.onClipboardImageSaved(code, ppOut.text || \"\"); pp.destroy(); }\n" +
+            "}";
+        try {
+            var o = Qt.createQmlObject(qml, root, "pasteImageProc");
+            o.running = true;
+        } catch (e) {
+            Logger.log("[AI] paste process error: " + e.message);
+        }
+    }
+
+    function onClipboardImageSaved(code, out) {
+        if (code === 0 && out.trim() !== "")
+            addAttachment(out.trim());
+        else
+            inputArea.paste();
+    }
+
+    // Open the current Claude Code session in a terminal (`claude --resume`).
+    function openClaudeCodeInTerminal() {
+        var sid = claudeCodeSessionFor(currentChatId);
+        var dir = activeClaudeConfigDir();
+        var inner = "cd " + shellQuote(claudeCodeCwd()) + " && ";
+        if (dir && dir !== "")
+            inner += "CLAUDE_CONFIG_DIR=" + shellQuote(dir) + " ";
+        inner += "exec " + shellQuote(claudeCodeBinPath());
+        if (sid !== "")
+            inner += " --resume " + shellQuote(sid);
+        var term = GlobalConfig.ai.loginTerminal || "konsole";
+        Launch.exec([term, "-e", "sh", "-lc", inner]);
+    }
+
+    // Live status for a running Claude Code reply, shown under it the way the CLI
+    // does: a rotating verb, elapsed time and output tokens.
+    property real claudeCodeStartedAt: 0
+    property int claudeCodeElapsed: 0
+    property int claudeCodeOutTokens: 0
+    property bool claudeCodeToolRunning: false
+    readonly property var thinkingVerbs: [
+        "Thinking", "Pondering", "Musing", "Mulling", "Cogitating", "Ruminating",
+        "Brewing", "Simmering", "Percolating", "Noodling", "Tinkering", "Puzzling",
+        "Untangling", "Connecting dots", "Crunching", "Sketching", "Weaving",
+        "Conjuring", "Scheming", "Distilling", "Assembling", "Wrangling",
+        "Spelunking", "Unravelling", "Contemplating", "Deliberating", "Figuring"
+    ]
+
+    function randomThinkingVerb() {
+        var v;
+        do {
+            v = thinkingVerbs[Math.floor(Math.random() * thinkingVerbs.length)] + "…";
+        } while (v === currentActionText && thinkingVerbs.length > 1);
+        return v;
+    }
+
+    function formatElapsed(sec) {
+        if (sec < 60)
+            return sec + "s";
+        return Math.floor(sec / 60) + "m " + (sec % 60) + "s";
+    }
+
+    Timer {
+        interval: 1000
+        repeat: true
+        running: root.isClaudeCode && root.isTyping && root.claudeCodeStartedAt > 0
+        onTriggered: root.claudeCodeElapsed = Math.floor((Date.now() - root.claudeCodeStartedAt) / 1000)
+    }
+
+    // A new verb every few seconds while nothing more specific (a tool) is shown.
+    Timer {
+        interval: 4000
+        repeat: true
+        running: root.isClaudeCode && root.isTyping && !root.claudeCodeToolRunning
+        onTriggered: root.currentActionText = root.randomThinkingVerb()
+    }
+
+    // Short one-line description of a tool call for its card header.
+    function toolSummary(name, input) {
+        if (!input)
+            return "";
+        if (isAgentTool(name))
+            return input.description || "";
+        var s = input.command || input.skill || input.file_path || input.notebook_path || input.pattern
+            || input.url || input.query || input.description || input.prompt || "";
+        if (s === "" && name === "TodoWrite" && Array.isArray(input.todos))
+            s = input.todos.length + " todos";
+        if (s === "") {
+            try { s = JSON.stringify(input); } catch (e) {}
+        }
+        s = String(s).replace(/\s+/g, " ").trim();
+        return s.length > 200 ? s.substring(0, 200) + "…" : s;
+    }
+
+    function isAgentTool(name) {
+        return name === "Agent" || name === "Task";
+    }
+
+    // "2 tools · 23.9k tokens · 6.6s" for a subagent card.
+    function agentStatsText(t) {
+        var parts = [];
+        if (t.toolUses)
+            parts.push(t.toolUses + (t.toolUses === 1 ? " tool" : " tools"));
+        if (t.tokens)
+            parts.push(formatTokens(t.tokens) + " tokens");
+        if (t.durationMs)
+            parts.push((t.durationMs / 1000).toFixed(1) + "s");
+        return parts.join(" · ");
+    }
+
+    // Find the top-level card a (possibly nested) subagent event belongs to.
+    function agentCardFor(proc, parentId) {
+        var top = proc.agentOf[parentId] || parentId;
+        return claudeCodeTool(proc, top);
+    }
+
+    function toolResultText(content) {
+        var t = "";
+        if (typeof content === "string")
+            t = content;
+        else if (Array.isArray(content))
+            for (var i = 0; i < content.length; i++) {
+                if (content[i].type === "text")
+                    t += (t ? "\n" : "") + (content[i].text || "");
+                else if (content[i].type === "image")
+                    t += (t ? "\n" : "") + "[image]";
+            }
+        t = t.trim();
+        return t.length > 2000 ? t.substring(0, 2000) + "\n…" : t;
+    }
+
+    function formatTokens(n) {
+        n = n || 0;
+        if (n >= 1000000) return (n / 1000000).toFixed(1) + "M";
+        if (n >= 1000) return (n / 1000).toFixed(1) + "k";
+        return String(n);
+    }
+
+    // "12.3s · 4 turns · 1.2k in / 800 out · $0.04" from the CLI's result event.
+    function usageSummary(evt) {
+        var parts = [];
+        if (evt.duration_ms)
+            parts.push((evt.duration_ms / 1000).toFixed(1) + "s");
+        if (evt.num_turns)
+            parts.push(evt.num_turns + (evt.num_turns === 1 ? " turn" : " turns"));
+        var u = evt.usage;
+        if (u) {
+            var inTok = (u.input_tokens || 0) + (u.cache_read_input_tokens || 0) + (u.cache_creation_input_tokens || 0);
+            parts.push(formatTokens(inTok) + " in / " + formatTokens(u.output_tokens) + " out");
+        }
+        if (typeof evt.total_cost_usd === "number")
+            parts.push("$" + evt.total_cost_usd.toFixed(evt.total_cost_usd < 1 ? 3 : 2));
+        return parts.join(" · ");
+    }
+
     property var promptSuggestions: []
 
     property bool loadingSuggestions: false
@@ -403,6 +674,13 @@ Item {
         }
     }
 
+    function withAttachmentList(text, paths) {
+        if (!paths || paths.length === 0)
+            return text;
+        return ((text || "").trim() + "\n\nAttached files (use the Read tool to view them):\n"
+            + paths.map(p => "- " + p).join("\n")).trim();
+    }
+
     function claudeCodeTranscript() {
         var lines = [];
         var count = 0;
@@ -411,6 +689,8 @@ Item {
             if (!m.isUser && !m.isFinished)
                 continue;
             var t = (m.text || "").trim();
+            if (m.isUser && (m.attachments || "") !== "")
+                t = withAttachmentList(t, m.attachments.split("\n"));
             if (t === "")
                 continue;
             lines.push((m.isUser ? "User: " : "Assistant: ") + t);
@@ -836,7 +1116,7 @@ Item {
 
 
     function claudeCodeCwd() {
-        return Quickshell.env("HOME") || ".";
+        return claudeCodeChatCwd || Quickshell.env("HOME") || ".";
     }
 
     function claudeCodeBinPath() {
@@ -850,8 +1130,20 @@ Item {
         return b;
     }
 
-    function claudeCodePermissionArgs() {
-        return GlobalConfig.ai.claudeCodeSkipPermissions ? ["--dangerously-skip-permissions"] : [];
+    function claudeCodePermissionArgs(mode) {
+        mode = effectiveClaudeCodePermissionMode(mode);
+        if (mode === "bypassPermissions")
+            return ["--dangerously-skip-permissions"];
+        if (mode === "default")
+            return [];
+        var args = ["--permission-mode", mode];
+        // There is no approval prompt in the sidebar, so in accept-edits mode
+        // commands, web access and reads outside the working directory would just
+        // be denied. Allow them for sidebar sessions only; edits outside the
+        // working directory still need permission.
+        if (mode === "acceptEdits")
+            args = args.concat(["--allowedTools", claudeCodeSidebarAllowedTools.join(",")]);
+        return args;
     }
 
     function claudeAccounts() {
@@ -1018,29 +1310,41 @@ Item {
     function stopClaudeCode() {
         if (root.currentClaudeCodeProc) {
             try {
+                root.currentClaudeCodeProc.stopped = true;
                 root.currentClaudeCodeProc.running = false;
             } catch (e) {}
             root.currentClaudeCodeProc = null;
         }
     }
 
-    function sendClaudeCode(promptText) {
+    function sendClaudeCode(promptText, attachments) {
+        claudeCodeStartedAt = Date.now();
+        claudeCodeElapsed = 0;
+        claudeCodeOutTokens = 0;
+        claudeCodeToolRunning = false;
+        currentActionText = randomThinkingVerb();
         for (var i = chatHistory.count - 1; i >= 0; i--) {
             var m = chatHistory.get(i);
-            if (!m.isUser && !m.isFinished && m.text === "")
+            if (!m.isUser && !m.isFinished && m.text === "" && (m.toolsJson || "") === "")
                 chatHistory.remove(i);
         }
         chatHistory.append({
             "isUser": false,
             "text": "",
             "isFinished": false,
-            "thoughtText": ""
+            "thoughtText": "",
+            "toolsJson": "",
+            "usageText": "",
+            "attachments": ""
         });
         listView.positionViewAtEnd();
 
         var bin = claudeCodeBinPath();
         var sid = claudeCodeSessionFor(currentChatId);
 
+        // Fresh session (new chat, the active account changed, or the working
+        // directory changed) → seed it with the prior transcript so the conversation
+        // carries over.
         var promptToSend = promptText;
         if (sid === "") {
             var transcript = claudeCodeTranscript();
@@ -1048,7 +1352,22 @@ Item {
                 promptToSend = transcript;
         }
 
-        var cmd = [bin, "-p", promptToSend, "--output-format", "stream-json", "--verbose", "--include-partial-messages"].concat(claudeCodePermissionArgs());
+        var cmd = [bin, "-p", promptToSend];
+
+        // Attachments usually live outside the working directory (e.g. pasted
+        // screenshots in the cache); allow the CLI to read them in any mode.
+        var dirs = [];
+        for (var a = 0; a < (attachments || []).length; a++) {
+            var d = attachments[a].replace(/\/[^\/]*$/, "") || "/";
+            if (dirs.indexOf(d) === -1)
+                dirs.push(d);
+        }
+        if (dirs.length > 0)
+            cmd = cmd.concat(["--add-dir"], dirs);
+
+        cmd = cmd.concat(["--output-format", "stream-json", "--verbose", "--include-partial-messages"]);
+
+        cmd = cmd.concat(claudeCodePermissionArgs(claudeCodePermissionMode));
 
         var mdl = GlobalConfig.ai.defaultClaudeCodeModel || "default";
         if (mdl && mdl !== "default") {
@@ -1077,10 +1396,20 @@ Item {
             "    command: " + commandStr + "\n" +
             "    workingDirectory: " + cwdStr + "\n" +
             claudeCodeEnvSnippet() +
+            "    property string chatId: " + JSON.stringify(currentChatId) + "\n" +
+            "    property int idx: " + (chatHistory.count - 1) + "\n" +
             "    property string acc: \"\"\n" +
             "    property string thought: \"\"\n" +
             "    property string sess: \"\"\n" +
             "    property string errAcc: \"\"\n" +
+            "    property string usage: \"\"\n" +
+            "    property var tools: []\n" +
+            "    property bool needSep: false\n" +
+            "    property bool thoughtSep: false\n" +
+            "    property int doneTokens: 0\n" +
+            "    property var agentOf: ({})\n" +
+            "    property int msgChars: 0\n" +
+            "    property bool stopped: false\n" +
             "    property bool done: false\n" +
             "    stdout: SplitParser { onRead: line => root.onClaudeCodeLine(proc, line) }\n" +
             "    stderr: SplitParser { onRead: line => root.logClaudeCodeStderr(proc, line) }\n" +
@@ -1101,6 +1430,43 @@ Item {
         }
     }
 
+    // Write to the bubble this process streams into, unless the user has since
+    // switched to another chat.
+    function setClaudeCodeBubble(proc, role, value) {
+        if (proc.chatId !== currentChatId || proc.idx < 0 || proc.idx >= chatHistory.count)
+            return;
+        chatHistory.setProperty(proc.idx, role, value);
+    }
+
+    function updateClaudeCodeTools(proc) {
+        setClaudeCodeBubble(proc, "toolsJson", proc.tools.length > 0 ? JSON.stringify(proc.tools) : "");
+        if (proc.chatId === currentChatId)
+            listView.positionViewAtEnd();
+    }
+
+    function claudeCodeTool(proc, id) {
+        for (var i = 0; i < proc.tools.length; i++)
+            if (proc.tools[i].id === id)
+                return proc.tools[i];
+        return null;
+    }
+
+    function appendClaudeCodeText(proc, text) {
+        if (!text)
+            return;
+        // A new text block after a tool call (or a new assistant turn) starts a
+        // new paragraph instead of running on from the previous sentence.
+        if (proc.needSep && proc.acc.trim() !== "")
+            proc.acc = proc.acc.replace(/\s+$/, "") + "\n\n";
+        proc.needSep = false;
+        proc.acc += text;
+        if (isThinking)
+            isThinking = false;
+        setClaudeCodeBubble(proc, "text", proc.acc.trim());
+        if (proc.chatId === currentChatId)
+            listView.positionViewAtEnd();
+    }
+
     function onClaudeCodeLine(proc, line) {
         line = (line || "").trim();
         if (line === "")
@@ -1116,28 +1482,63 @@ Item {
         if (evt.session_id)
             proc.sess = evt.session_id;
 
-        if (evt.type === "system")
+        if (evt.type === "system") {
+            onClaudeCodeTaskEvent(proc, evt);
             return;
+        }
+
+        // Events from subagents (Task/Agent tool) belong to that tool's card, not
+        // to the main reply.
+        if (evt.parent_tool_use_id) {
+            onClaudeCodeSubagentEvent(proc, evt);
+            return;
+        }
 
         if (evt.type === "stream_event" && evt.event) {
             var ev = evt.event;
-            if (ev.type === "content_block_delta" && ev.delta) {
-                if (ev.delta.type === "text_delta") {
-                    proc.acc += ev.delta.text || "";
-                    if (isThinking) isThinking = false;
-                } else if (ev.delta.type === "thinking_delta") {
-                    proc.thought += ev.delta.thinking || "";
+            if (ev.type === "message_start") {
+                proc.needSep = true;
+                proc.msgChars = 0;
+            } else if (ev.type === "message_delta" && ev.usage && ev.usage.output_tokens) {
+                // The real count arrives once per message; until then it is estimated.
+                proc.doneTokens += ev.usage.output_tokens;
+                proc.msgChars = 0;
+                if (proc.chatId === currentChatId)
+                    claudeCodeOutTokens = proc.doneTokens;
+            } else if (ev.type === "content_block_start" && ev.content_block) {
+                var cb = ev.content_block;
+                if (cb.type === "thinking")
+                    proc.thoughtSep = true;
+                if (cb.type === "tool_use") {
+                    proc.needSep = true;
+                    if (!claudeCodeTool(proc, cb.id)) {
+                        proc.tools.push({ id: cb.id, name: cb.name || "tool", summary: "", result: "", isError: false, done: false });
+                        updateClaudeCodeTools(proc);
+                    }
+                    currentActionText = "Running " + (cb.name || "tool") + "…";
+                    claudeCodeToolRunning = true;
+                    isThinking = true;
                 }
-                root.currentThoughtText = proc.thought.trim();
-                chatHistory.setProperty(chatHistory.count - 1, "thoughtText", proc.thought.trim());
-                chatHistory.setProperty(chatHistory.count - 1, "text", proc.acc.trim());
-                listView.positionViewAtEnd();
+            } else if (ev.type === "content_block_delta" && ev.delta) {
+                proc.msgChars += (ev.delta.text || ev.delta.thinking || ev.delta.partial_json || "").length;
+                if (proc.chatId === currentChatId)
+                    claudeCodeOutTokens = proc.doneTokens + Math.round(proc.msgChars / 3);
+                if (ev.delta.type === "text_delta") {
+                    appendClaudeCodeText(proc, ev.delta.text || "");
+                } else if (ev.delta.type === "thinking_delta") {
+                    if (proc.thoughtSep && proc.thought.trim() !== "")
+                        proc.thought = proc.thought.replace(/\s+$/, "") + "\n\n";
+                    proc.thoughtSep = false;
+                    proc.thought += ev.delta.thinking || "";
+                    root.currentThoughtText = proc.thought.trim();
+                    setClaudeCodeBubble(proc, "thoughtText", proc.thought.trim());
+                }
             }
             return;
         }
 
-        // Whole assistant messages (also carry tool_use blocks). Used as the fallback
-        // when token-level partials aren't emitted, and to surface tool activity.
+        // Whole assistant messages carry the complete tool_use inputs; they are also
+        // the fallback when token-level partials aren't emitted.
         if (evt.type === "assistant" && evt.message && evt.message.content) {
             var hasTool = false;
             var textPart = "";
@@ -1145,20 +1546,60 @@ Item {
                 var b = evt.message.content[i];
                 if (b.type === "tool_use") {
                     hasTool = true;
-                    if (b.name)
-                        currentActionText = "Running " + b.name + "...";
+                    var t = claudeCodeTool(proc, b.id);
+                    if (!t) {
+                        t = { id: b.id, name: b.name || "tool", summary: "", result: "", isError: false, done: false };
+                        proc.tools.push(t);
+                    }
+                    t.summary = toolSummary(b.name, b.input);
+                    if (b.name) {
+                        currentActionText = "Running " + b.name + "…";
+                        claudeCodeToolRunning = true;
+                    }
                 } else if (b.type === "text") {
                     textPart += b.text || "";
                 }
             }
-            if (textPart.trim() !== "" && proc.acc.indexOf(textPart) === -1) {
-                proc.acc = (proc.acc ? proc.acc + "\n\n" : "") + textPart;
-                if (isThinking) isThinking = false;
-                chatHistory.setProperty(chatHistory.count - 1, "text", proc.acc.trim());
-                listView.positionViewAtEnd();
+            if (hasTool)
+                updateClaudeCodeTools(proc);
+            if (textPart.trim() !== "" && proc.acc.indexOf(textPart.trim()) === -1) {
+                proc.needSep = true;
+                appendClaudeCodeText(proc, textPart);
             }
-            if (hasTool && textPart.trim() === "")
+            if (hasTool)
                 isThinking = true;
+            return;
+        }
+
+        // Tool results come back as a user message.
+        if (evt.type === "user" && evt.message && Array.isArray(evt.message.content)) {
+            var changed = false;
+            for (var j = 0; j < evt.message.content.length; j++) {
+                var r = evt.message.content[j];
+                if (r.type !== "tool_result")
+                    continue;
+                var tr = claudeCodeTool(proc, r.tool_use_id);
+                if (!tr)
+                    continue;
+                tr.result = toolResultText(r.content);
+                var tur = evt.tool_use_result;
+                if (isAgentTool(tr.name) && tur && typeof tur === "object") {
+                    if (tur.content)
+                        tr.result = toolResultText(tur.content);
+                    tr.toolUses = tur.totalToolUseCount || tr.toolUses || 0;
+                    tr.tokens = tur.totalTokens || tr.tokens || 0;
+                    tr.durationMs = tur.totalDurationMs || tr.durationMs || 0;
+                }
+                tr.isError = r.is_error === true;
+                tr.done = true;
+                tr.progress = "";
+                changed = true;
+            }
+            if (changed) {
+                updateClaudeCodeTools(proc);
+                claudeCodeToolRunning = false;
+                currentActionText = randomThinkingVerb();
+            }
             return;
         }
 
@@ -1169,36 +1610,133 @@ Item {
                 proc.acc = claudeCodeAuthHint();
             } else if (proc.acc.trim() === "" && resText !== "") {
                 proc.acc = resText;
+            } else if (errored && resText !== "" && proc.acc.indexOf(resText) === -1) {
+                proc.acc = proc.acc.replace(/\s+$/, "") + "\n\n⚠️ " + resText;
             }
+            proc.usage = usageSummary(evt);
             finalizeClaudeCode(proc);
             return;
         }
+    }
+
+    // task_started / task_progress / task_notification for subagents.
+    function onClaudeCodeTaskEvent(proc, evt) {
+        if (!evt.tool_use_id || String(evt.subtype || "").indexOf("task_") !== 0)
+            return;
+        var t = claudeCodeTool(proc, evt.tool_use_id);
+        if (!t) {
+            // A nested subagent: its progress rolls up into the top-level card.
+            var top = agentCardFor(proc, evt.tool_use_id);
+            if (top && top.id !== evt.tool_use_id && evt.description && evt.subtype === "task_progress") {
+                top.progress = evt.description;
+                updateClaudeCodeTools(proc);
+            }
+            return;
+        }
+        if (evt.subagent_type)
+            t.agentType = evt.subagent_type;
+        if (evt.subtype === "task_progress" && evt.description)
+            t.progress = evt.description;
+        if (evt.usage) {
+            t.toolUses = evt.usage.tool_uses || t.toolUses || 0;
+            t.tokens = evt.usage.total_tokens || t.tokens || 0;
+            t.durationMs = evt.usage.duration_ms || t.durationMs || 0;
+        }
+        if (evt.subtype === "task_notification" && evt.status && evt.status !== "completed")
+            t.isError = true;
+        if (proc.chatId === currentChatId && evt.subtype === "task_progress" && t.progress !== "")
+            currentActionText = t.progress.length > 40 ? t.progress.substring(0, 40) + "…" : t.progress;
+        updateClaudeCodeTools(proc);
+    }
+
+    // Tool calls and results made inside a subagent, listed on its card.
+    function onClaudeCodeSubagentEvent(proc, evt) {
+        var card = agentCardFor(proc, evt.parent_tool_use_id);
+        if (!card || !evt.message || !Array.isArray(evt.message.content))
+            return;
+        if (!card.steps)
+            card.steps = [];
+        var changed = false;
+        for (var i = 0; i < evt.message.content.length; i++) {
+            var b = evt.message.content[i];
+            if (evt.type === "assistant" && b.type === "tool_use") {
+                proc.agentOf[b.id] = card.id;
+                card.steps.push({ id: b.id, name: b.name || "tool", summary: toolSummary(b.name, b.input), done: false, isError: false });
+                changed = true;
+            } else if (evt.type === "user" && b.type === "tool_result") {
+                for (var j = 0; j < card.steps.length; j++)
+                    if (card.steps[j].id === b.tool_use_id) {
+                        card.steps[j].done = true;
+                        card.steps[j].isError = b.is_error === true;
+                        changed = true;
+                    }
+            }
+        }
+        // Long-running subagents: keep only the latest steps on the card.
+        if (card.steps.length > 30)
+            card.steps = card.steps.slice(card.steps.length - 30);
+        if (changed)
+            updateClaudeCodeTools(proc);
     }
 
     function finalizeClaudeCode(proc) {
         if (proc.done)
             return;
         proc.done = true;
+        // A tool the CLI never answered (stopped, crashed) is no longer running.
+        for (var i = 0; i < proc.tools.length; i++) {
+            proc.tools[i].done = true;
+            proc.tools[i].progress = "";
+            var st = proc.tools[i].steps || [];
+            for (var k = 0; k < st.length; k++)
+                st[k].done = true;
+        }
         var finalText = (proc.acc || "").trim();
-        chatHistory.setProperty(chatHistory.count - 1, "text", finalText !== "" ? finalText : "(no output)");
-        chatHistory.setProperty(chatHistory.count - 1, "isFinished", true);
-        setClaudeCodeSession(currentChatId, proc.sess);
-        isTyping = false;
-        isThinking = false;
-        inAgentLoop = false;
-        currentActionText = "Thinking...";
-        saveHistory();
-        listView.positionViewAtEnd();
+        if (finalText === "" && proc.tools.length === 0)
+            finalText = proc.stopped ? qsTr("(stopped)") : "(no output)";
+        if (proc.sess !== "")
+            setClaudeCodeSession(proc.chatId, proc.sess);
+        if (proc.chatId === currentChatId) {
+            setClaudeCodeBubble(proc, "text", finalText);
+            setClaudeCodeBubble(proc, "toolsJson", proc.tools.length > 0 ? JSON.stringify(proc.tools) : "");
+            setClaudeCodeBubble(proc, "usageText", proc.usage);
+            setClaudeCodeBubble(proc, "isFinished", true);
+            isTyping = false;
+            isThinking = false;
+            inAgentLoop = false;
+            claudeCodeToolRunning = false;
+            claudeCodeStartedAt = 0;
+            currentActionText = "Thinking...";
+            saveHistory();
+            listView.positionViewAtEnd();
+        } else {
+            // The user moved to another chat meanwhile: store the finished reply
+            // straight into that chat's saved history.
+            var s = sessionEntry(proc.chatId);
+            if (s && s.messages && proc.idx < s.messages.length) {
+                var msg = s.messages[proc.idx];
+                msg.text = finalText;
+                msg.toolsJson = proc.tools.length > 0 ? JSON.stringify(proc.tools) : "";
+                msg.usageText = proc.usage;
+                msg.isFinished = true;
+                GlobalConfig.ai.ollamaHistoryJson = JSON.stringify(allChatSessions);
+            }
+        }
     }
 
     function onClaudeCodeExit(proc, code) {
         if (!proc.done) {
-            if ((proc.acc || "").trim() === "") {
-                if (isClaudeCodeAuthError(proc.errAcc))
-                    chatHistory.setProperty(chatHistory.count - 1, "text", claudeCodeAuthHint());
-                else if (code !== 0)
-                    chatHistory.setProperty(chatHistory.count - 1, "text",
-                        "⚠️ Claude Code çalıştırılamadı (çıkış kodu " + code + "). `claude` CLI kurulu ve giriş yapılmış mı? Bir terminalde `claude` çalıştırıp giriş yapmayı deneyin.");
+            if ((proc.acc || "").trim() === "" && !proc.stopped) {
+                if (isClaudeCodeAuthError(proc.errAcc)) {
+                    proc.acc = claudeCodeAuthHint();
+                } else if (code !== 0) {
+                    var err = (proc.errAcc || "").trim();
+                    var lines = err.split("\n");
+                    if (lines.length > 20)
+                        err = lines.slice(lines.length - 20).join("\n");
+                    proc.acc = "⚠️ Claude Code exited with code " + code + "."
+                        + (err !== "" ? "\n\n```\n" + err + "\n```" : "\n\nIs the `claude` CLI installed and logged in? Try running `claude` in a terminal.");
+                }
             }
             finalizeClaudeCode(proc);
         }
@@ -1304,6 +1842,8 @@ Item {
     }
 
     property var allChatSessions: []
+    // Set while a saved chat is being put back into the list (no pop-in animation).
+    property bool loadingChat: false
 
     function createNewChat() {
         cancelRateLimitRetry();
@@ -1314,6 +1854,7 @@ Item {
         inAgentLoop = false;
         currentChatId = "chat_" + Date.now();
         chatHistory.clear();
+        pendingAttachments = [];
         isHistoryTab = false;
     }
 
@@ -1326,6 +1867,7 @@ Item {
         inAgentLoop = false;
         currentChatId = id;
         chatHistory.clear();
+        loadingChat = true;
         var found = false;
         for (var i = 0; i < allChatSessions.length; i++) {
             if (allChatSessions[i].id === id) {
@@ -1335,14 +1877,20 @@ Item {
                         "isUser": msgs[j].isUser === true,
                         "text": msgs[j].text || "",
                         "isFinished": msgs[j].isFinished !== false,
-                        "thoughtText": msgs[j].thoughtText || ""
+                        "thoughtText": msgs[j].thoughtText || "",
+                        "toolsJson": msgs[j].toolsJson || "",
+                        "usageText": msgs[j].usageText || "",
+                        "attachments": msgs[j].attachments || ""
                     });
                 }
+                claudeCodeChatCwd = allChatSessions[i].claudeCodeCwd || Quickshell.env("HOME") || ".";
+                claudeCodePermissionMode = allChatSessions[i].claudeCodePermissionMode || defaultClaudeCodePermissionMode();
                 found = true;
                 break;
             }
         }
         if (!found) createNewChat();
+        Qt.callLater(function() { root.loadingChat = false; });
         savedContentY = -1;
         Qt.callLater(function() { listView.positionViewAtEnd(); });
         isHistoryTab = false;
@@ -1385,7 +1933,10 @@ Item {
                 "isUser": msg.isUser === true,
                 "text": msg.text || "",
                 "isFinished": msg.isFinished !== false,
-                "thoughtText": msg.thoughtText || ""
+                "thoughtText": msg.thoughtText || "",
+                "toolsJson": msg.toolsJson || "",
+                "usageText": msg.usageText || "",
+                "attachments": msg.attachments || ""
             });
         }
         
@@ -1395,6 +1946,8 @@ Item {
         for (var j = 0; j < allChatSessions.length; j++) {
             if (allChatSessions[j].id === currentChatId) {
                 allChatSessions[j].messages = msgs;
+                allChatSessions[j].claudeCodeCwd = claudeCodeChatCwd;
+                allChatSessions[j].claudeCodePermissionMode = claudeCodePermissionMode;
                 
                 var firstUser = null;
                 for (var k = 0; k < msgs.length; k++) {
@@ -1421,7 +1974,9 @@ Item {
             allChatSessions.unshift({
                 "id": currentChatId || ("chat_" + Date.now()),
                 "title": initialTitle,
-                "messages": msgs
+                "messages": msgs,
+                "claudeCodeCwd": claudeCodeChatCwd,
+                "claudeCodePermissionMode": claudeCodePermissionMode
             });
             
             historySessionsModel.insert(0, {
@@ -1620,14 +2175,19 @@ Item {
             "isUser": false,
             "text": message || "",
             "isFinished": true,
-            "thoughtText": ""
+            "thoughtText": "",
+            "toolsJson": "",
+            "usageText": "",
+            "attachments": ""
         });
         listView.positionViewAtEnd();
         saveHistory();
     }
 
     function sendPrompt(promptText, isSystemToolResult = false, base64Image = null, toolName = "", isRetry = false) {
-        if (!promptText.trim() && !base64Image) return;
+        var attachments = (!isSystemToolResult && !isRetry && root.isClaudeCode) ? pendingAttachments.map(a => a.path) : [];
+        if (!promptText.trim() && !base64Image && attachments.length === 0) return;
+        pendingAttachments = [];
 
         promptSuggestions = [];
 
@@ -1639,7 +2199,10 @@ Item {
                 "isUser": true,
                 "text": promptText || "",
                 "isFinished": true,
-                "thoughtText": ""
+                "thoughtText": "",
+                "toolsJson": "",
+                "usageText": "",
+                "attachments": attachments.join("\n")
             });
             listView.positionViewAtEnd();
             saveHistory();
@@ -1680,7 +2243,7 @@ Item {
         }
 
         if (root.isClaudeCode) {
-            root.sendClaudeCode(promptText);
+            root.sendClaudeCode(withAttachmentList(promptText, attachments), attachments);
             return;
         }
 
@@ -1729,7 +2292,10 @@ Item {
             "isUser": false,
             "text": "",
             "isFinished": false,
-            "thoughtText": ""
+            "thoughtText": "",
+            "toolsJson": "",
+            "usageText": "",
+            "attachments": ""
         });
         
         listView.positionViewAtEnd();
@@ -2385,6 +2951,106 @@ Item {
                  }
              }
 
+             // Permission mode for this chat (Claude Code).
+             SplitButton {
+                 id: permissionSelector
+
+                 type: SplitButton.Tonal
+                 verticalPadding: 4
+                 visible: root.isClaudeCode
+
+                 active: menuItems.find(m => m.modelData === root.effectiveClaudeCodePermissionMode(root.claudeCodePermissionMode)) ?? menuItems[0] ?? null
+                 menu.onItemSelected: item => root.setClaudeCodePermissionMode(item.modelData)
+
+                 menuItems: permissionVariants.instances
+
+                 fallbackIcon: "shield"
+                 fallbackText: qsTr("Permissions")
+                 stateLayer.disabled: true
+
+                 Variants {
+                     id: permissionVariants
+
+                     model: root.claudeCodePermissionModes
+
+                     delegate: MenuItem {
+                         required property string modelData
+
+                         text: root.permissionModeLabel(modelData)
+                     }
+                 }
+             }
+
+             // Working directory for this chat (Claude Code).
+             StyledRect {
+                 id: cwdButton
+
+                 visible: root.isClaudeCode
+                 implicitWidth: Math.min(cwdRow.implicitWidth + Tokens.padding.medium * 2, 220)
+                 implicitHeight: permissionSelector.height
+                 radius: Tokens.rounding.full
+                 color: Colours.tPalette.m3secondaryContainer
+
+                 StateLayer {
+                     radius: Tokens.rounding.full
+                     color: Colours.palette.m3onSecondaryContainer
+                     onClicked: cwdDialog.open()
+                 }
+
+                 RowLayout {
+                     id: cwdRow
+
+                     anchors.fill: parent
+                     anchors.leftMargin: Tokens.padding.medium
+                     anchors.rightMargin: Tokens.padding.medium
+                     spacing: Tokens.spacing.small
+
+                     MaterialIcon {
+                         text: "folder"
+                         color: Colours.palette.m3onSecondaryContainer
+                         font: Tokens.font.icon.small
+                     }
+
+                     StyledText {
+                         Layout.fillWidth: true
+                         text: root.shortPath(root.claudeCodeChatCwd)
+                         color: Colours.palette.m3onSecondaryContainer
+                         font: Tokens.font.label.medium
+                         elide: Text.ElideMiddle
+                     }
+                 }
+
+                 FileDialog {
+                     id: cwdDialog
+
+                     selectFolder: true
+                     title: qsTr("Claude Code working directory")
+                     onAccepted: path => root.setClaudeCodeCwd(path)
+                 }
+             }
+
+             // Continue this chat's session in a terminal (claude --resume).
+             StyledRect {
+                 visible: root.isClaudeCode
+                 implicitWidth: permissionSelector.height
+                 implicitHeight: permissionSelector.height
+                 radius: Tokens.rounding.full
+                 color: Colours.tPalette.m3secondaryContainer
+
+                 StateLayer {
+                     radius: Tokens.rounding.full
+                     color: Colours.palette.m3onSecondaryContainer
+                     onClicked: root.openClaudeCodeInTerminal()
+                 }
+
+                 MaterialIcon {
+                     anchors.centerIn: parent
+                     text: "terminal"
+                     color: Colours.palette.m3onSecondaryContainer
+                     font: Tokens.font.icon.small
+                 }
+             }
+
 
          }
          
@@ -2408,13 +3074,17 @@ Item {
                      id: listView
 
                      anchors.top: parent.top
-                     anchors.bottom: inputBoxRow.top
+                     anchors.bottom: attachmentStrip.visible ? attachmentStrip.top : inputBoxRow.top
                      anchors.left: parent.left
                      anchors.right: parent.right
                      anchors.bottomMargin: Tokens.spacing.medium
                      spacing: Tokens.spacing.medium
                      model: chatHistory
                      boundsBehavior: Flickable.StopAtBounds
+                     // Keep off-screen messages alive. Recreating them while dragging the
+                     // scrollbar re-measures them, so the content height (and with it the
+                     // scroll position) kept jumping.
+                     cacheBuffer: 100000
                      
                      ColumnLayout {
                          anchors.centerIn: parent
@@ -2479,10 +3149,25 @@ Item {
                      }
 
                      footer: Item {
+                         // Claude Code keeps its status line up for the whole reply,
+                         // below the text as it streams.
+                         id: statusFooter
+
+                         readonly property bool shown: isThinking || (root.isClaudeCode && root.isTyping)
+                         readonly property real maxBubbleWidth: listView.width * 0.85
+                         readonly property real naturalWidth: footerCol.implicitWidth + Tokens.padding.medium * 2 + 8
+                         // Widest the bubble has been during this reply. The verb, the
+                         // counters and the thoughts all change width as they update;
+                         // only growing keeps the bubble from wobbling.
+                         property real stableWidth: 0
+
+                         onNaturalWidthChanged: if (shown) stableWidth = Math.max(stableWidth, naturalWidth)
+                         onShownChanged: stableWidth = shown ? naturalWidth : 0
+
                          width: listView.width
-                         height: isThinking ? bubbleBg.height + Tokens.spacing.medium : 0
+                         height: shown ? bubbleBg.height + Tokens.spacing.medium : 0
                          visible: opacity > 0
-                         opacity: isThinking ? 1 : 0
+                         opacity: shown ? 1 : 0
                          
                          Behavior on height { Anim { type: Anim.DefaultSpatial } }
                          Behavior on opacity { Anim { type: Anim.DefaultSpatial } }
@@ -2491,7 +3176,7 @@ Item {
                              id: bubbleBg
 
                              y: Tokens.spacing.medium / 2
-                             width: Math.min(listView.width * 0.85, footerCol.implicitWidth + Tokens.padding.medium * 2 + 8)
+                             width: Math.min(statusFooter.maxBubbleWidth, Math.max(statusFooter.stableWidth, statusFooter.naturalWidth))
                              height: footerCol.implicitHeight + Tokens.padding.medium * 2
                              radius: Tokens.rounding.large
                              color: Colours.tPalette.m3surfaceContainer
@@ -2512,9 +3197,41 @@ Item {
                                      spacing: Tokens.spacing.small
                                      
                                      LoadingIndicator {
+                                         visible: !root.isClaudeCode
                                          width: 20
                                          height: 20
                                          color: Colours.palette.m3primary
+                                     }
+
+                                     // Claude Code: the CLI's twinkling star.
+                                     StyledText {
+                                         id: starGlyph
+
+                                         readonly property var frames: ["·", "✢", "✳", "✶", "✻", "✽", "✻", "✶", "✳", "✢"]
+                                         property int frame: 0
+
+                                         visible: root.isClaudeCode
+                                         // The frames come from different fallback fonts with
+                                         // different line heights; a fixed box keeps the row
+                                         // (and the bubble) from bouncing with every frame.
+                                         width: 20
+                                         height: 20
+                                         horizontalAlignment: Text.AlignHCenter
+                                         verticalAlignment: Text.AlignVCenter
+                                         anchors.verticalCenter: parent.verticalCenter
+                                         text: frames[frame]
+                                         color: root.claudeCodeToolRunning ? Colours.palette.m3tertiary : Colours.palette.m3primary
+                                         font.pointSize: Tokens.font.body.small.pointSize * 1.2
+                                         font.family: Tokens.font.body.small.family
+
+                                         Behavior on color { CAnim {} }
+
+                                         Timer {
+                                             interval: 120
+                                             repeat: true
+                                             running: starGlyph.visible && root.isTyping
+                                             onTriggered: starGlyph.frame = (starGlyph.frame + 1) % starGlyph.frames.length
+                                         }
                                      }
                                      
                                      Item {
@@ -2606,10 +3323,23 @@ Item {
                                          }
                                      }
                                  }
+                                 // Claude Code: elapsed time and output tokens on their own line.
+                                 StyledText {
+                                     visible: root.isClaudeCode && root.isTyping
+                                     width: Math.min(implicitWidth, statusFooter.maxBubbleWidth - Tokens.padding.medium * 2 - 8)
+                                     leftPadding: 20 + Tokens.spacing.small
+                                     text: root.formatElapsed(root.claudeCodeElapsed)
+                                         + (root.claudeCodeOutTokens > 0 ? " · ↓ " + root.formatTokens(root.claudeCodeOutTokens) + " tokens" : "")
+                                     color: Colours.palette.m3outline
+                                     font.family: Tokens.font.mono.small.family
+                                     font.pointSize: Tokens.font.label.small.pointSize
+                                     elide: Text.ElideRight
+                                 }
+
                                  Item {
                                      id: footerThoughtContentWrapper
 
-                                     width: footerThoughtContent.width
+                                     width: root.isThoughtExpanded ? footerThoughtContent.width : 0
                                      height: root.isThoughtExpanded ? footerThoughtContent.implicitHeight : 0
                                      clip: true
                                      
@@ -2649,16 +3379,40 @@ Item {
                          required property bool isUser
                          required property bool isFinished
                          required property string thoughtText
+                         required property string toolsJson
+                         required property string usageText
+                         required property string attachments
+
+                         readonly property var tools: {
+                             if (!toolsJson)
+                                 return [];
+                             try {
+                                 return JSON.parse(toolsJson);
+                             } catch (e) {
+                                 return [];
+                             }
+                         }
+                         readonly property var attachmentList: attachments ? attachments.split("\n") : []
 
                          width: listView.width - Tokens.padding.large
-                         visible: (!delegateItem.isFinished && isThinking) ? false : (delegateItem.text !== "" || delegateItem.thoughtText !== "")
+                         // While a reply is still thinking only its tool calls are worth showing.
+                         visible: (!delegateItem.isFinished && isThinking && delegateItem.tools.length === 0) ? false : (delegateItem.text !== "" || delegateItem.thoughtText !== "" || delegateItem.tools.length > 0 || delegateItem.attachmentList.length > 0)
                          height: visible ? bubbleRect.height : 0
                          
                          scale: 0.0
                          opacity: 0.0
                          
+                         required property int index
+
+                         // Only a message that was just added pops in; one being created
+                         // again as it scrolls into view appears as is.
                          Component.onCompleted: {
-                             popInAnim.start();
+                             if (index === chatHistory.count - 1 && !root.loadingChat)
+                                 popInAnim.start();
+                             else {
+                                 scale = 1;
+                                 opacity = 1;
+                             }
                          }
                          
                          ParallelAnimation {
@@ -2796,9 +3550,201 @@ Item {
                                      }
                                  }
 
+                                 // Tool calls made while producing this reply (Claude Code).
+                                 Repeater {
+                                     model: delegateItem.tools
+
+                                     StyledRect {
+                                         id: toolCard
+
+                                         required property var modelData
+                                         property bool expanded: false
+                                         readonly property bool isAgent: root.isAgentTool(modelData.name)
+                                         readonly property var steps: modelData.steps || []
+                                         // Collapsed running subagent: show just its latest steps.
+                                         readonly property var visibleSteps: expanded ? steps : (!modelData.done ? steps.slice(-3) : [])
+
+                                         width: bubbleRect.maxBubbleWidth - Tokens.padding.medium * 2
+                                         implicitHeight: toolCardCol.implicitHeight + Tokens.padding.small * 2
+                                         radius: Tokens.rounding.small
+                                         color: Colours.layer(Colours.tPalette.m3surfaceContainerHigh, 2)
+
+                                         // Subagent cards get an accent bar down the left edge.
+                                         StyledRect {
+                                             visible: toolCard.isAgent
+                                             anchors.left: parent.left
+                                             anchors.top: parent.top
+                                             anchors.bottom: parent.bottom
+                                             anchors.margins: 4
+                                             width: 3
+                                             radius: Tokens.rounding.full
+                                             color: toolCard.modelData.isError ? Colours.palette.m3error : (toolCard.modelData.done ? Colours.palette.m3outlineVariant : Colours.palette.m3tertiary)
+
+                                             Behavior on color { CAnim {} }
+                                         }
+
+                                         Column {
+                                             id: toolCardCol
+
+                                             anchors.left: parent.left
+                                             anchors.right: parent.right
+                                             anchors.top: parent.top
+                                             anchors.margins: Tokens.padding.small
+                                             anchors.leftMargin: toolCard.isAgent ? Tokens.padding.small + 8 : Tokens.padding.small
+                                             spacing: Tokens.spacing.small
+
+                                             Item {
+                                                 width: parent.width
+                                                 implicitHeight: toolHeader.implicitHeight
+
+                                                 RowLayout {
+                                                     id: toolHeader
+
+                                                     anchors.left: parent.left
+                                                     anchors.right: parent.right
+                                                     spacing: Tokens.spacing.small
+
+                                                     MaterialIcon {
+                                                         text: toolCard.modelData.isError ? "error" : (toolCard.isAgent ? (toolCard.modelData.done ? "task_alt" : "smart_toy") : (toolCard.modelData.done ? "check_circle" : "pending"))
+                                                         color: toolCard.modelData.isError ? Colours.palette.m3error : (toolCard.modelData.done ? Colours.palette.m3primary : (toolCard.isAgent ? Colours.palette.m3tertiary : Colours.palette.m3onSurfaceVariant))
+                                                         font: Tokens.font.icon.small
+
+                                                         // A running subagent breathes so it reads as busy.
+                                                         SequentialAnimation on opacity {
+                                                             running: toolCard.isAgent && !toolCard.modelData.done
+                                                             loops: Animation.Infinite
+                                                             onRunningChanged: if (!running) parent.opacity = 1
+
+                                                             NumberAnimation { to: 0.35; duration: 700; easing.type: Easing.InOutSine }
+                                                             NumberAnimation { to: 1; duration: 700; easing.type: Easing.InOutSine }
+                                                         }
+                                                     }
+
+                                                     StyledText {
+                                                         text: toolCard.isAgent ? (toolCard.modelData.agentType || "subagent") : toolCard.modelData.name
+                                                         color: Colours.palette.m3onSurface
+                                                         font: Tokens.font.label.medium
+                                                     }
+
+                                                     StyledText {
+                                                         Layout.fillWidth: true
+                                                         text: toolCard.modelData.summary || ""
+                                                         color: Colours.palette.m3onSurfaceVariant
+                                                         font: toolCard.isAgent ? Tokens.font.label.medium : Tokens.font.mono.small
+                                                         elide: Text.ElideRight
+                                                         maximumLineCount: 1
+                                                     }
+
+                                                     MaterialIcon {
+                                                         visible: toolCard.isAgent || (toolCard.modelData.result || "") !== "" || (toolCard.modelData.summary || "").length > 40
+                                                         text: "expand_more"
+                                                         color: Colours.palette.m3onSurfaceVariant
+                                                         font: Tokens.font.icon.small
+                                                         rotation: toolCard.expanded ? 180 : 0
+
+                                                         Behavior on rotation { NumberAnimation { duration: 150; easing.type: Easing.OutQuad } }
+                                                     }
+                                                 }
+
+                                                 MouseArea {
+                                                     anchors.fill: parent
+                                                     cursorShape: Qt.PointingHandCursor
+                                                     onClicked: toolCard.expanded = !toolCard.expanded
+                                                 }
+                                             }
+
+                                             // Subagent: current step and running totals.
+                                             StyledText {
+                                                 visible: toolCard.isAgent && text !== ""
+                                                 width: parent.width
+                                                 text: {
+                                                     const stats = root.agentStatsText(toolCard.modelData);
+                                                     const step = !toolCard.modelData.done ? (toolCard.modelData.progress || "") : "";
+                                                     return step !== "" && stats !== "" ? step + " · " + stats : (step || stats);
+                                                 }
+                                                 color: Colours.palette.m3outline
+                                                 font: Tokens.font.label.small
+                                                 elide: Text.ElideRight
+                                             }
+
+                                             // Subagent: its own tool calls.
+                                             Repeater {
+                                                 model: toolCard.visibleSteps
+
+                                                 RowLayout {
+                                                     required property var modelData
+
+                                                     width: toolCardCol.width
+                                                     spacing: Tokens.spacing.small
+
+                                                     MaterialIcon {
+                                                         text: parent.modelData.isError ? "close" : (parent.modelData.done ? "check" : "more_horiz")
+                                                         color: parent.modelData.isError ? Colours.palette.m3error : Colours.palette.m3onSurfaceVariant
+                                                         font: Tokens.font.icon.small
+                                                     }
+
+                                                     StyledText {
+                                                         text: parent.modelData.name
+                                                         color: Colours.palette.m3onSurfaceVariant
+                                                         font: Tokens.font.label.small
+                                                     }
+
+                                                     StyledText {
+                                                         Layout.fillWidth: true
+                                                         text: parent.modelData.summary || ""
+                                                         color: Colours.palette.m3outline
+                                                         font: Tokens.font.mono.small
+                                                         elide: Text.ElideRight
+                                                         maximumLineCount: 1
+                                                     }
+                                                 }
+                                             }
+
+                                             StyledText {
+                                                 visible: !toolCard.expanded && !toolCard.modelData.done && toolCard.steps.length > 3
+                                                 text: qsTr("+%1 earlier steps").arg(toolCard.steps.length - 3)
+                                                 color: Colours.palette.m3outline
+                                                 font: Tokens.font.label.small
+                                             }
+
+                                             // Subagent report, rendered as Markdown.
+                                             TextEdit {
+                                                 visible: toolCard.isAgent && toolCard.expanded && (toolCard.modelData.result || "") !== ""
+                                                 width: parent.width
+                                                 text: toolCard.modelData.result || ""
+                                                 textFormat: Text.MarkdownText
+                                                 color: toolCard.modelData.isError ? Colours.palette.m3error : Colours.palette.m3onSurface
+                                                 font: Tokens.font.body.small
+                                                 wrapMode: Text.Wrap
+                                                 readOnly: true
+                                                 selectByMouse: true
+                                                 selectionColor: Colours.palette.m3primary
+                                                 selectedTextColor: Colours.palette.m3onPrimary
+                                             }
+
+                                             TextEdit {
+                                                 visible: toolCard.expanded && !toolCard.isAgent
+                                                 width: parent.width
+                                                 text: (toolCard.modelData.summary || "") + ((toolCard.modelData.result || "") !== "" ? "\n\n" + toolCard.modelData.result : "")
+                                                 textFormat: Text.PlainText
+                                                 color: toolCard.modelData.isError ? Colours.palette.m3error : Colours.palette.m3onSurfaceVariant
+                                                 font: Tokens.font.mono.small
+                                                 wrapMode: Text.WrapAnywhere
+                                                 readOnly: true
+                                                 selectByMouse: true
+                                                 selectionColor: Colours.palette.m3primary
+                                                 selectedTextColor: Colours.palette.m3onPrimary
+                                             }
+                                         }
+                                     }
+                                 }
+
                                  TextEdit {
                                      id: messageText
 
+                                     // Nothing to show yet (e.g. only tool calls so far): no
+                                     // empty line with a lone blinking cursor.
+                                     visible: fullText !== ""
                                      textFormat: Text.MarkdownText
                                      width: Math.min(implicitWidth, bubbleRect.maxBubbleWidth - Tokens.padding.medium * 2)
                                      
@@ -2836,6 +3782,39 @@ Item {
                                          propagateComposedEvents: true
                                          onPressed: mouse => mouse.accepted = false
                                      }
+                                 }
+
+                                 Repeater {
+                                     model: delegateItem.attachmentList
+
+                                     Row {
+                                         required property string modelData
+
+                                         spacing: Tokens.spacing.small
+
+                                         MaterialIcon {
+                                             text: root.isImagePath(parent.modelData) ? "image" : "attach_file"
+                                             color: delegateItem.isUser ? Colours.palette.m3onPrimary : Colours.palette.m3onSurfaceVariant
+                                             font: Tokens.font.icon.small
+                                         }
+
+                                         StyledText {
+                                             width: Math.min(implicitWidth, bubbleRect.maxBubbleWidth - Tokens.padding.medium * 2 - 24)
+                                             text: parent.modelData.replace(/^.*\//, "")
+                                             color: delegateItem.isUser ? Colours.palette.m3onPrimary : Colours.palette.m3onSurfaceVariant
+                                             font: Tokens.font.label.small
+                                             elide: Text.ElideMiddle
+                                         }
+                                     }
+                                 }
+
+                                 StyledText {
+                                     visible: !delegateItem.isUser && delegateItem.isFinished && delegateItem.usageText !== ""
+                                     width: Math.min(implicitWidth, bubbleRect.maxBubbleWidth - Tokens.padding.medium * 2)
+                                     text: delegateItem.usageText
+                                     color: Colours.palette.m3outline
+                                     font: Tokens.font.label.small
+                                     wrapMode: Text.Wrap
                                  }
                              }
                          }
@@ -2891,7 +3870,7 @@ Item {
                  ColumnLayout {
                      id: suggestionBox
 
-                     anchors.bottom: inputBoxRow.top
+                     anchors.bottom: attachmentStrip.visible ? attachmentStrip.top : inputBoxRow.top
                      anchors.bottomMargin: Tokens.spacing.small
                      anchors.left: parent.left
                      anchors.right: parent.right
@@ -2970,6 +3949,83 @@ Item {
                      }
                  }
 
+                 // Files attached to the next message (Claude Code).
+                 Flow {
+                     id: attachmentStrip
+
+                     anchors.bottom: inputBoxRow.top
+                     anchors.bottomMargin: Tokens.spacing.small
+                     anchors.left: parent.left
+                     anchors.right: parent.right
+                     z: 10
+                     spacing: Tokens.spacing.small
+                     visible: root.isClaudeCode && root.pendingAttachments.length > 0
+
+                     Repeater {
+                         model: root.pendingAttachments
+
+                         StyledRect {
+                             id: attachChip
+
+                             required property var modelData
+
+                             implicitWidth: Math.min(attachChipRow.implicitWidth + Tokens.padding.medium * 2, attachmentStrip.width)
+                             implicitHeight: attachChipRow.implicitHeight + Tokens.padding.small * 2
+                             radius: Tokens.rounding.full
+                             color: Colours.tPalette.m3secondaryContainer
+
+                             RowLayout {
+                                 id: attachChipRow
+
+                                 anchors.fill: parent
+                                 anchors.leftMargin: Tokens.padding.medium
+                                 anchors.rightMargin: Tokens.padding.small
+                                 spacing: Tokens.spacing.small
+
+                                 MaterialIcon {
+                                     text: attachChip.modelData.isImage ? "image" : "attach_file"
+                                     color: Colours.palette.m3onSecondaryContainer
+                                     font: Tokens.font.icon.small
+                                 }
+
+                                 StyledText {
+                                     Layout.fillWidth: true
+                                     Layout.maximumWidth: 180
+                                     text: attachChip.modelData.path.replace(/^.*\//, "")
+                                     color: Colours.palette.m3onSecondaryContainer
+                                     font: Tokens.font.label.medium
+                                     elide: Text.ElideMiddle
+                                 }
+
+                                 Item {
+                                     Layout.preferredWidth: 20
+                                     Layout.preferredHeight: 20
+
+                                     MaterialIcon {
+                                         anchors.centerIn: parent
+                                         text: "close"
+                                         color: Colours.palette.m3onSecondaryContainer
+                                         font: Tokens.font.icon.small
+                                     }
+
+                                     MouseArea {
+                                         anchors.fill: parent
+                                         cursorShape: Qt.PointingHandCursor
+                                         onClicked: root.removeAttachment(attachChip.modelData.path)
+                                     }
+                                 }
+                             }
+                         }
+                     }
+                 }
+
+                 FileDialog {
+                     id: attachDialog
+
+                     title: qsTr("Attach a file")
+                     onAccepted: path => root.addAttachment(path)
+                 }
+
                  StyledRect {
                      id: inputBoxRow
 
@@ -3013,6 +4069,18 @@ Item {
                          onClicked: inputArea.forceActiveFocus()
                      }
 
+                     DropArea {
+                         anchors.fill: parent
+                         enabled: root.isClaudeCode
+                         onDropped: drop => {
+                             if (!drop.hasUrls)
+                                 return;
+                             for (var i = 0; i < drop.urls.length; i++)
+                                 root.addAttachment(drop.urls[i].toString());
+                             drop.acceptProposedAction();
+                         }
+                     }
+
                      RowLayout {
                          anchors.fill: parent
                          anchors.leftMargin: Tokens.padding.large
@@ -3051,10 +4119,40 @@ Item {
                                  Keys.onPressed: event => {
                                      if (event.key === Qt.Key_Return && !(event.modifiers & Qt.ShiftModifier)) {
                                          event.accepted = true;
-                                         root.sendPrompt(inputArea.text);
-                                         inputArea.clear();
+                                         if (!root.isTyping) {
+                                             root.sendPrompt(inputArea.text);
+                                             inputArea.clear();
+                                         }
+                                     } else if (root.isClaudeCode && event.matches(StandardKey.Paste)) {
+                                         // An image on the clipboard becomes an attachment;
+                                         // anything else is pasted as text as usual.
+                                         event.accepted = true;
+                                         root.pasteClipboardImage();
                                      }
                                  }
+                             }
+                         }
+
+                         // Attach a file (Claude Code).
+                         Item {
+                             visible: root.isClaudeCode
+                             Layout.preferredWidth: visible ? 32 : 0
+                             Layout.preferredHeight: 32
+
+                             MaterialIcon {
+                                 anchors.centerIn: parent
+                                 text: "attach_file"
+                                 color: attachMouse.containsMouse ? Colours.palette.m3primary : Colours.palette.m3onSurfaceVariant
+                                 font: Tokens.font.icon.small
+                             }
+
+                             MouseArea {
+                                 id: attachMouse
+
+                                 anchors.fill: parent
+                                 hoverEnabled: true
+                                 cursorShape: Qt.PointingHandCursor
+                                 onClicked: attachDialog.open()
                              }
                          }
 
@@ -3086,9 +4184,9 @@ Item {
 
                              MaterialShape {
                                  anchors.fill: parent
-                                 color: root.isTyping ? Colours.palette.m3error : (inputArea.text.length > 0 ? Colours.palette.m3primary : Colours.layer(Colours.tPalette.m3surfaceContainerHigh, 2))
-                                 shape: root.isTyping ? MaterialShape.Cookie4Sided : (inputArea.text.length > 0 ? MaterialShape.Arrow : MaterialShape.Circle)
-                                 scale: (inputArea.text.length === 0 && !root.isTyping) ? 1 : sendMouse.pressed ? 0.6 : sendMouse.containsMouse ? 0.8 : 0.7
+                                 color: root.isTyping ? Colours.palette.m3error : (root.canSend ? Colours.palette.m3primary : Colours.layer(Colours.tPalette.m3surfaceContainerHigh, 2))
+                                 shape: root.isTyping ? MaterialShape.Cookie4Sided : (root.canSend ? MaterialShape.Arrow : MaterialShape.Circle)
+                                 scale: (!root.canSend && !root.isTyping) ? 1 : sendMouse.pressed ? 0.6 : sendMouse.containsMouse ? 0.8 : 0.7
                                  rotation: 0
                                  
                                  Behavior on scale { Anim { type: Anim.FastSpatial } }
@@ -3099,7 +4197,7 @@ Item {
 
                                      anchors.fill: parent
                                      hoverEnabled: true
-                                     cursorShape: (inputArea.text.length > 0 || root.isTyping) ? Qt.PointingHandCursor : Qt.ArrowCursor
+                                     cursorShape: (root.canSend || root.isTyping) ? Qt.PointingHandCursor : Qt.ArrowCursor
                                      onClicked: {
                                          if (root.isTyping) {
                                              root.cancelRateLimitRetry();
@@ -3113,7 +4211,7 @@ Item {
                                              typingTimer.stop();
                                              chatHistory.setProperty(chatHistory.count - 1, "isFinished", true);
                                              saveHistory();
-                                         } else if (inputArea.text.length > 0) {
+                                         } else if (inputArea.text.length > 0 || root.pendingAttachments.length > 0) {
                                              root.sendPrompt(inputArea.text);
                                              inputArea.clear();
                                          }
@@ -3126,7 +4224,7 @@ Item {
                                  text: "arrow_upward"
                                  color: Colours.palette.m3onSurfaceVariant
                                  font: Tokens.font.icon.small
-                                 opacity: (inputArea.text.length > 0 || root.isTyping) ? 0 : 1
+                                 opacity: (root.canSend || root.isTyping) ? 0 : 1
 
                                  Behavior on opacity { Anim { type: Anim.DefaultEffects } }
                              }
