@@ -29,8 +29,14 @@ Item {
     readonly property bool hovered: hover.hovered
     readonly property bool resizing: grip.pressed
     readonly property alias content: loader.item
-    // Large folders carry their name under the card, like an icon label.
-    readonly property real labelHeight: isGroup ? Math.min(controller.cellHeight - controller.iconSize, 40) : 0
+    // Every large item carries its name under the card, like an icon label.
+    readonly property real labelHeight: Math.min(controller.cellHeight - controller.iconSize, 40)
+    readonly property string label: {
+        if (isGroup)
+            return DesktopLayout.groups[itemId]?.name ?? "";
+        const path = widget?.type === "folder" ? (config.path ?? "").replace(/\/+$/, "") : "";
+        return path !== "" ? path.substring(path.lastIndexOf("/") + 1) : info.name;
+    }
 
     signal pressed(var mouse)
     signal clicked(var mouse)
@@ -118,8 +124,8 @@ Item {
         anchors.fill: parent
         anchors.margins: Tokens.padding.small
         anchors.bottomMargin: Tokens.padding.small + root.labelHeight
-        radius: root.isGroup ? Tokens.rounding.extraLarge : Tokens.rounding.large
-        color: GlobalConfig.appearance.pitchBlack ? Qt.alpha("#000000", 0.7) : Qt.alpha(Colours.palette.m3surfaceContainer, root.isGroup ? 0.35 : 0.55)
+        radius: Tokens.rounding.extraLarge
+        color: GlobalConfig.appearance.pitchBlack ? Qt.alpha("#000000", 0.7) : Qt.alpha(Colours.palette.m3surfaceContainer, 0.4)
         border.width: root.selected || root.mergeTarget || root.focusVisible ? 2 : 1
         border.color: root.selected || root.mergeTarget || root.focusVisible ? Colours.palette.m3primary : Qt.alpha(Colours.palette.m3onSurface, 0.12)
 
@@ -171,7 +177,7 @@ Item {
             id: loader
 
             anchors.fill: parent
-            anchors.margins: root.isGroup ? Tokens.padding.small : Tokens.padding.medium
+            anchors.margins: root.isGroup ? Tokens.padding.small : Tokens.padding.large
             asynchronous: true
             readonly property string wanted: root.info.source
 
@@ -190,11 +196,11 @@ Item {
         }
     }
 
+    // Centred in the label row so names in different scripts line up.
     StyledRect {
         anchors.horizontalCenter: card.horizontalCenter
-        anchors.top: card.bottom
-        anchors.topMargin: Tokens.spacing.small
-        visible: root.isGroup
+        anchors.verticalCenter: card.bottom
+        anchors.verticalCenterOffset: root.labelHeight / 2
         width: title.width + Tokens.padding.medium * 2
         height: title.height + Tokens.padding.small
         radius: Tokens.rounding.small
@@ -206,7 +212,7 @@ Item {
             anchors.centerIn: parent
             width: Math.min(implicitWidth, card.width)
             desktopStyle: true
-            text: root.isGroup ? (DesktopLayout.groups[root.itemId]?.name ?? "") : ""
+            text: root.label
             onRenameRequested: root.controller.startRename(root.key)
             onRenameCommitted: text => {
                 root.controller.finishRename(root);
