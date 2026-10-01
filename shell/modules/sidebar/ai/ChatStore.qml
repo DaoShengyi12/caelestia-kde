@@ -170,15 +170,31 @@ QtObject {
         revision++;
     }
 
-    // Removes chats; returns whether the current chat was one of them.
-    function removeChats(ids: var): bool {
-        if (ids.length === 0)
-            return false;
+    // Removes chats and returns them with their positions, for restoreChats().
+    function takeChats(ids: var): var {
+        const taken = [];
+        for (let i = 0; i < sessions.length; i++)
+            if (ids.indexOf(sessions[i].id) !== -1)
+                taken.push({
+                    "index": i,
+                    "session": sessions[i]
+                });
+        if (taken.length === 0)
+            return taken;
         sessions = sessions.filter(s => ids.indexOf(s.id) === -1);
         persist();
         forgetStored(ids);
         revision++;
-        return ids.indexOf(currentChatId) !== -1;
+        return taken;
+    }
+
+    // Puts chats taken earlier back where they were; chats added since stay.
+    function restoreChats(taken: var): void {
+        for (let i = 0; i < taken.length; i++)
+            if (!session(taken[i].session.id))
+                sessions.splice(Math.min(taken[i].index, sessions.length), 0, taken[i].session);
+        persist();
+        revision++;
     }
 
     function show(id: string): void {

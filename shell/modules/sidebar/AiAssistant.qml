@@ -1415,24 +1415,62 @@ Item {
             Quickshell.clipboardText = Sessions.asMarkdown(s);
     }
 
-    function deleteChat(id) {
+    // Removes chats, keeping them around for a short undo window.
+    function removeChats(ids, label) {
         cancelRateLimitRetry();
-        stopClaudeCode([id]);
-        if (!chatStore.removeChats([id]))
+        stopClaudeCode(ids);
+        const previousChatId = currentChatId;
+        const removed = chatStore.takeChats(ids);
+        if (removed.length === 0)
             return;
-        if (chatStore.sessions.length > 0)
-            loadChat(chatStore.sessions[0].id);
-        else
-            createNewChat();
+
+        if (!chatStore.current()) {
+            if (chatStore.sessions.length > 0)
+                loadChat(chatStore.sessions[0].id);
+            else
+                createNewChat();
+            isHistoryTab = true;
+        }
+
+        historyUndo = {
+            "removed": removed,
+            "previousChatId": previousChatId,
+            "switchedTo": currentChatId,
+            "label": label
+        };
+        historyUndoTimer.restart();
+    }
+
+    function deleteChat(id) {
+        removeChats([id], qsTr("Chat deleted"));
     }
 
     // Pinned chats survive "clear"; with none pinned this wipes everything.
     function clearAllHistory() {
-        cancelRateLimitRetry();
-        const ids = chatStore.sessions.filter(s => !s.pinned).map(s => s.id);
-        stopClaudeCode(ids);
-        if (chatStore.removeChats(ids))
-            createNewChat();
+        const ids = chatStore.sessions.filter(s => !s.pinned && s.messages.length > 0).map(s => s.id);
+        removeChats(ids, ids.length === 1 ? qsTr("1 chat cleared") : qsTr("%1 chats cleared").arg(ids.length));
+    }
+
+    function undoHistoryRemoval() {
+        var u = historyUndo;
+        historyUndo = null;
+        historyUndoTimer.stop();
+        if (!u)
+            return;
+        chatStore.restoreChats(u.removed);
+        if (currentChatId === u.switchedTo && currentChatId !== u.previousChatId && chatStore.session(u.previousChatId) && !isTyping) {
+            loadChat(u.previousChatId);
+            isHistoryTab = true;
+        }
+    }
+
+    property var historyUndo: null
+
+    Timer {
+        id: historyUndoTimer
+
+        interval: 8000
+        onTriggered: root.historyUndo = null
     }
 
     function applyGeneratedTitle(chatId, raw) {
@@ -3577,10 +3615,66 @@ Item {
                      }
                  }
 
+                 StyledRect {
+                     id: historyUndoBar
+
+                     anchors.bottom: historyActions.top
+                     anchors.left: parent.left
+                     anchors.right: parent.right
+                     anchors.bottomMargin: Tokens.spacing.small
+                     z: 1
+                     implicitHeight: undoLayout.implicitHeight + Tokens.padding.small * 2
+                     radius: Tokens.rounding.medium
+                     color: Colours.palette.m3inverseSurface
+                     opacity: root.historyUndo ? 1 : 0
+                     visible: opacity > 0
+
+                     Behavior on opacity { NumberAnimation { duration: 200; easing.type: Easing.OutCubic } }
+
+                     RowLayout {
+                         id: undoLayout
+
+                         anchors.left: parent.left
+                         anchors.right: parent.right
+                         anchors.verticalCenter: parent.verticalCenter
+                         anchors.leftMargin: Tokens.padding.large
+                         anchors.rightMargin: Tokens.padding.small
+                         spacing: Tokens.spacing.small
+
+                         StyledText {
+                             Layout.fillWidth: true
+                             text: root.historyUndo ? root.historyUndo.label : ""
+                             color: Colours.palette.m3inverseOnSurface
+                             font: Tokens.font.body.small
+                             elide: Text.ElideRight
+                         }
+
+                         StyledRect {
+                             Layout.preferredWidth: undoText.implicitWidth + Tokens.padding.large * 2
+                             Layout.preferredHeight: 28
+                             radius: 14
+
+                             StateLayer {
+                                 radius: 14
+                                 color: Colours.palette.m3inversePrimary
+                                 onClicked: root.undoHistoryRemoval()
+                             }
+
+                             StyledText {
+                                 id: undoText
+
+                                 anchors.centerIn: parent
+                                 text: qsTr("Undo")
+                                 color: Colours.palette.m3inversePrimary
+                                 font: Tokens.font.label.large
+                             }
+                         }
+                     }
+                 }
+
                  RowLayout {
                      id: historyActions
 
-                     property bool confirmClear: false
                      readonly property int clearableCount: root.totalChatCount - root.pinnedChatCount
 
                      anchors.bottom: parent.bottom
@@ -3588,33 +3682,58 @@ Item {
                      anchors.right: parent.right
                      spacing: Tokens.spacing.small
 
-                     Timer {
-                         id: confirmClearReset
-
-                         interval: 3000
-                         onTriggered: historyActions.confirmClear = false
-                     }
-
-                     StyledRect {
+                     // Press and hold to clear, so a stray click does nothing.
+                     StyledClippingRect {
                          id: clearAllButton
+
+                         readonly property bool holding: clearLayer.pressed
+                         property real holdProgress: 0
 
                          Layout.preferredWidth: clearAllLayout.implicitWidth + Tokens.padding.large * 2
                          Layout.preferredHeight: 32
                          radius: 16
                          visible: historyActions.clearableCount > 0
-                         color: historyActions.confirmClear ? Colours.palette.m3error : Colours.palette.m3errorContainer
+                         color: "transparent"
+                         border.width: 1
+                         border.color: holding ? Colours.palette.m3error : Colours.palette.m3outlineVariant
 
-                         StateLayer {
-                             radius: 16
-                             onClicked: {
-                                 if (historyActions.confirmClear) {
-                                     historyActions.confirmClear = false;
+                         onHoldingChanged: {
+                             if (holding) {
+                                 holdAnim.restart();
+                             } else {
+                                 holdAnim.stop();
+                                 holdProgress = 0;
+                             }
+                         }
+
+                         NumberAnimation {
+                             id: holdAnim
+
+                             target: clearAllButton
+                             property: "holdProgress"
+                             from: 0
+                             to: 1
+                             duration: 1200
+                             onFinished: {
+                                 if (clearAllButton.holding) {
+                                     clearAllButton.holdProgress = 0;
                                      root.clearAllHistory();
-                                 } else {
-                                     historyActions.confirmClear = true;
-                                     confirmClearReset.restart();
                                  }
                              }
+                         }
+
+                         Rectangle {
+                             anchors.top: parent.top
+                             anchors.bottom: parent.bottom
+                             anchors.left: parent.left
+                             width: parent.width * clearAllButton.holdProgress
+                             color: Colours.palette.m3errorContainer
+                         }
+
+                         StateLayer {
+                             id: clearLayer
+
+                             radius: 16
                          }
 
                          RowLayout {
@@ -3624,19 +3743,24 @@ Item {
                              spacing: Tokens.spacing.small
 
                              MaterialIcon {
-                                 text: historyActions.confirmClear ? "delete_forever" : "delete_sweep"
-                                 color: historyActions.confirmClear ? Colours.palette.m3onError : Colours.palette.m3onErrorContainer
+                                 text: "delete_sweep"
+                                 color: clearAllButton.holding ? Colours.palette.m3onErrorContainer : Colours.palette.m3error
                                  font: Tokens.font.icon.small
                              }
                              Text {
                                  text: {
-                                     if (historyActions.confirmClear)
-                                         return qsTr("Delete %1?").arg(historyActions.clearableCount);
-                                     return root.pinnedChatCount > 0 ? qsTr("Clear unpinned") : qsTr("Clear all");
+                                     if (clearAllButton.holding)
+                                         return qsTr("Keep holding…");
+                                     return root.pinnedChatCount > 0 ? qsTr("Hold to clear unpinned") : qsTr("Hold to clear all");
                                  }
-                                 color: historyActions.confirmClear ? Colours.palette.m3onError : Colours.palette.m3onErrorContainer
+                                 color: clearAllButton.holding ? Colours.palette.m3onErrorContainer : Colours.palette.m3error
                                  font: Tokens.font.body.small
                              }
+                         }
+
+                         Tooltip {
+                             target: clearAllButton
+                             text: qsTr("Press and hold to delete %1 chats").arg(historyActions.clearableCount)
                          }
                      }
 
