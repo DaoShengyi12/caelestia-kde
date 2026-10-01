@@ -405,9 +405,10 @@ Item {
                     anchors.margins: Tokens.padding.small
                     spacing: Tokens.spacing.small
 
+                    // Fixed height so the icon stays put whether the label wraps to one or two lines.
                     Item {
                         Layout.fillWidth: true
-                        Layout.fillHeight: true
+                        Layout.preferredHeight: 64
 
                         Image {
                             id: iconImage
@@ -439,6 +440,8 @@ Item {
                     Text {
                         visible: !delegateItem.renaming
                         Layout.fillWidth: true
+                        Layout.fillHeight: true
+                        verticalAlignment: Text.AlignTop
                         text: {
                             if (delegateItem.fileName.toLowerCase().endsWith(".desktop"))
                                 return delegateItem.desktopEntry?.name || delegateItem.desktopName;
@@ -466,6 +469,11 @@ Item {
                                 delegateItem.cancelRename();
                         }
                         Keys.onEscapePressed: delegateItem.cancelRename()
+                    }
+
+                    Item {
+                        visible: delegateItem.renaming
+                        Layout.fillHeight: true
                     }
                 }
 
