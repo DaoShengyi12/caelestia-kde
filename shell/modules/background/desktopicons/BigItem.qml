@@ -30,7 +30,11 @@ Item {
     readonly property bool resizing: grip.pressed
     readonly property alias content: loader.item
     // Every large item carries its name under the card, like an icon label.
-    readonly property real labelHeight: Math.min(controller.cellHeight - controller.iconSize, 40)
+    // The label sits in the gap to the next row, so that gap is kept only a little
+    // wider than the one between columns; otherwise rows look much further apart.
+    readonly property real sideGap: Tokens.padding.extraLarge / 2
+    readonly property real topGap: Tokens.padding.small
+    readonly property real labelHeight: Tokens.padding.extraLargeIncreased
     readonly property string label: {
         if (isGroup)
             return DesktopLayout.groups[itemId]?.name ?? "";
@@ -122,8 +126,10 @@ Item {
         id: card
 
         anchors.fill: parent
-        anchors.margins: Tokens.padding.small
-        anchors.bottomMargin: Tokens.padding.small + root.labelHeight
+        anchors.leftMargin: root.sideGap
+        anchors.rightMargin: root.sideGap
+        anchors.topMargin: root.topGap
+        anchors.bottomMargin: root.labelHeight
         radius: Tokens.rounding.extraLarge
         color: GlobalConfig.appearance.pitchBlack ? Qt.alpha("#000000", 0.7) : Qt.alpha(Colours.palette.m3surfaceContainer, 0.4)
         border.width: root.selected || root.mergeTarget || root.focusVisible ? 2 : 1
@@ -196,11 +202,12 @@ Item {
         }
     }
 
-    // Centred in the label row so names in different scripts line up.
+    // Centred in the gap down to the next row's card (its top gap included), so
+    // names in different scripts line up.
     StyledRect {
         anchors.horizontalCenter: card.horizontalCenter
         anchors.verticalCenter: card.bottom
-        anchors.verticalCenterOffset: root.labelHeight / 2
+        anchors.verticalCenterOffset: (root.labelHeight + root.topGap) / 2 - 1
         width: title.width + Tokens.padding.medium * 2
         height: title.height + Tokens.padding.small
         radius: Tokens.rounding.small
