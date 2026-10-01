@@ -72,6 +72,9 @@ Item {
         anchors.verticalCenter: parent.verticalCenter
         visible: root.renaming
         horizontalAlignment: TextInput.AlignHCenter
+        // On the desktop the editor has to fit the label row under the card.
+        verticalPadding: root.desktopStyle ? Tokens.padding.small : Tokens.padding.large
+        horizontalPadding: root.desktopStyle ? Tokens.padding.medium : Tokens.padding.large
         onAccepted: root.commitRename()
         onActiveFocusChanged: {
             if (!activeFocus && root.renaming)
