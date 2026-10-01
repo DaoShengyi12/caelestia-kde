@@ -202,6 +202,7 @@ Item {
                 property int col: -1
                 property int row: -1
                 property bool renaming: false
+                readonly property bool isDesktopFile: fileName.toLowerCase().endsWith(".desktop")
 
                 readonly property DesktopEntry desktopEntry: {
                     if (!fileName.toLowerCase().endsWith(".desktop"))
@@ -221,7 +222,8 @@ Item {
                         root.renamingDelegate.cancelRename();
                     root.renamingDelegate = delegateItem;
                     renaming = true;
-                    renameField.text = fileName;
+                    // Hide the .desktop suffix so editing the name can't drop it.
+                    renameField.text = isDesktopFile ? fileName.slice(0, -8) : fileName;
                     renameField.forceActiveFocus();
                 }
 
@@ -231,7 +233,10 @@ Item {
                     renaming = false;
                     if (root.renamingDelegate === delegateItem)
                         root.renamingDelegate = null;
-                    root.renameIcon(path, renameField.text);
+                    let newName = renameField.text.trim();
+                    if (isDesktopFile && newName.length > 0 && !newName.toLowerCase().endsWith(".desktop"))
+                        newName += ".desktop";
+                    root.renameIcon(path, newName);
                 }
 
                 function cancelRename(): void {
