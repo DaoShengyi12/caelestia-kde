@@ -349,6 +349,7 @@ Item {
         visibilities: root.visibilities
         popouts: popoutsWrapper.content
         utilities: utilities
+        followsPopout: shouldPush
         anchors.top: parent.top
         anchors.bottom: utilities.top
         anchors.right: parent.right
