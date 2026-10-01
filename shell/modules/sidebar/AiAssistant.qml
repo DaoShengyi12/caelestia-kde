@@ -1453,6 +1453,12 @@ Item {
             listView.positionViewAtEnd();
     }
 
+    // Length of the reply text so far; tool calls store it so their cards can be
+    // placed between the text written before and after them.
+    function claudeCodeTextPos(proc) {
+        return (proc.acc || "").trim().length;
+    }
+
     function claudeCodeTool(proc, id) {
         for (var i = 0; i < proc.tools.length; i++)
             if (proc.tools[i].id === id)
@@ -1521,7 +1527,7 @@ Item {
                 if (cb.type === "tool_use") {
                     proc.needSep = true;
                     if (!claudeCodeTool(proc, cb.id)) {
-                        proc.tools.push({ id: cb.id, name: cb.name || "tool", summary: "", result: "", isError: false, done: false });
+                        proc.tools.push({ id: cb.id, name: cb.name || "tool", summary: "", result: "", isError: false, done: false, at: claudeCodeTextPos(proc) });
                         updateClaudeCodeTools(proc);
                     }
                     currentActionText = "Running " + (cb.name || "tool") + "…";
@@ -1550,14 +1556,13 @@ Item {
         // the fallback when token-level partials aren't emitted.
         if (evt.type === "assistant" && evt.message && evt.message.content) {
             var hasTool = false;
-            var textPart = "";
             for (var i = 0; i < evt.message.content.length; i++) {
                 var b = evt.message.content[i];
                 if (b.type === "tool_use") {
                     hasTool = true;
                     var t = claudeCodeTool(proc, b.id);
                     if (!t) {
-                        t = { id: b.id, name: b.name || "tool", summary: "", result: "", isError: false, done: false };
+                        t = { id: b.id, name: b.name || "tool", summary: "", result: "", isError: false, done: false, at: claudeCodeTextPos(proc) };
                         proc.tools.push(t);
                     }
                     t.summary = toolSummary(b.name, b.input);
@@ -1566,15 +1571,16 @@ Item {
                         claudeCodeToolRunning = true;
                     }
                 } else if (b.type === "text") {
-                    textPart += b.text || "";
+                    // Appended in order so a later tool call is placed after it.
+                    var bt = (b.text || "").trim();
+                    if (bt !== "" && proc.acc.indexOf(bt) === -1) {
+                        proc.needSep = true;
+                        appendClaudeCodeText(proc, b.text);
+                    }
                 }
             }
             if (hasTool)
                 updateClaudeCodeTools(proc);
-            if (textPart.trim() !== "" && proc.acc.indexOf(textPart.trim()) === -1) {
-                proc.needSep = true;
-                appendClaudeCodeText(proc, textPart);
-            }
             if (hasTool)
                 isThinking = true;
             return;
@@ -3402,6 +3408,32 @@ Item {
                                  return [];
                              }
                          }
+                         // The reply text split at the points where tool calls were made:
+                         // each segment is the text written before its tool cards. Tools
+                         // saved without a position are shown first.
+                         readonly property var segments: {
+                             var out = [{ text: "", tools: [] }];
+                             var pos = 0;
+                             for (var i = 0; i < tools.length; i++) {
+                                 var at = Math.max(pos, Math.min(tools[i].at || 0, text.length));
+                                 var cur = out[out.length - 1];
+                                 if (at > pos) {
+                                     if (cur.tools.length > 0) {
+                                         cur = { text: "", tools: [] };
+                                         out.push(cur);
+                                     }
+                                     cur.text = text.substring(pos, at).trim();
+                                     pos = at;
+                                 }
+                                 cur.tools.push(tools[i]);
+                             }
+                             var rest = text.substring(pos).trim();
+                             if (out[out.length - 1].tools.length > 0)
+                                 out.push({ text: rest, tools: [] });
+                             else
+                                 out[out.length - 1].text = rest;
+                             return out;
+                         }
                          readonly property var attachmentList: attachments ? attachments.split("\n") : []
 
                          width: listView.width - Tokens.padding.large
@@ -3560,237 +3592,254 @@ Item {
                                      }
                                  }
 
-                                 // Tool calls made while producing this reply (Claude Code).
+                                 // Reply text with the tool calls made while producing it (Claude
+                                 // Code), each card placed after the text written before it.
                                  Repeater {
-                                     model: delegateItem.tools
+                                     model: delegateItem.segments.length
 
-                                     StyledRect {
-                                         id: toolCard
+                                     Column {
+                                         id: segmentItem
 
-                                         required property var modelData
-                                         property bool expanded: false
-                                         readonly property bool isAgent: root.isAgentTool(modelData.name)
-                                         readonly property var steps: modelData.steps || []
-                                         // Collapsed running subagent: show just its latest steps.
-                                         readonly property var visibleSteps: expanded ? steps : (!modelData.done ? steps.slice(-3) : [])
+                                         required property int index
+                                         readonly property var segment: delegateItem.segments[index] || ({ text: "", tools: [] })
+                                         readonly property bool isLast: index === delegateItem.segments.length - 1
 
-                                         width: bubbleRect.maxBubbleWidth - Tokens.padding.medium * 2
-                                         implicitHeight: toolCardCol.implicitHeight + Tokens.padding.small * 2
-                                         radius: Tokens.rounding.small
-                                         color: Colours.layer(Colours.tPalette.m3surfaceContainerHigh, 2)
+                                         visible: segment.text !== "" || segment.tools.length > 0
+                                         spacing: bubbleLayout.spacing
 
-                                         // Subagent cards get an accent bar down the left edge.
-                                         StyledRect {
-                                             visible: toolCard.isAgent
-                                             anchors.left: parent.left
-                                             anchors.top: parent.top
-                                             anchors.bottom: parent.bottom
-                                             anchors.margins: 4
-                                             width: 3
-                                             radius: Tokens.rounding.full
-                                             color: toolCard.modelData.isError ? Colours.palette.m3error : (toolCard.modelData.done ? Colours.palette.m3outlineVariant : Colours.palette.m3tertiary)
+                                         TextEdit {
+                                             id: messageText
 
-                                             Behavior on color { CAnim {} }
+                                             // Nothing to show yet (e.g. only tool calls so far): no
+                                             // empty line with a lone blinking cursor.
+                                             visible: fullText !== ""
+                                             textFormat: Text.MarkdownText
+                                             width: Math.min(implicitWidth, bubbleRect.maxBubbleWidth - Tokens.padding.medium * 2)
+                                     
+                                             property string fullText: segmentItem.segment.text
+                                     
+                                             property bool cursorVisible: true
+
+                                             Timer {
+                                                 running: !delegateItem.isFinished && segmentItem.isLast
+                                                 repeat: true
+                                                 interval: 400
+                                                 onTriggered: messageText.cursorVisible = !messageText.cursorVisible
+                                             }
+                                     
+                                             text: delegateItem.isFinished || !segmentItem.isLast ? fullText : fullText + (cursorVisible ? "▌" : "")
+                                     
+                                             color: delegateItem.isUser ? Colours.palette.m3onPrimary : Colours.palette.m3onSurface
+
+                                             font: Tokens.font.body.small
+
+                                             wrapMode: Text.Wrap
+
+                                             readOnly: true
+
+                                             selectByMouse: true
+
+                                             selectionColor: Colours.palette.m3primary
+
+                                             selectedTextColor: Colours.palette.m3onPrimary
+
+                                             MouseArea {
+                                                 anchors.fill: parent
+                                                 hoverEnabled: true
+                                                 cursorShape: Qt.IBeamCursor
+                                                 propagateComposedEvents: true
+                                                 onPressed: mouse => mouse.accepted = false
+                                             }
                                          }
 
-                                         Column {
-                                             id: toolCardCol
+                                         Repeater {
+                                             model: segmentItem.segment.tools.length
 
-                                             anchors.left: parent.left
-                                             anchors.right: parent.right
-                                             anchors.top: parent.top
-                                             anchors.margins: Tokens.padding.small
-                                             anchors.leftMargin: toolCard.isAgent ? Tokens.padding.small + 8 : Tokens.padding.small
-                                             spacing: Tokens.spacing.small
+                                             StyledRect {
+                                                 id: toolCard
 
-                                             Item {
-                                                 width: parent.width
-                                                 implicitHeight: toolHeader.implicitHeight
+                                                 required property int index
+                                                 readonly property var tool: segmentItem.segment.tools[index] || ({})
+                                                 property bool expanded: false
+                                                 readonly property bool isAgent: root.isAgentTool(tool.name)
+                                                 readonly property var steps: tool.steps || []
+                                                 // Collapsed running subagent: show just its latest steps.
+                                                 readonly property var visibleSteps: expanded ? steps : (!tool.done ? steps.slice(-3) : [])
 
-                                                 RowLayout {
-                                                     id: toolHeader
+                                                 width: bubbleRect.maxBubbleWidth - Tokens.padding.medium * 2
+                                                 implicitHeight: toolCardCol.implicitHeight + Tokens.padding.small * 2
+                                                 radius: Tokens.rounding.small
+                                                 color: Colours.layer(Colours.tPalette.m3surfaceContainerHigh, 2)
+
+                                                 // Subagent cards get an accent bar down the left edge.
+                                                 StyledRect {
+                                                     visible: toolCard.isAgent
+                                                     anchors.left: parent.left
+                                                     anchors.top: parent.top
+                                                     anchors.bottom: parent.bottom
+                                                     anchors.margins: 4
+                                                     width: 3
+                                                     radius: Tokens.rounding.full
+                                                     color: toolCard.tool.isError ? Colours.palette.m3error : (toolCard.tool.done ? Colours.palette.m3outlineVariant : Colours.palette.m3tertiary)
+
+                                                     Behavior on color { CAnim {} }
+                                                 }
+
+                                                 Column {
+                                                     id: toolCardCol
 
                                                      anchors.left: parent.left
                                                      anchors.right: parent.right
+                                                     anchors.top: parent.top
+                                                     anchors.margins: Tokens.padding.small
+                                                     anchors.leftMargin: toolCard.isAgent ? Tokens.padding.small + 8 : Tokens.padding.small
                                                      spacing: Tokens.spacing.small
 
-                                                     MaterialIcon {
-                                                         text: toolCard.modelData.isError ? "error" : (toolCard.isAgent ? (toolCard.modelData.done ? "task_alt" : "smart_toy") : (toolCard.modelData.done ? "check_circle" : "pending"))
-                                                         color: toolCard.modelData.isError ? Colours.palette.m3error : (toolCard.modelData.done ? Colours.palette.m3primary : (toolCard.isAgent ? Colours.palette.m3tertiary : Colours.palette.m3onSurfaceVariant))
-                                                         font: Tokens.font.icon.small
+                                                     Item {
+                                                         width: parent.width
+                                                         implicitHeight: toolHeader.implicitHeight
 
-                                                         // A running subagent breathes so it reads as busy.
-                                                         SequentialAnimation on opacity {
-                                                             running: toolCard.isAgent && !toolCard.modelData.done
-                                                             loops: Animation.Infinite
-                                                             onRunningChanged: if (!running) parent.opacity = 1
+                                                         RowLayout {
+                                                             id: toolHeader
 
-                                                             NumberAnimation { to: 0.35; duration: 700; easing.type: Easing.InOutSine }
-                                                             NumberAnimation { to: 1; duration: 700; easing.type: Easing.InOutSine }
+                                                             anchors.left: parent.left
+                                                             anchors.right: parent.right
+                                                             spacing: Tokens.spacing.small
+
+                                                             MaterialIcon {
+                                                                 text: toolCard.tool.isError ? "error" : (toolCard.isAgent ? (toolCard.tool.done ? "task_alt" : "smart_toy") : (toolCard.tool.done ? "check_circle" : "pending"))
+                                                                 color: toolCard.tool.isError ? Colours.palette.m3error : (toolCard.tool.done ? Colours.palette.m3primary : (toolCard.isAgent ? Colours.palette.m3tertiary : Colours.palette.m3onSurfaceVariant))
+                                                                 font: Tokens.font.icon.small
+
+                                                                 // A running subagent breathes so it reads as busy.
+                                                                 SequentialAnimation on opacity {
+                                                                     running: toolCard.isAgent && !toolCard.tool.done
+                                                                     loops: Animation.Infinite
+                                                                     onRunningChanged: if (!running) parent.opacity = 1
+
+                                                                     NumberAnimation { to: 0.35; duration: 700; easing.type: Easing.InOutSine }
+                                                                     NumberAnimation { to: 1; duration: 700; easing.type: Easing.InOutSine }
+                                                                 }
+                                                             }
+
+                                                             StyledText {
+                                                                 text: toolCard.isAgent ? (toolCard.tool.agentType || "subagent") : toolCard.tool.name
+                                                                 color: Colours.palette.m3onSurface
+                                                                 font: Tokens.font.label.medium
+                                                             }
+
+                                                             StyledText {
+                                                                 Layout.fillWidth: true
+                                                                 text: toolCard.tool.summary || ""
+                                                                 color: Colours.palette.m3onSurfaceVariant
+                                                                 font: toolCard.isAgent ? Tokens.font.label.medium : Tokens.font.mono.small
+                                                                 elide: Text.ElideRight
+                                                                 maximumLineCount: 1
+                                                             }
+
+                                                             MaterialIcon {
+                                                                 visible: toolCard.isAgent || (toolCard.tool.result || "") !== "" || (toolCard.tool.summary || "").length > 40
+                                                                 text: "expand_more"
+                                                                 color: Colours.palette.m3onSurfaceVariant
+                                                                 font: Tokens.font.icon.small
+                                                                 rotation: toolCard.expanded ? 180 : 0
+
+                                                                 Behavior on rotation { NumberAnimation { duration: 150; easing.type: Easing.OutQuad } }
+                                                             }
+                                                         }
+
+                                                         MouseArea {
+                                                             anchors.fill: parent
+                                                             cursorShape: Qt.PointingHandCursor
+                                                             onClicked: toolCard.expanded = !toolCard.expanded
+                                                         }
+                                                     }
+
+                                                     // Subagent: current step and running totals.
+                                                     StyledText {
+                                                         visible: toolCard.isAgent && text !== ""
+                                                         width: parent.width
+                                                         text: {
+                                                             const stats = root.agentStatsText(toolCard.tool);
+                                                             const step = !toolCard.tool.done ? (toolCard.tool.progress || "") : "";
+                                                             return step !== "" && stats !== "" ? step + " · " + stats : (step || stats);
+                                                         }
+                                                         color: Colours.palette.m3outline
+                                                         font: Tokens.font.label.small
+                                                         elide: Text.ElideRight
+                                                     }
+
+                                                     // Subagent: its own tool calls.
+                                                     Repeater {
+                                                         model: toolCard.visibleSteps
+
+                                                         RowLayout {
+                                                             required property var modelData
+
+                                                             width: toolCardCol.width
+                                                             spacing: Tokens.spacing.small
+
+                                                             MaterialIcon {
+                                                                 text: parent.modelData.isError ? "close" : (parent.modelData.done ? "check" : "more_horiz")
+                                                                 color: parent.modelData.isError ? Colours.palette.m3error : Colours.palette.m3onSurfaceVariant
+                                                                 font: Tokens.font.icon.small
+                                                             }
+
+                                                             StyledText {
+                                                                 text: parent.modelData.name
+                                                                 color: Colours.palette.m3onSurfaceVariant
+                                                                 font: Tokens.font.label.small
+                                                             }
+
+                                                             StyledText {
+                                                                 Layout.fillWidth: true
+                                                                 text: parent.modelData.summary || ""
+                                                                 color: Colours.palette.m3outline
+                                                                 font: Tokens.font.mono.small
+                                                                 elide: Text.ElideRight
+                                                                 maximumLineCount: 1
+                                                             }
                                                          }
                                                      }
 
                                                      StyledText {
-                                                         text: toolCard.isAgent ? (toolCard.modelData.agentType || "subagent") : toolCard.modelData.name
-                                                         color: Colours.palette.m3onSurface
-                                                         font: Tokens.font.label.medium
-                                                     }
-
-                                                     StyledText {
-                                                         Layout.fillWidth: true
-                                                         text: toolCard.modelData.summary || ""
-                                                         color: Colours.palette.m3onSurfaceVariant
-                                                         font: toolCard.isAgent ? Tokens.font.label.medium : Tokens.font.mono.small
-                                                         elide: Text.ElideRight
-                                                         maximumLineCount: 1
-                                                     }
-
-                                                     MaterialIcon {
-                                                         visible: toolCard.isAgent || (toolCard.modelData.result || "") !== "" || (toolCard.modelData.summary || "").length > 40
-                                                         text: "expand_more"
-                                                         color: Colours.palette.m3onSurfaceVariant
-                                                         font: Tokens.font.icon.small
-                                                         rotation: toolCard.expanded ? 180 : 0
-
-                                                         Behavior on rotation { NumberAnimation { duration: 150; easing.type: Easing.OutQuad } }
-                                                     }
-                                                 }
-
-                                                 MouseArea {
-                                                     anchors.fill: parent
-                                                     cursorShape: Qt.PointingHandCursor
-                                                     onClicked: toolCard.expanded = !toolCard.expanded
-                                                 }
-                                             }
-
-                                             // Subagent: current step and running totals.
-                                             StyledText {
-                                                 visible: toolCard.isAgent && text !== ""
-                                                 width: parent.width
-                                                 text: {
-                                                     const stats = root.agentStatsText(toolCard.modelData);
-                                                     const step = !toolCard.modelData.done ? (toolCard.modelData.progress || "") : "";
-                                                     return step !== "" && stats !== "" ? step + " · " + stats : (step || stats);
-                                                 }
-                                                 color: Colours.palette.m3outline
-                                                 font: Tokens.font.label.small
-                                                 elide: Text.ElideRight
-                                             }
-
-                                             // Subagent: its own tool calls.
-                                             Repeater {
-                                                 model: toolCard.visibleSteps
-
-                                                 RowLayout {
-                                                     required property var modelData
-
-                                                     width: toolCardCol.width
-                                                     spacing: Tokens.spacing.small
-
-                                                     MaterialIcon {
-                                                         text: parent.modelData.isError ? "close" : (parent.modelData.done ? "check" : "more_horiz")
-                                                         color: parent.modelData.isError ? Colours.palette.m3error : Colours.palette.m3onSurfaceVariant
-                                                         font: Tokens.font.icon.small
-                                                     }
-
-                                                     StyledText {
-                                                         text: parent.modelData.name
-                                                         color: Colours.palette.m3onSurfaceVariant
+                                                         visible: !toolCard.expanded && !toolCard.tool.done && toolCard.steps.length > 3
+                                                         text: qsTr("+%1 earlier steps").arg(toolCard.steps.length - 3)
+                                                         color: Colours.palette.m3outline
                                                          font: Tokens.font.label.small
                                                      }
 
-                                                     StyledText {
-                                                         Layout.fillWidth: true
-                                                         text: parent.modelData.summary || ""
-                                                         color: Colours.palette.m3outline
+                                                     // Subagent report, rendered as Markdown.
+                                                     TextEdit {
+                                                         visible: toolCard.isAgent && toolCard.expanded && (toolCard.tool.result || "") !== ""
+                                                         width: parent.width
+                                                         text: toolCard.tool.result || ""
+                                                         textFormat: Text.MarkdownText
+                                                         color: toolCard.tool.isError ? Colours.palette.m3error : Colours.palette.m3onSurface
+                                                         font: Tokens.font.body.small
+                                                         wrapMode: Text.Wrap
+                                                         readOnly: true
+                                                         selectByMouse: true
+                                                         selectionColor: Colours.palette.m3primary
+                                                         selectedTextColor: Colours.palette.m3onPrimary
+                                                     }
+
+                                                     TextEdit {
+                                                         visible: toolCard.expanded && !toolCard.isAgent
+                                                         width: parent.width
+                                                         text: (toolCard.tool.summary || "") + ((toolCard.tool.result || "") !== "" ? "\n\n" + toolCard.tool.result : "")
+                                                         textFormat: Text.PlainText
+                                                         color: toolCard.tool.isError ? Colours.palette.m3error : Colours.palette.m3onSurfaceVariant
                                                          font: Tokens.font.mono.small
-                                                         elide: Text.ElideRight
-                                                         maximumLineCount: 1
+                                                         wrapMode: Text.WrapAnywhere
+                                                         readOnly: true
+                                                         selectByMouse: true
+                                                         selectionColor: Colours.palette.m3primary
+                                                         selectedTextColor: Colours.palette.m3onPrimary
                                                      }
                                                  }
                                              }
-
-                                             StyledText {
-                                                 visible: !toolCard.expanded && !toolCard.modelData.done && toolCard.steps.length > 3
-                                                 text: qsTr("+%1 earlier steps").arg(toolCard.steps.length - 3)
-                                                 color: Colours.palette.m3outline
-                                                 font: Tokens.font.label.small
-                                             }
-
-                                             // Subagent report, rendered as Markdown.
-                                             TextEdit {
-                                                 visible: toolCard.isAgent && toolCard.expanded && (toolCard.modelData.result || "") !== ""
-                                                 width: parent.width
-                                                 text: toolCard.modelData.result || ""
-                                                 textFormat: Text.MarkdownText
-                                                 color: toolCard.modelData.isError ? Colours.palette.m3error : Colours.palette.m3onSurface
-                                                 font: Tokens.font.body.small
-                                                 wrapMode: Text.Wrap
-                                                 readOnly: true
-                                                 selectByMouse: true
-                                                 selectionColor: Colours.palette.m3primary
-                                                 selectedTextColor: Colours.palette.m3onPrimary
-                                             }
-
-                                             TextEdit {
-                                                 visible: toolCard.expanded && !toolCard.isAgent
-                                                 width: parent.width
-                                                 text: (toolCard.modelData.summary || "") + ((toolCard.modelData.result || "") !== "" ? "\n\n" + toolCard.modelData.result : "")
-                                                 textFormat: Text.PlainText
-                                                 color: toolCard.modelData.isError ? Colours.palette.m3error : Colours.palette.m3onSurfaceVariant
-                                                 font: Tokens.font.mono.small
-                                                 wrapMode: Text.WrapAnywhere
-                                                 readOnly: true
-                                                 selectByMouse: true
-                                                 selectionColor: Colours.palette.m3primary
-                                                 selectedTextColor: Colours.palette.m3onPrimary
-                                             }
                                          }
-                                     }
-                                 }
-
-                                 TextEdit {
-                                     id: messageText
-
-                                     // Nothing to show yet (e.g. only tool calls so far): no
-                                     // empty line with a lone blinking cursor.
-                                     visible: fullText !== ""
-                                     textFormat: Text.MarkdownText
-                                     width: Math.min(implicitWidth, bubbleRect.maxBubbleWidth - Tokens.padding.medium * 2)
-                                     
-                                     property string fullText: delegateItem.text !== undefined ? delegateItem.text : ""
-                                     
-                                     property bool cursorVisible: true
-
-                                     Timer {
-                                         running: !delegateItem.isFinished
-                                         repeat: true
-                                         interval: 400
-                                         onTriggered: messageText.cursorVisible = !messageText.cursorVisible
-                                     }
-                                     
-                                     text: delegateItem.isFinished ? fullText : fullText + (cursorVisible ? "▌" : "")
-                                     
-                                     color: delegateItem.isUser ? Colours.palette.m3onPrimary : Colours.palette.m3onSurface
-
-                                     font: Tokens.font.body.small
-
-                                     wrapMode: Text.Wrap
-
-                                     readOnly: true
-
-                                     selectByMouse: true
-
-                                     selectionColor: Colours.palette.m3primary
-
-                                     selectedTextColor: Colours.palette.m3onPrimary
-
-                                     MouseArea {
-                                         anchors.fill: parent
-                                         hoverEnabled: true
-                                         cursorShape: Qt.IBeamCursor
-                                         propagateComposedEvents: true
-                                         onPressed: mouse => mouse.accepted = false
                                      }
                                  }
 
