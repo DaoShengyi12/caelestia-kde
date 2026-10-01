@@ -39,8 +39,8 @@ Item {
 
     // Room the content gets at a given size in cells, matching BigItem's margins.
     function areaFor(w: int, h: int): size {
-        const inset = Tokens.padding.small * 4;
-        return Qt.size(w * controller.cellWidth - inset, h * controller.cellHeight - inset - frame.labelHeight);
+        const inset = Tokens.padding.small * 2;
+        return Qt.size(w * controller.cellWidth - frame.sideGap * 2 - inset, h * controller.cellHeight - frame.topGap - frame.labelHeight - inset);
     }
 
     function slotX(index: int): real {
