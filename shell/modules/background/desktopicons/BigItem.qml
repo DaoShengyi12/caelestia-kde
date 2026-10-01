@@ -204,7 +204,7 @@ Item {
         width: title.width + Tokens.padding.medium * 2
         height: title.height + Tokens.padding.small
         radius: Tokens.rounding.small
-        color: root.selected ? Qt.alpha(Colours.palette.m3primary, 0.24) : "transparent"
+        color: root.selected && !title.renaming ? Qt.alpha(Colours.palette.m3primary, 0.24) : "transparent"
 
         GroupTitle {
             id: title
