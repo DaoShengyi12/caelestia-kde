@@ -24,6 +24,8 @@ Singleton {
     property var widgets: ({})
     property int iconSize: 64
     property bool autoArrange: false
+    // Clip full-colour icons to a rounded square.
+    property bool roundIcons: true
     // "" keeps the manual order; otherwise name, type, modified or size.
     property string sortKey: ""
 
@@ -91,6 +93,13 @@ Singleton {
         scheduleSave();
     }
 
+    function setRoundIcons(on: bool): void {
+        if (roundIcons === on)
+            return;
+        roundIcons = on;
+        scheduleSave();
+    }
+
     function setSortKey(key: string): void {
         if (sortKey === key)
             return;
@@ -145,6 +154,7 @@ Singleton {
             if (iconSizes.indexOf(prefs.iconSize) !== -1)
                 iconSize = prefs.iconSize;
             autoArrange = prefs.autoArrange === true;
+            roundIcons = prefs.roundIcons !== false;
             sortKey = typeof prefs.sortKey === "string" ? prefs.sortKey : "";
         }
         positions = nextPositions;
@@ -165,7 +175,7 @@ Singleton {
             widgetList.push({ id, type: widgets[id].type, size: widgets[id].size, config: widgets[id].config });
         return JSON.stringify({
             version: 2,
-            prefs: { iconSize, autoArrange, sortKey },
+            prefs: { iconSize, autoArrange, sortKey, roundIcons },
             items,
             groups: groupList,
             widgets: widgetList

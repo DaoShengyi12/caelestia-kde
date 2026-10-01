@@ -130,6 +130,22 @@ Item {
                     }
                 }
 
+                RowLayout {
+                    Layout.fillWidth: true
+                    spacing: Tokens.spacing.medium
+
+                    StyledText {
+                        Layout.fillWidth: true
+                        text: qsTr("Rounded icon corners")
+                        font: Tokens.font.body.medium
+                    }
+
+                    StyledSwitch {
+                        checked: DesktopLayout.roundIcons
+                        onToggled: DesktopLayout.setRoundIcons(checked)
+                    }
+                }
+
                 StyledText {
                     Layout.topMargin: Tokens.spacing.small
                     text: qsTr("Icon size")

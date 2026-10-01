@@ -16,146 +16,235 @@ Item {
 
     readonly property string groupId: frame.itemId
     readonly property var entries: controller.groupEntries(groupId)
-    // Always three rows of icons, so the icons grow with the folder; a wider
-    // folder adds columns at the same size.
-    readonly property int rows: 3
-    readonly property int columns: Math.max(3, Math.round(rows * width / Math.max(1, height)))
-    readonly property real slot: Math.min(width / columns, height / rows)
+
+    // Room the content gets at a given size in cells, matching BigItem's margins.
+    function areaFor(w: int, h: int): size {
+        const inset = Tokens.padding.small * 4;
+        return Qt.size(w * controller.cellWidth - inset, h * controller.cellHeight - inset - frame.labelHeight);
+    }
+
+    // Icons are sized for a 3x3 folder and keep that size: a bigger folder
+    // fits more of them instead of drawing them larger.
+    readonly property size reference: areaFor(3, 3)
+    readonly property real slot: Math.min(reference.width, reference.height) / 3
     readonly property real iconSize: slot * 0.82
+    // Laid out for the size the folder is heading to, not the animated one,
+    // so the icons move once while the card grows around them.
+    readonly property size target: areaFor(frame.span.w, frame.span.h)
+    readonly property int columns: Math.max(1, Math.floor(target.width / slot))
+    readonly property int rows: Math.max(1, Math.floor(target.height / slot))
     readonly property int capacity: columns * rows
     readonly property bool overflow: entries.length > capacity
-    readonly property var shown: overflow ? entries.slice(0, capacity - 1) : entries
-    readonly property var rest: overflow ? entries.slice(capacity - 1) : []
+    readonly property int shownCount: overflow ? capacity - 1 : entries.length
+    readonly property var rest: overflow ? entries.slice(capacity - 1, capacity + 3) : []
+    readonly property real offsetX: (target.width - columns * slot) / 2
+    readonly property real offsetY: (target.height - rows * slot) / 2
     property Item hoveredSlot: null
 
-    // Filled from the top left, the full grid centred in the card.
-    Grid {
-        id: grid
+    function slotX(index: int): real {
+        return offsetX + (index % columns) * slot;
+    }
 
-        x: (root.width - root.columns * root.slot) / 2
-        y: (root.height - root.rows * root.slot) / 2
-        columns: root.columns
+    function slotY(index: int): real {
+        return offsetY + Math.floor(index / columns) * slot;
+    }
 
-        Repeater {
-            model: root.shown
+    // One delegate per member that lives as long as the member does, so a
+    // resize only moves icons around instead of rebuilding them.
+    ListModel {
+        id: members
+    }
 
-            Item {
-                id: slotItem
+    onEntriesChanged: syncMembers()
+    Component.onCompleted: syncMembers()
 
-                required property var modelData
-                readonly property string memberKey: DesktopLayout.fileKey(modelData.fileName)
-                readonly property bool dragged: root.controller.dragGroup === root.groupId && root.controller.dragKeys.indexOf(memberKey) !== -1
-
-                width: root.slot
-                height: root.slot
-                opacity: dragged ? 0.35 : 1
-
-                EntryIcon {
-                    id: icon
-
-                    anchors.centerIn: parent
-                    width: root.iconSize
-                    height: width
-                    entry: slotItem.modelData
-                    materialYou: root.controller.materialYou
-                    vibrant: root.controller.vibrant
-                    scale: slotArea.pressed ? 0.92 : slotArea.containsMouse ? 1.08 : 1
-
-                    Behavior on scale {
-                        Anim {
-                            type: Anim.FastSpatial
-                        }
-                    }
-                }
-
-                MouseArea {
-                    id: slotArea
-
-                    property point pressPos
-                    property bool dragSent: false
-
-                    anchors.fill: parent
-                    hoverEnabled: true
-                    cursorShape: Qt.PointingHandCursor
-                    acceptedButtons: Qt.LeftButton | Qt.RightButton
-                    onContainsMouseChanged: {
-                        if (containsMouse)
-                            root.hoveredSlot = slotItem;
-                        else if (root.hoveredSlot === slotItem)
-                            root.hoveredSlot = null;
-                    }
-                    onPressed: mouse => {
-                        pressPos = Qt.point(mouse.x, mouse.y);
-                        dragSent = false;
-                        root.controller.grabKeyboard();
-                    }
-                    onPositionChanged: mouse => {
-                        if (!(pressedButtons & Qt.LeftButton) || dragSent)
-                            return;
-                        const dx = mouse.x - pressPos.x;
-                        const dy = mouse.y - pressPos.y;
-                        if (dx * dx + dy * dy >= Qt.styleHints.startDragDistance * Qt.styleHints.startDragDistance) {
-                            dragSent = true;
-                            root.hoveredSlot = null;
-                            root.controller.beginMemberDrag(root.groupId, slotItem.modelData.fileName, icon, pressPos.x - icon.x, pressPos.y - icon.y);
-                        }
-                    }
-                    // Large folders act like a launcher: one click opens.
-                    onClicked: mouse => {
-                        if (dragSent)
-                            return;
-                        if (mouse.button === Qt.RightButton) {
-                            const p = mapToItem(root.controller, mouse.x, mouse.y);
-                            root.controller.memberContextMenu(root.groupId, slotItem.modelData.fileName, p.x, p.y);
-                        } else {
-                            slotItem.modelData.launch();
-                        }
-                    }
+    function syncMembers(): void {
+        const names = entries.map(e => e.fileName);
+        for (let i = members.count - 1; i >= 0; i--)
+            if (names.indexOf(members.get(i).name) === -1)
+                members.remove(i);
+        for (let i = 0; i < names.length; i++) {
+            let at = -1;
+            for (let j = i; j < members.count; j++) {
+                if (members.get(j).name === names[i]) {
+                    at = j;
+                    break;
                 }
             }
+            if (at === -1)
+                members.insert(i, { name: names[i] });
+            else if (at !== i)
+                members.move(at, i, 1);
         }
+    }
 
-        // The rest of the group in miniature; opens the whole group.
+    Repeater {
+        model: members
+
         Item {
-            visible: root.overflow
+            id: slotItem
+
+            required property string name
+            required property int index
+            readonly property var modelData: root.controller.files[name] ?? null
+            readonly property string memberKey: DesktopLayout.fileKey(name)
+            readonly property bool dragged: root.controller.dragGroup === root.groupId && root.controller.dragKeys.indexOf(memberKey) !== -1
+            readonly property bool fits: index < root.shownCount
+
+            x: root.slotX(index)
+            y: root.slotY(index)
             width: root.slot
             height: root.slot
+            opacity: !fits ? 0 : dragged ? 0.35 : 1
+            scale: fits ? 1 : 0.6
+            visible: opacity > 0
+            enabled: fits
 
-            Grid {
+            Behavior on x {
+                Anim {}
+            }
+
+            Behavior on y {
+                Anim {}
+            }
+
+            Behavior on opacity {
+                Anim {
+                    type: Anim.FastEffects
+                }
+            }
+
+            Behavior on scale {
+                Anim {
+                    type: Anim.FastSpatial
+                }
+            }
+
+            EntryIcon {
+                id: icon
+
                 anchors.centerIn: parent
-                columns: 2
-                spacing: root.iconSize * 0.08
-                scale: moreArea.pressed ? 0.92 : moreArea.containsMouse ? 1.08 : 1
+                width: root.iconSize
+                height: width
+                entry: slotItem.modelData
+                materialYou: root.controller.materialYou
+                vibrant: root.controller.vibrant
+                scale: slotArea.pressed ? 0.92 : slotArea.containsMouse ? 1.08 : 1
 
                 Behavior on scale {
                     Anim {
                         type: Anim.FastSpatial
                     }
                 }
-
-                Repeater {
-                    model: root.rest.slice(0, 4)
-
-                    EntryIcon {
-                        required property var modelData
-
-                        width: root.iconSize * 0.46
-                        height: width
-                        entry: modelData
-                        materialYou: root.controller.materialYou
-                        vibrant: root.controller.vibrant
-                    }
-                }
             }
 
             MouseArea {
-                id: moreArea
+                id: slotArea
+
+                property point pressPos
+                property bool dragSent: false
 
                 anchors.fill: parent
                 hoverEnabled: true
                 cursorShape: Qt.PointingHandCursor
-                onClicked: root.controller.openGroup(root.groupId)
+                acceptedButtons: Qt.LeftButton | Qt.RightButton
+                onContainsMouseChanged: {
+                    if (containsMouse)
+                        root.hoveredSlot = slotItem;
+                    else if (root.hoveredSlot === slotItem)
+                        root.hoveredSlot = null;
+                }
+                onPressed: mouse => {
+                    pressPos = Qt.point(mouse.x, mouse.y);
+                    dragSent = false;
+                    root.controller.grabKeyboard();
+                }
+                onPositionChanged: mouse => {
+                    if (!(pressedButtons & Qt.LeftButton) || dragSent)
+                        return;
+                    const dx = mouse.x - pressPos.x;
+                    const dy = mouse.y - pressPos.y;
+                    if (dx * dx + dy * dy >= Qt.styleHints.startDragDistance * Qt.styleHints.startDragDistance) {
+                        dragSent = true;
+                        root.hoveredSlot = null;
+                        root.controller.beginMemberDrag(root.groupId, slotItem.name, icon, pressPos.x - icon.x, pressPos.y - icon.y);
+                    }
+                }
+                // Large folders act like a launcher: one click opens.
+                onClicked: mouse => {
+                    if (dragSent || !slotItem.modelData)
+                        return;
+                    if (mouse.button === Qt.RightButton) {
+                        const p = mapToItem(root.controller, mouse.x, mouse.y);
+                        root.controller.memberContextMenu(root.groupId, slotItem.name, p.x, p.y);
+                    } else {
+                        slotItem.modelData.launch();
+                    }
+                }
             }
+        }
+    }
+
+    // The rest of the group in miniature; opens the whole group.
+    Item {
+        x: root.slotX(Math.max(0, root.capacity - 1))
+        y: root.slotY(Math.max(0, root.capacity - 1))
+        width: root.slot
+        height: root.slot
+        opacity: root.overflow ? 1 : 0
+        visible: opacity > 0
+
+        Behavior on x {
+            Anim {}
+        }
+
+        Behavior on y {
+            Anim {}
+        }
+
+        Behavior on opacity {
+            Anim {
+                type: Anim.FastEffects
+            }
+        }
+
+        Grid {
+            anchors.centerIn: parent
+            columns: 2
+            spacing: root.iconSize * 0.08
+            scale: moreArea.pressed ? 0.92 : moreArea.containsMouse ? 1.08 : 1
+
+            Behavior on scale {
+                Anim {
+                    type: Anim.FastSpatial
+                }
+            }
+
+            // A fixed four slots so the previews are not rebuilt on resize.
+            Repeater {
+                model: 4
+
+                EntryIcon {
+                    required property int index
+
+                    width: root.iconSize * 0.46
+                    height: width
+                    entry: root.rest[index] ?? null
+                    visible: !!entry
+                    materialYou: root.controller.materialYou
+                    vibrant: root.controller.vibrant
+                }
+            }
+        }
+
+        MouseArea {
+            id: moreArea
+
+            anchors.fill: parent
+            enabled: root.overflow
+            hoverEnabled: true
+            cursorShape: Qt.PointingHandCursor
+            onClicked: root.controller.openGroup(root.groupId)
         }
     }
 
@@ -166,8 +255,8 @@ Item {
         readonly property Item target: root.hoveredSlot
         property string text
 
-        x: target ? Math.max(-Tokens.padding.large, Math.min(root.width - width + Tokens.padding.large, target.mapToItem(root, 0, 0).x + target.width / 2 - width / 2)) : x
-        y: target ? target.mapToItem(root, 0, 0).y - height + Tokens.padding.small : y
+        x: target ? Math.max(-Tokens.padding.large, Math.min(root.width - width + Tokens.padding.large, target.x + target.width / 2 - width / 2)) : x
+        y: target ? target.y - height + Tokens.padding.small : y
         z: 5
         implicitWidth: bubbleText.implicitWidth + Tokens.padding.medium * 2
         implicitHeight: bubbleText.implicitHeight + Tokens.padding.small * 2
@@ -178,7 +267,7 @@ Item {
 
         onTargetChanged: {
             if (target) {
-                text = target.modelData.displayName;
+                text = target.modelData?.displayName ?? "";
                 bubbleDelay.restart();
             } else {
                 bubbleDelay.ready = false;
