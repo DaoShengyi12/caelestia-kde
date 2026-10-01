@@ -19,8 +19,8 @@ Item {
     property var controller
 
     // Size in cells. Width picks the layout: rings at 2, meters at 3,
-    // meters with details and a network column from 4. A third row adds
-    // the speeds, CPU and GPU models and network totals.
+    // meters with usage and a network column from 4. A third row adds the
+    // speeds, a detail line under each meter and network totals.
     readonly property int cols: frame?.span.w ?? 3
     readonly property bool tall: (frame?.span.h ?? 2) >= 3
     readonly property int tier: cols <= 2 ? 0 : cols === 3 ? 1 : 2
@@ -100,7 +100,7 @@ Item {
                 label: qsTr("CPU")
                 value: Cpu.percentage
                 extra: root.temp(Cpu.temperature)
-                detail: root.tier === 2 ? Cpu.name : ""
+                detail: Cpu.name
             }
 
             Meter {
@@ -109,21 +109,27 @@ Item {
                 label: qsTr("GPU")
                 value: Gpu.percentage
                 extra: root.temp(Gpu.temperature)
-                detail: root.tier === 2 ? Gpu.name : ""
+                detail: Gpu.name
             }
 
             Meter {
                 icon: "memory_alt"
                 label: qsTr("Memory")
                 value: Memory.percentage
-                extra: root.tier === 2 && Memory.total > 0 ? Units.formatKibUsage(Memory.used, Memory.total) : ""
+                extra: root.tier === 2 && !root.tall ? usage : ""
+                detail: usage
+
+                readonly property string usage: Memory.total > 0 ? Units.formatKibUsage(Memory.used, Memory.total) : ""
             }
 
             Meter {
                 icon: "hard_disk"
                 label: qsTr("Disk")
                 value: Storage.percentage
-                extra: root.tier === 2 && Storage.primaryDisk ? Units.formatKibUsage(Storage.primaryDisk.used, Storage.primaryDisk.total) : ""
+                extra: root.tier === 2 && !root.tall ? usage : ""
+                detail: usage
+
+                readonly property string usage: Storage.primaryDisk ? Units.formatKibUsage(Storage.primaryDisk.used, Storage.primaryDisk.total) : ""
             }
 
             // Medium widgets show the speeds under the meters when there is room.
@@ -262,7 +268,7 @@ Item {
         required property string label
         required property real value
         property string extra
-        // Second line under the label, such as the CPU model.
+        // Second line under the label, such as the CPU model; tall widgets only.
         property string detail
 
         Layout.fillWidth: true
