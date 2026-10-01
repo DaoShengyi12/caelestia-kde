@@ -116,23 +116,23 @@ Item {
             }
 
             Meter {
+                readonly property string usage: Memory.total > 0 ? Units.formatKibUsage(Memory.used, Memory.total) : ""
+
                 icon: "memory_alt"
                 label: qsTr("Memory")
                 value: Memory.percentage
                 extra: root.tier === 2 && !root.tall ? usage : ""
                 detail: usage
-
-                readonly property string usage: Memory.total > 0 ? Units.formatKibUsage(Memory.used, Memory.total) : ""
             }
 
             Meter {
+                readonly property string usage: Storage.primaryDisk ? Units.formatKibUsage(Storage.primaryDisk.used, Storage.primaryDisk.total) : ""
+
                 icon: "hard_disk"
                 label: qsTr("Disk")
                 value: Storage.percentage
                 extra: root.tier === 2 && !root.tall ? usage : ""
                 detail: usage
-
-                readonly property string usage: Storage.primaryDisk ? Units.formatKibUsage(Storage.primaryDisk.used, Storage.primaryDisk.total) : ""
             }
 
             // Medium widgets show the speeds under the meters when there is room.

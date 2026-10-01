@@ -1,5 +1,7 @@
 pragma ComponentBehavior: Bound
 
+import "desktopicons"
+import "desktopicons/LayoutEngine.js" as Engine
 import QtQuick
 import Qt.labs.folderlistmodel
 import Quickshell
@@ -10,8 +12,6 @@ import qs.components
 import qs.services
 import qs.utils
 import qs.modules.launcher.services
-import "desktopicons"
-import "desktopicons/LayoutEngine.js" as Engine
 
 Item {
     id: root
@@ -87,6 +87,43 @@ Item {
     property var previewSpans: null
     readonly property var displaySpans: previewSpans ?? spans
     readonly property WidgetCatalog widgetCatalog: WidgetCatalog {}
+
+    property string ctrlAdded: ""
+    property point pressPoint
+    property var fileOpQueue: []
+    property string typeAhead: ""
+
+    // Rewrites one key in the [Desktop Entry] group, leaving the rest of the file as is.
+    readonly property string setDesktopKeyScript: `import os, sys
+path, key, value = sys.argv[1:4]
+value = value.replace('\\\\', '\\\\\\\\').replace('\\n', '\\\\n').replace('\\t', '\\\\t').replace('\\r', '\\\\r')
+with open(path, encoding='utf-8') as f:
+    lines = f.read().split('\\n')
+group = None
+header = None
+found = False
+for i, line in enumerate(lines):
+    stripped = line.strip()
+    if stripped.startswith('['):
+        group = stripped
+        if group == '[Desktop Entry]' and header is None:
+            header = i
+        continue
+    if group == '[Desktop Entry]' and stripped.split('=', 1)[0].strip() == key:
+        lines[i] = key + '=' + value
+        found = True
+        break
+if not found:
+    if header is None:
+        sys.exit('no [Desktop Entry] group in ' + path)
+    lines.insert(header + 1, key + '=' + value)
+mode = os.stat(path).st_mode & 0o7777
+tmp = os.path.join(os.path.dirname(path), '.' + os.path.basename(path) + '.tmp')
+with open(tmp, 'w', encoding='utf-8') as f:
+    f.write('\\n'.join(lines))
+os.chmod(tmp, mode)
+os.replace(tmp, path)
+`
 
     // ---- Lookups ----------------------------------------------------------
 
@@ -487,9 +524,6 @@ Item {
         prepareDragImage(key);
     }
 
-    property string ctrlAdded: ""
-    property point pressPoint
-
     function tileClicked(key: string, mouse: var): void {
         const ctrl = mouse.modifiers & Qt.ControlModifier;
         const shift = mouse.modifiers & Qt.ShiftModifier;
@@ -881,39 +915,7 @@ Item {
         runFileOp(["kioclient", "move", e.url, "file://" + desktopDir + "/" + encodeURIComponent(trimmed)], qsTr("Rename failed"), null);
     }
 
-    // Rewrites one key in the [Desktop Entry] group, leaving the rest of the file as is.
-    readonly property string setDesktopKeyScript: `import os, sys
-path, key, value = sys.argv[1:4]
-value = value.replace('\\\\', '\\\\\\\\').replace('\\n', '\\\\n').replace('\\t', '\\\\t').replace('\\r', '\\\\r')
-with open(path, encoding='utf-8') as f:
-    lines = f.read().split('\\n')
-group = None
-header = None
-for i, line in enumerate(lines):
-    stripped = line.strip()
-    if stripped.startswith('['):
-        group = stripped
-        if group == '[Desktop Entry]' and header is None:
-            header = i
-        continue
-    if group == '[Desktop Entry]' and stripped.split('=', 1)[0].strip() == key:
-        lines[i] = key + '=' + value
-        break
-else:
-    if header is None:
-        sys.exit('no [Desktop Entry] group in ' + path)
-    lines.insert(header + 1, key + '=' + value)
-mode = os.stat(path).st_mode & 0o7777
-tmp = os.path.join(os.path.dirname(path), '.' + os.path.basename(path) + '.tmp')
-with open(tmp, 'w', encoding='utf-8') as f:
-    f.write('\\n'.join(lines))
-os.chmod(tmp, mode)
-os.replace(tmp, path)
-`
-
     // ---- File operations --------------------------------------------------
-
-    property var fileOpQueue: []
 
     function runFileOp(command: var, failTitle: string, done: var): void {
         fileOpQueue = fileOpQueue.concat([{ command, failTitle, done }]);
@@ -1226,8 +1228,6 @@ os.replace(tmp, path)
 
     // ---- Keyboard ---------------------------------------------------------
 
-    property string typeAhead: ""
-
     function focusOn(key: string, extend: bool): void {
         if (key === "")
             return;
@@ -1329,8 +1329,6 @@ os.replace(tmp, path)
     onGridReadyChanged: Qt.callLater(syncEntries)
 
     Connections {
-        target: DesktopLayout
-
         function onLoadedChanged(): void {
             Qt.callLater(root.syncEntries);
         }
@@ -1363,6 +1361,8 @@ os.replace(tmp, path)
             if (screenName === root.screenData.name)
                 viewOptions.openAt(x, y);
         }
+
+        target: DesktopLayout
     }
 
     Timer {
@@ -1507,12 +1507,12 @@ wl-paste --no-newline --type text/uri-list`]
         StyledRect {
             id: band
 
+            readonly property rect current: bandDrag.active ? rect() : Qt.rect(0, 0, 0, 0)
+
             function rect(): rect {
                 const p = bandDrag.centroid.position;
                 return Qt.rect(Math.min(p.x, bandArea.origin.x), Math.min(p.y, bandArea.origin.y), Math.abs(p.x - bandArea.origin.x), Math.abs(p.y - bandArea.origin.y));
             }
-
-            readonly property rect current: bandDrag.active ? rect() : Qt.rect(0, 0, 0, 0)
 
             visible: bandDrag.active
             x: current.x
@@ -1599,22 +1599,6 @@ wl-paste --no-newline --type text/uri-list`]
                 dimmed: root.dragGroup === "" && root.dragKeys.indexOf(key) !== -1
                 mergeTarget: root.mergeKey === key
 
-                Behavior on x {
-                    Anim {}
-                }
-
-                Behavior on y {
-                    Anim {}
-                }
-
-                Behavior on width {
-                    Anim {}
-                }
-
-                Behavior on height {
-                    Anim {}
-                }
-
                 Component.onCompleted: {
                     const next = Object.assign({}, root.tiles);
                     next[key] = big;
@@ -1634,6 +1618,22 @@ wl-paste --no-newline --type text/uri-list`]
                 onDoubleClicked: mouse => root.tileDoubleClicked(key, mouse)
                 onContextMenuRequested: (x, y) => root.tileContextMenu(key, x, y)
                 onDragRequested: root.beginDrag(key)
+
+                Behavior on x {
+                    Anim {}
+                }
+
+                Behavior on y {
+                    Anim {}
+                }
+
+                Behavior on width {
+                    Anim {}
+                }
+
+                Behavior on height {
+                    Anim {}
+                }
             }
         }
 
@@ -1666,14 +1666,6 @@ wl-paste --no-newline --type text/uri-list`]
                 dimmed: cut || (root.dragGroup === "" && root.dragKeys.indexOf(key) !== -1)
                 mergeTarget: root.mergeKey === key
 
-                Behavior on x {
-                    Anim {}
-                }
-
-                Behavior on y {
-                    Anim {}
-                }
-
                 Component.onCompleted: {
                     const next = Object.assign({}, root.tiles);
                     next[key] = tile;
@@ -1698,6 +1690,14 @@ wl-paste --no-newline --type text/uri-list`]
                     root.applyRename(key, text);
                 }
                 onRenameCancelled: root.finishRename(tile)
+
+                Behavior on x {
+                    Anim {}
+                }
+
+                Behavior on y {
+                    Anim {}
+                }
             }
         }
     }

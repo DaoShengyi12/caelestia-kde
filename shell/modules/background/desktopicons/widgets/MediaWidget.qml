@@ -110,6 +110,11 @@ Item {
 
                 // Click or drag along the bar to seek.
                 MouseArea {
+                    function seek(x: real): void {
+                        if (root.player?.length > 0)
+                            root.player.position = Math.max(0, Math.min(1, x / width)) * root.player.length;
+                    }
+
                     anchors.fill: parent
                     anchors.topMargin: -Tokens.padding.small
                     anchors.bottomMargin: -Tokens.padding.small
@@ -117,11 +122,6 @@ Item {
                     cursorShape: Qt.PointingHandCursor
                     onPressed: mouse => seek(mouse.x)
                     onPositionChanged: mouse => seek(mouse.x)
-
-                    function seek(x: real): void {
-                        if (root.player?.length > 0)
-                            root.player.position = Math.max(0, Math.min(1, x / width)) * root.player.length;
-                    }
                 }
             }
 

@@ -17,12 +17,6 @@ Item {
     readonly property string groupId: frame.itemId
     readonly property var entries: controller.groupEntries(groupId)
 
-    // Room the content gets at a given size in cells, matching BigItem's margins.
-    function areaFor(w: int, h: int): size {
-        const inset = Tokens.padding.small * 4;
-        return Qt.size(w * controller.cellWidth - inset, h * controller.cellHeight - inset - frame.labelHeight);
-    }
-
     // Icons are sized for a 3x3 folder and keep that size: a bigger folder
     // fits more of them instead of drawing them larger.
     readonly property size reference: areaFor(3, 3)
@@ -43,6 +37,12 @@ Item {
     readonly property real offsetY: (target.height - rows * slot) / 2
     property Item hoveredSlot: null
 
+    // Room the content gets at a given size in cells, matching BigItem's margins.
+    function areaFor(w: int, h: int): size {
+        const inset = Tokens.padding.small * 4;
+        return Qt.size(w * controller.cellWidth - inset, h * controller.cellHeight - inset - frame.labelHeight);
+    }
+
     function slotX(index: int): real {
         return Math.round(offsetX + (index % columns) * slot);
     }
@@ -50,15 +50,6 @@ Item {
     function slotY(index: int): real {
         return Math.round(offsetY + Math.floor(index / columns) * slot);
     }
-
-    // One delegate per member that lives as long as the member does, so a
-    // resize only moves icons around instead of rebuilding them.
-    ListModel {
-        id: members
-    }
-
-    onEntriesChanged: syncMembers()
-    Component.onCompleted: syncMembers()
 
     function syncMembers(): void {
         const names = entries.map(e => e.fileName);
@@ -78,6 +69,15 @@ Item {
             else if (at !== i)
                 members.move(at, i, 1);
         }
+    }
+
+    onEntriesChanged: syncMembers()
+    Component.onCompleted: syncMembers()
+
+    // One delegate per member that lives as long as the member does, so a
+    // resize only moves icons around instead of rebuilding them.
+    ListModel {
+        id: members
     }
 
     Repeater {

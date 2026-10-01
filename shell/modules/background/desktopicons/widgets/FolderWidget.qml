@@ -1,5 +1,6 @@
 pragma ComponentBehavior: Bound
 
+import ".."
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
@@ -10,7 +11,6 @@ import qs.components.controls as Controls
 import qs.components.filedialog
 import qs.services
 import qs.utils
-import ".."
 
 // A live view of a real folder, like Plasma's Folder View: scroll through it,
 // open files, drag them out, and drop files on it to move them in.
@@ -100,20 +100,8 @@ Item {
                 sortCaseSensitive: false
             }
 
-            WheelHandler {
-                acceptedModifiers: Qt.NoModifier
-                onWheel: event => view.contentY = Math.max(0, Math.min(view.contentHeight - view.height, view.contentY - event.angleDelta.y))
-            }
-
             ScrollBar.vertical: Controls.StyledScrollBar {
                 flickable: view
-            }
-
-            StyledText {
-                anchors.centerIn: parent
-                visible: view.count === 0
-                text: qsTr("Empty folder")
-                color: Colours.palette.m3outline
             }
 
             delegate: Item {
@@ -216,6 +204,18 @@ Item {
                     }
                 }
             }
+
+            WheelHandler {
+                acceptedModifiers: Qt.NoModifier
+                onWheel: event => view.contentY = Math.max(0, Math.min(view.contentHeight - view.height, view.contentY - event.angleDelta.y))
+            }
+
+            StyledText {
+                anchors.centerIn: parent
+                visible: view.count === 0
+                text: qsTr("Empty folder")
+                color: Colours.palette.m3outline
+            }
         }
     }
 
@@ -242,12 +242,6 @@ Item {
         thisSideX: Controls.Menu.Left
         thisSideY: Controls.Menu.Top
 
-        Item {
-            id: anchor
-
-            parent: root.controller
-        }
-
         items: [
             Controls.MenuItem {
                 text: qsTr("Open")
@@ -270,5 +264,11 @@ Item {
                 onClicked: root.controller.runFileOp(["kioclient", "move", fileMenu.entry.url, "trash:/"], qsTr("File operation failed"), null)
             }
         ]
+
+        Item {
+            id: anchor
+
+            parent: root.controller
+        }
     }
 }
