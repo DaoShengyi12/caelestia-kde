@@ -855,7 +855,7 @@ os.replace(tmp, path)
         dragGroup = openGroupId;
         dragAnchor = key;
         dragSource.Drag.mimeData = { "text/uri-list": urls.join("\r\n") + "\r\n" };
-        dragSource.Drag.hotSpot = Qt.point(dragPreview.width / 2, iconSize / 2);
+        dragSource.Drag.hotSpot = Qt.point(dragPreview.width / 2, Tokens.padding.small + iconSize / 2);
         if (!dragImageReady || dragImageKey !== key)
             dragSource.Drag.imageSource = "";
         dragSource.Drag.active = true;
