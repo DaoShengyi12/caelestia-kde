@@ -17,6 +17,9 @@ Item {
     id: root
 
     required property ShellScreen screenData
+    // Wallpaper layer, sampled for the frosted cards of large items.
+    property Item wallpaper: null
+    readonly property point gridOrigin: Qt.point(gridItem.x, gridItem.y)
 
     readonly property var screenConfig: GlobalConfig.forScreen(screenData.name).background
     readonly property bool materialYou: screenConfig.materialYouIconsEnabled
