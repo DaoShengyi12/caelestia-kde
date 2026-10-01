@@ -28,6 +28,7 @@ Item {
     property bool dimmed: false
     property bool mergeTarget: false
     property bool renaming: false
+    property real appear: 0
 
     readonly property string label: isGroup ? groupName : (entry?.displayName ?? "")
     readonly property alias iconItem: iconBox
@@ -71,8 +72,6 @@ Item {
         const p = iconBox.mapFromItem(root, x, y);
         return p.x >= 0 && p.y >= 0 && p.x <= iconBox.width && p.y <= iconBox.height;
     }
-
-    property real appear: 0
 
     opacity: (dimmed ? 0.4 : 1) * appear
     scale: 0.85 + 0.15 * appear
@@ -203,13 +202,13 @@ Item {
             // The window only gets keyboard focus once the compositor applies the
             // exclusive grab, after startRename() has run; focus the editor then.
             Connections {
-                target: renameField.Window.window
-                enabled: root.renaming
-
                 function onActiveChanged(): void {
                     if (renameField.Window.window.active)
                         renameField.forceActiveFocus();
                 }
+
+                target: renameField.Window.window
+                enabled: root.renaming
             }
         }
 

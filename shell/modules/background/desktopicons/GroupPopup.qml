@@ -75,25 +75,6 @@ Item {
             shownId = controller.openGroupId;
     }
 
-    Behavior on shown {
-        Anim {
-            type: open ? Anim.DefaultSpatial : Anim.FastEffects
-        }
-    }
-
-    Connections {
-        target: root.controller
-
-        function onOpenGroupIdChanged(): void {
-            if (root.controller.openGroupId !== "")
-                root.shownId = root.controller.openGroupId;
-        }
-    }
-
-    ListModel {
-        id: membersModel
-    }
-
     onMembersChanged: {
         const want = {};
         for (const m of members)
@@ -107,6 +88,25 @@ Item {
         for (const m of members)
             if (!have[m])
                 membersModel.append({ name: m });
+    }
+
+    Behavior on shown {
+        Anim {
+            type: open ? Anim.DefaultSpatial : Anim.FastEffects
+        }
+    }
+
+    Connections {
+        function onOpenGroupIdChanged(): void {
+            if (root.controller.openGroupId !== "")
+                root.shownId = root.controller.openGroupId;
+        }
+
+        target: root.controller
+    }
+
+    ListModel {
+        id: membersModel
     }
 
     // Clicking outside closes the group.
@@ -233,14 +233,6 @@ Item {
                             focusVisible: root.controller.keyboardActive && root.controller.focusKey === tileKey && root.open
                             dimmed: root.controller.dragGroup === root.shownId && root.controller.dragKeys.indexOf(tileKey) !== -1
 
-                            Behavior on x {
-                                Anim {}
-                            }
-
-                            Behavior on y {
-                                Anim {}
-                            }
-
                             Component.onCompleted: {
                                 const next = Object.assign({}, root.controller.tiles);
                                 next[tileKey] = tile;
@@ -265,6 +257,14 @@ Item {
                                 root.controller.applyRename(tileKey, text);
                             }
                             onRenameCancelled: root.controller.finishRename(tile)
+
+                            Behavior on x {
+                                Anim {}
+                            }
+
+                            Behavior on y {
+                                Anim {}
+                            }
                         }
                     }
                 }
@@ -273,6 +273,18 @@ Item {
 
         DropArea {
             id: dropArea
+
+            function update(drag: var): void {
+                if (root.controller.dragGroup !== root.shownId) {
+                    root.joinHover = root.controller.dragGroup === "";
+                    return;
+                }
+                const names = root.draggedNames();
+                const rest = root.members.filter(m => names.indexOf(m) === -1);
+                const at = Math.min(rest.length, root.indexAt(drag.x + panel.x, drag.y + panel.y));
+                rest.splice(at, 0, ...root.members.filter(m => names.indexOf(m) !== -1));
+                root.previewOrder = rest;
+            }
 
             anchors.fill: parent
             enabled: root.open
@@ -299,18 +311,6 @@ Item {
                     root.controller.reorderGroup(root.shownId, root.draggedNames(), index);
                 else if (root.controller.dragGroup === "" && root.controller.groupable(root.controller.dragKeys.concat([DesktopLayout.groupKey(root.shownId)])))
                     root.controller.makeGroup(root.controller.dragKeys, null, root.shownId);
-            }
-
-            function update(drag: var): void {
-                if (root.controller.dragGroup !== root.shownId) {
-                    root.joinHover = root.controller.dragGroup === "";
-                    return;
-                }
-                const names = root.draggedNames();
-                const rest = root.members.filter(m => names.indexOf(m) === -1);
-                const at = Math.min(rest.length, root.indexAt(drag.x + panel.x, drag.y + panel.y));
-                rest.splice(at, 0, ...root.members.filter(m => names.indexOf(m) !== -1));
-                root.previewOrder = rest;
             }
         }
     }

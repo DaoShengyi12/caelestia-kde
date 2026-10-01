@@ -26,6 +26,7 @@ Item {
     property bool focusVisible: false
     property bool dimmed: false
     property bool mergeTarget: false
+    property real appear: 0
     readonly property bool hovered: hover.hovered
     readonly property bool resizing: grip.pressed
     readonly property alias content: loader.item
@@ -66,8 +67,6 @@ Item {
     function overIcon(x: real, y: real): bool {
         return true;
     }
-
-    property real appear: 0
 
     opacity: (dimmed ? 0.4 : 1) * appear
     scale: (0.9 + 0.1 * appear) * (mergeTarget ? 1.02 : 1)
@@ -176,9 +175,6 @@ Item {
         Loader {
             id: loader
 
-            anchors.fill: parent
-            anchors.margins: root.isGroup ? Tokens.padding.small : Tokens.padding.large
-            asynchronous: true
             readonly property string wanted: root.info.source
 
             function load(): void {
@@ -190,6 +186,10 @@ Item {
                 else
                     source = "";
             }
+
+            anchors.fill: parent
+            anchors.margins: root.isGroup ? Tokens.padding.small : Tokens.padding.large
+            asynchronous: true
 
             onWantedChanged: load()
             Component.onCompleted: load()

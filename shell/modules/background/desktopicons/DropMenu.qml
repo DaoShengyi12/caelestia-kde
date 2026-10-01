@@ -13,6 +13,8 @@ Controls.Menu {
     property string dest: ""
     property var cell: null
 
+    readonly property bool allLocal: urls.every(u => u.startsWith("file://"))
+
     function openAt(x: real, y: real, dropped: var, target: string, at: var): void {
         urls = dropped;
         dest = target;
@@ -31,20 +33,12 @@ Controls.Menu {
         urls = [];
     }
 
-    readonly property bool allLocal: urls.every(u => u.startsWith("file://"))
-
     attachTo: anchor
     z: 9999
     attachSideX: Controls.Menu.Left
     attachSideY: Controls.Menu.Top
     thisSideX: Controls.Menu.Left
     thisSideY: Controls.Menu.Top
-
-    Item {
-        id: anchor
-
-        parent: root.controller
-    }
 
     items: [
         Controls.MenuItem {
@@ -70,4 +64,10 @@ Controls.Menu {
             onClicked: root.urls = []
         }
     ]
+
+    Item {
+        id: anchor
+
+        parent: root.controller
+    }
 }

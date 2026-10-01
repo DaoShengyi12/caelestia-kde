@@ -19,6 +19,9 @@ Controls.Menu {
     property var itemPool: ({})
     property var entryByKey: ({})
 
+    readonly property bool iconsEnabled: DesktopLayout.iconsShownOn(screenName)
+    readonly property bool iconsShown: GlobalConfig.forScreen(screenName).background.wallpaperEnabled && iconsEnabled
+
     function executeEntryByKey(key) {
         let entry = root.entryByKey[key];
         if (!entry) return;
@@ -110,16 +113,6 @@ Controls.Menu {
         }
     }
 
-    attachSideX: _flipX ? Controls.Menu.Left : Controls.Menu.Right
-    attachSideY: _flipY ? Controls.Menu.Top : Controls.Menu.Bottom
-    thisSideX: _flipX ? Controls.Menu.Right : Controls.Menu.Left
-    thisSideY: _flipY ? Controls.Menu.Bottom : Controls.Menu.Top
-    transparentBackground: true
-    revealHorizontal: true
-
-    rightClickReposition: true
-    onRightClickedAt: (x, y) => ContextMenuStore.openDesktopContextMenu(x, y, root.screenName)
-
     // The model is rebuilt only when the store's entries change, so opening
     // the menu does not recreate every row.
     function refresh() {
@@ -132,6 +125,16 @@ Controls.Menu {
         refresh();
         replayReveal();
     }
+
+    attachSideX: _flipX ? Controls.Menu.Left : Controls.Menu.Right
+    attachSideY: _flipY ? Controls.Menu.Top : Controls.Menu.Bottom
+    thisSideX: _flipX ? Controls.Menu.Right : Controls.Menu.Left
+    thisSideY: _flipY ? Controls.Menu.Bottom : Controls.Menu.Top
+    transparentBackground: true
+    revealHorizontal: true
+
+    rightClickReposition: true
+    onRightClickedAt: (x, y) => ContextMenuStore.openDesktopContextMenu(x, y, root.screenName)
 
     onExpandedChanged: {
         if (expanded)
@@ -161,9 +164,6 @@ Controls.Menu {
 
         target: ContextMenuStore
     }
-
-    readonly property bool iconsEnabled: DesktopLayout.iconsShownOn(screenName)
-    readonly property bool iconsShown: GlobalConfig.forScreen(screenName).background.wallpaperEnabled && iconsEnabled
 
     Controls.MenuItem {
         id: pasteItem
