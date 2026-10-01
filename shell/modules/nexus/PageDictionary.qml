@@ -247,7 +247,7 @@ QtObject {
         {
             label: qsTr("AI Assistant"),
             key: "ai",
-            icon: "smart_toy",
+            icon: "auto_awesome",
             description: qsTr("Claude Code, accounts, providers"),
             category: "assistant",
             settings: [
