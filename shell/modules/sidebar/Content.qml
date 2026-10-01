@@ -115,7 +115,7 @@ Item {
                                     { id: "notifications", label: qsTr("Notifications"), icon: "notifications" }
                                 ];
                                 if (root.aiEnabled) {
-                                    tabs.push({ id: "ai", label: qsTr("AI Assistant"), icon: "smart_toy" });
+                                    tabs.push({ id: "ai", label: qsTr("AI"), icon: "auto_awesome" });
                                 }
                                 if (GlobalConfig.ai.showNews) {
                                     tabs.push({ id: "news", label: qsTr("News"), icon: "newspaper" });
