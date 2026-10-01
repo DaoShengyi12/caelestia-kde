@@ -4037,6 +4037,38 @@
         <source>Configure desktop right click menu</source>
         <translation>配置桌面右键菜单</translation>
     </message>
+    <message>
+        <source>Small</source>
+        <translation>小</translation>
+    </message>
+    <message>
+        <source>Medium</source>
+        <translation>中</translation>
+    </message>
+    <message>
+        <source>Large</source>
+        <translation>大</translation>
+    </message>
+    <message>
+        <source>Huge</source>
+        <translation>特大</translation>
+    </message>
+    <message>
+        <source>Desktop Icon Size</source>
+        <translation>桌面图标大小</translation>
+    </message>
+    <message>
+        <source>Ctrl+scroll on the desktop also changes it</source>
+        <translation>在桌面上按住 Ctrl 滚动也可以调整</translation>
+    </message>
+    <message>
+        <source>Arrange Icons Automatically</source>
+        <translation>自动排列图标</translation>
+    </message>
+    <message>
+        <source>Keep desktop icons packed; dragging one reorders the rest</source>
+        <translation>桌面图标保持紧凑排列，拖动一个会让其余图标重新排序</translation>
+    </message>
 </context>
 <context>
     <name>Details</name>
@@ -11239,6 +11271,264 @@
         <location line="+1"/>
         <source>Image files</source>
         <translation>图像文件</translation>
+    </message>
+</context>
+<context>
+    <name>WidgetCatalog</name>
+    <message>
+        <source>Clock &amp; Weather</source>
+        <translation>时钟与天气</translation>
+    </message>
+    <message>
+        <source>System Monitor</source>
+        <translation>系统监视</translation>
+    </message>
+    <message>
+        <source>Calendar</source>
+        <translation>日历</translation>
+    </message>
+    <message>
+        <source>Note</source>
+        <translation>便签</translation>
+    </message>
+    <message>
+        <source>Folder View</source>
+        <translation>文件夹视图</translation>
+    </message>
+    <message>
+        <source>Large Folder</source>
+        <translation>大文件夹</translation>
+    </message>
+    <message>
+        <source>Media</source>
+        <translation>媒体</translation>
+    </message>
+</context>
+<context>
+    <name>DesktopIcons</name>
+    <message>
+        <source>Group</source>
+        <translation>分组</translation>
+    </message>
+    <message>
+        <source>Rename failed</source>
+        <translation>重命名失败</translation>
+    </message>
+    <message>
+        <source>File operation failed</source>
+        <translation>文件操作失败</translation>
+    </message>
+    <message>
+        <source>%1 could not complete the request</source>
+        <translation>%1 无法完成请求</translation>
+    </message>
+</context>
+<context>
+    <name>DesktopIconContextMenu</name>
+    <message>
+        <source>Open %1 Items</source>
+        <translation>打开 %1 个项目</translation>
+    </message>
+    <message>
+        <source>Open Group</source>
+        <translation>打开分组</translation>
+    </message>
+    <message>
+        <source>Show in File Manager</source>
+        <translation>在文件管理器中显示</translation>
+    </message>
+    <message>
+        <source>Rename</source>
+        <translation>重命名</translation>
+    </message>
+    <message>
+        <source>Show as Icon</source>
+        <translation>显示为图标</translation>
+    </message>
+    <message>
+        <source>Show as Large Folder</source>
+        <translation>显示为大文件夹</translation>
+    </message>
+    <message>
+        <source>Change Folder...</source>
+        <translation>更换文件夹...</translation>
+    </message>
+    <message>
+        <source>Open in File Manager</source>
+        <translation>在文件管理器中打开</translation>
+    </message>
+    <message>
+        <source>Group Items</source>
+        <translation>组成分组</translation>
+    </message>
+    <message>
+        <source>Ungroup</source>
+        <translation>解散分组</translation>
+    </message>
+    <message>
+        <source>Remove from Group</source>
+        <translation>移出分组</translation>
+    </message>
+    <message>
+        <source>Copy</source>
+        <translation>复制</translation>
+    </message>
+    <message>
+        <source>Cut</source>
+        <translation>剪切</translation>
+    </message>
+    <message>
+        <source>Move Contents to Trash</source>
+        <translation>将内容移到回收站</translation>
+    </message>
+    <message>
+        <source>Move to Trash</source>
+        <translation>移到回收站</translation>
+    </message>
+    <message>
+        <source>Remove Widgets</source>
+        <translation>移除小组件</translation>
+    </message>
+    <message>
+        <source>Remove Widget</source>
+        <translation>移除小组件</translation>
+    </message>
+</context>
+<context>
+    <name>DesktopContextMenu</name>
+    <message>
+        <source>Paste</source>
+        <translation>粘贴</translation>
+    </message>
+    <message>
+        <source>Add Widget...</source>
+        <translation>添加小组件...</translation>
+    </message>
+    <message>
+        <source>Arrange Icons...</source>
+        <translation>排列图标...</translation>
+    </message>
+</context>
+<context>
+    <name>DropMenu</name>
+    <message>
+        <source>Move Here</source>
+        <translation>移动到这里</translation>
+    </message>
+    <message>
+        <source>Copy Here</source>
+        <translation>复制到这里</translation>
+    </message>
+    <message>
+        <source>Link Here</source>
+        <translation>在这里创建链接</translation>
+    </message>
+</context>
+<context>
+    <name>FolderWidget</name>
+    <message>
+        <source>Choose a folder to show</source>
+        <translation>选择要显示的文件夹</translation>
+    </message>
+    <message>
+        <source>Empty folder</source>
+        <translation>空文件夹</translation>
+    </message>
+    <message>
+        <source>Copy</source>
+        <translation>复制</translation>
+    </message>
+    <message>
+        <source>Cut</source>
+        <translation>剪切</translation>
+    </message>
+    <message>
+        <source>Move to Trash</source>
+        <translation>移到回收站</translation>
+    </message>
+    <message>
+        <source>File operation failed</source>
+        <translation>文件操作失败</translation>
+    </message>
+</context>
+<context>
+    <name>NoteWidget</name>
+    <message>
+        <source>Write something…</source>
+        <translation>写点什么…</translation>
+    </message>
+</context>
+<context>
+    <name>SystemWidget</name>
+    <message>
+        <source>Disk</source>
+        <translation>磁盘</translation>
+    </message>
+</context>
+<context>
+    <name>ViewOptions</name>
+    <message>
+        <source>Sort by</source>
+        <translation>排序方式</translation>
+    </message>
+    <message>
+        <source>Name</source>
+        <translation>名称</translation>
+    </message>
+    <message>
+        <source>Type</source>
+        <translation>类型</translation>
+    </message>
+    <message>
+        <source>Date modified</source>
+        <translation>修改日期</translation>
+    </message>
+    <message>
+        <source>Size</source>
+        <translation>大小</translation>
+    </message>
+    <message>
+        <source>Arrange automatically</source>
+        <translation>自动排列</translation>
+    </message>
+    <message>
+        <source>Keep icons packed; dragging reorders them</source>
+        <translation>图标保持紧凑排列，拖动时重新排序</translation>
+    </message>
+    <message>
+        <source>Rounded icon corners</source>
+        <translation>图标圆角</translation>
+    </message>
+    <message>
+        <source>Small</source>
+        <translation>小</translation>
+    </message>
+    <message>
+        <source>Medium</source>
+        <translation>中</translation>
+    </message>
+    <message>
+        <source>Large</source>
+        <translation>大</translation>
+    </message>
+    <message>
+        <source>Huge</source>
+        <translation>特大</translation>
+    </message>
+    <message>
+        <source>Tip: Ctrl+scroll on the desktop also resizes icons</source>
+        <translation>提示：在桌面上按住 Ctrl 滚动也能调整图标大小</translation>
+    </message>
+</context>
+<context>
+    <name>WidgetGallery</name>
+    <message>
+        <source>Add Widget</source>
+        <translation>添加小组件</translation>
+    </message>
+    <message>
+        <source>Drag a widget&apos;s corner to resize it; right-click for more</source>
+        <translation>拖动小组件的角可以调整大小，右键查看更多选项</translation>
     </message>
 </context>
 </TS>
