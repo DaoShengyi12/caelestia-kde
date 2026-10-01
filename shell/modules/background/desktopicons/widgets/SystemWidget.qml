@@ -102,7 +102,8 @@ Item {
                 label: qsTr("CPU")
                 value: Cpu.percentage
                 extra: root.temp(Cpu.temperature)
-                detail: Cpu.name
+                // Drop the "8-Core Processor" tail; the model says enough.
+                detail: Cpu.name.replace(/\s*(\d+-Core\s*)?Processor\s*$/i, "")
             }
 
             Meter {
