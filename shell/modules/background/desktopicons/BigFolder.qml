@@ -27,7 +27,9 @@ Item {
     // fits more of them instead of drawing them larger.
     readonly property size reference: areaFor(3, 3)
     readonly property real slot: Math.min(reference.width, reference.height) / 3
-    readonly property real iconSize: slot * 0.82
+    // Whole pixels throughout: icons drawn at fractional sizes or positions
+    // get resampled and come out blurry.
+    readonly property int iconSize: Math.round(slot * 0.82)
     // Laid out for the size the folder is heading to, not the animated one,
     // so the icons move once while the card grows around them.
     readonly property size target: areaFor(frame.span.w, frame.span.h)
@@ -42,11 +44,11 @@ Item {
     property Item hoveredSlot: null
 
     function slotX(index: int): real {
-        return offsetX + (index % columns) * slot;
+        return Math.round(offsetX + (index % columns) * slot);
     }
 
     function slotY(index: int): real {
-        return offsetY + Math.floor(index / columns) * slot;
+        return Math.round(offsetY + Math.floor(index / columns) * slot);
     }
 
     // One delegate per member that lives as long as the member does, so a
@@ -211,7 +213,7 @@ Item {
         Grid {
             anchors.centerIn: parent
             columns: 2
-            spacing: root.iconSize * 0.08
+            spacing: Math.round(root.iconSize * 0.08)
             scale: moreArea.pressed ? 0.92 : moreArea.containsMouse ? 1.08 : 1
 
             Behavior on scale {
@@ -227,7 +229,7 @@ Item {
                 EntryIcon {
                     required property int index
 
-                    width: root.iconSize * 0.46
+                    width: Math.round(root.iconSize * 0.46)
                     height: width
                     entry: root.rest[index] ?? null
                     visible: !!entry
