@@ -296,11 +296,14 @@ Item {
     // stored per chat (a CLI session only resumes from the directory it was created
     // in); a new chat inherits whatever was selected last.
     property string claudeCodeChatCwd: Quickshell.env("HOME") || "."
+
     property string claudeCodePermissionMode: defaultClaudeCodePermissionMode()
+
     // Bypass is only offered once it has been allowed in the AI settings.
     readonly property var claudeCodePermissionModes: GlobalConfig.ai.claudeCodeSkipPermissions
         ? ["bypassPermissions", "acceptEdits", "auto", "plan", "default"]
         : ["acceptEdits", "auto", "plan", "default"]
+
     readonly property var claudeCodeSidebarAllowedTools: ["Bash", "WebFetch", "WebSearch", "Read"]
 
     function defaultClaudeCodePermissionMode() {
@@ -373,7 +376,9 @@ Item {
 
     // Files attached to the next message: [{ path, isImage }].
     property var pendingAttachments: []
+
     readonly property bool canSend: inputArea.text.length > 0 || pendingAttachments.length > 0
+
     readonly property string attachmentDir: (Quickshell.env("XDG_CACHE_HOME") || ((Quickshell.env("HOME") || "") + "/.cache")) + "/caelestia/ai-attachments"
 
     function isImagePath(p) {
@@ -444,9 +449,13 @@ Item {
     // Live status for a running Claude Code reply, shown under it the way the CLI
     // does: a rotating verb, elapsed time and output tokens.
     property real claudeCodeStartedAt: 0
+
     property int claudeCodeElapsed: 0
+
     property int claudeCodeOutTokens: 0
+
     property bool claudeCodeToolRunning: false
+
     readonly property var thinkingVerbs: [
         "Thinking", "Pondering", "Musing", "Mulling", "Cogitating", "Ruminating",
         "Brewing", "Simmering", "Percolating", "Noodling", "Tinkering", "Puzzling",
@@ -1842,6 +1851,7 @@ Item {
     }
 
     property var allChatSessions: []
+
     // Set while a saved chat is being put back into the list (no pop-in animation).
     property bool loadingChat: false
 
