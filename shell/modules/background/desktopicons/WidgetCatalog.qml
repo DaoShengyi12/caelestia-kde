@@ -13,7 +13,7 @@ QtObject {
     ]
 
     // Large folders are groups shown at more than one cell.
-    readonly property var group: ({ type: "group", name: qsTr("Large Folder"), icon: "folder", size: { w: 2, h: 2 }, min: { w: 2, h: 2 }, max: { w: 6, h: 4 }, source: "BigFolder.qml" })
+    readonly property var group: ({ type: "group", name: qsTr("Large Folder"), icon: "folder", size: { w: 3, h: 3 }, min: { w: 3, h: 3 }, max: { w: 8, h: 6 }, source: "BigFolder.qml" })
 
     function info(type: string): var {
         if (type === "group")

@@ -16,11 +16,10 @@ Item {
 
     readonly property string groupId: frame.itemId
     readonly property var entries: controller.groupEntries(groupId)
-    // Icons keep one size, a little under the desktop's, so a bigger folder
-    // shows more of them rather than bigger ones (3x3 at the 2x2 size).
-    readonly property real wantedSlot: controller.iconSize * 0.75
-    readonly property int columns: Math.max(2, Math.floor(width / wantedSlot))
-    readonly property int rows: Math.max(2, Math.floor(height / wantedSlot))
+    // Always three rows of icons, so the icons grow with the folder; a wider
+    // folder adds columns at the same size.
+    readonly property int rows: 3
+    readonly property int columns: Math.max(3, Math.round(rows * width / Math.max(1, height)))
     readonly property real slot: Math.min(width / columns, height / rows)
     readonly property real iconSize: slot * 0.82
     readonly property int capacity: columns * rows
