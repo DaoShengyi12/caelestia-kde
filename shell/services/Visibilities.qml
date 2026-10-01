@@ -23,6 +23,21 @@ Singleton {
     // Tab the sidebar opens on: "last" for wherever it was left, or a tab id.
     property string sidebarDefaultTab: "last"
     property string lastSidebarTab: "notifications"
+    // Width the pinned sidebar was dragged to, or 0 for the default. Unpinned, the
+    // sidebar always uses the default width.
+    property int sidebarWidth: 0
+    // True while the edge of the sidebar is being dragged; consumers that are
+    // expensive to update (the exclusion zone) wait until the drag ends.
+    property bool sidebarResizing: false
+
+    function sidebarWidthFor(defaultWidth: real): real {
+        return sidebarPinned && sidebarWidth > 0 ? sidebarWidth : defaultWidth;
+    }
+
+    function setSidebarWidth(width: int): void {
+        sidebarWidth = Math.max(0, width);
+        saveSidebarState();
+    }
 
     function setSidebarPinned(pinned: bool): void {
         sidebarPinned = pinned;
@@ -49,7 +64,8 @@ Singleton {
         sidebarStateFile.setText(JSON.stringify({
             pinned: sidebarPinned,
             defaultTab: sidebarDefaultTab,
-            lastTab: lastSidebarTab
+            lastTab: lastSidebarTab,
+            width: sidebarWidth
         }));
     }
 
@@ -64,6 +80,7 @@ Singleton {
                 sidebarPinned = s.pinned === true;
                 sidebarDefaultTab = s.defaultTab || "last";
                 lastSidebarTab = s.lastTab || "notifications";
+                sidebarWidth = Math.max(0, Math.round(s.width || 0));
             } catch (e) {}
             if (sidebarPinned)
                 pinRestore.start();
