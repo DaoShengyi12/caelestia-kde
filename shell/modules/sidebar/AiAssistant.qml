@@ -374,6 +374,15 @@ Item {
         return p;
     }
 
+    // Every path under the home directory written as ~/..., for tool summaries
+    // (file paths, shell commands).
+    function shortPaths(text) {
+        var home = Quickshell.env("HOME") || "";
+        if (!text || home === "")
+            return text || "";
+        return text.split(home + "/").join("~/");
+    }
+
     // Files attached to the next message: [{ path, isImage }].
     property var pendingAttachments: []
 
@@ -555,6 +564,26 @@ Item {
     }
 
     // "12.3s · 4 turns · 1.2k in / 800 out · $0.04" from the CLI's result event.
+    // Usage over all the turns of one reply (a backgrounded subagent adds a turn
+    // with its own result). The cost the CLI reports is already a running total.
+    function mergeResultUsage(prev, evt) {
+        if (!prev)
+            return evt;
+        var a = prev.usage || {};
+        var b = evt.usage || {};
+        return {
+            duration_ms: (prev.duration_ms || 0) + (evt.duration_ms || 0),
+            num_turns: (prev.num_turns || 0) + (evt.num_turns || 0),
+            usage: {
+                input_tokens: (a.input_tokens || 0) + (b.input_tokens || 0),
+                cache_read_input_tokens: (a.cache_read_input_tokens || 0) + (b.cache_read_input_tokens || 0),
+                cache_creation_input_tokens: (a.cache_creation_input_tokens || 0) + (b.cache_creation_input_tokens || 0),
+                output_tokens: (a.output_tokens || 0) + (b.output_tokens || 0)
+            },
+            total_cost_usd: typeof evt.total_cost_usd === "number" ? evt.total_cost_usd : prev.total_cost_usd
+        };
+    }
+
     function usageSummary(evt) {
         var parts = [];
         if (evt.duration_ms)
@@ -1412,6 +1441,7 @@ Item {
             "    property string sess: \"\"\n" +
             "    property string errAcc: \"\"\n" +
             "    property string usage: \"\"\n" +
+            "    property var resultUsage: null\n" +
             "    property var tools: []\n" +
             "    property bool needSep: false\n" +
             "    property bool thoughtSep: false\n" +
@@ -1598,6 +1628,14 @@ Item {
                     continue;
                 tr.result = toolResultText(r.content);
                 var tur = evt.tool_use_result;
+                // A backgrounded subagent answers at once with a placeholder; its
+                // report arrives later in a task_notification.
+                if (isAgentTool(tr.name) && tur && tur.isAsync === true) {
+                    tr.result = "";
+                    tr.async = true;
+                    changed = true;
+                    continue;
+                }
                 if (isAgentTool(tr.name) && tur && typeof tur === "object") {
                     if (tur.content)
                         tr.result = toolResultText(tur.content);
@@ -1621,6 +1659,23 @@ Item {
         if (evt.type === "result") {
             var resText = (evt.result !== undefined && evt.result !== null) ? String(evt.result) : "";
             var errored = (evt.is_error === true) || (evt.subtype && String(evt.subtype).indexOf("error") !== -1);
+            proc.resultUsage = mergeResultUsage(proc.resultUsage, evt);
+            // The CLI sends one result per turn and a backgrounded subagent adds a
+            // turn, so a later result only updates the usage line.
+            if (proc.done) {
+                proc.usage = usageSummary(proc.resultUsage);
+                if (proc.chatId === currentChatId) {
+                    setClaudeCodeBubble(proc, "usageText", proc.usage);
+                    saveHistory();
+                }
+                return;
+            }
+            // With a backgrounded subagent still running, the CLI starts another
+            // turn once it reports back, and that turn ends with its own result.
+            if (!errored && proc.tools.some(t => t.async && !t.done)) {
+                proc.usage = usageSummary(proc.resultUsage);
+                return;
+            }
             if (errored && (isClaudeCodeAuthError(resText) || isClaudeCodeAuthError(proc.errAcc))) {
                 proc.acc = claudeCodeAuthHint();
             } else if (proc.acc.trim() === "" && resText !== "") {
@@ -1628,7 +1683,7 @@ Item {
             } else if (errored && resText !== "" && proc.acc.indexOf(resText) === -1) {
                 proc.acc = proc.acc.replace(/\s+$/, "") + "\n\n⚠️ " + resText;
             }
-            proc.usage = usageSummary(evt);
+            proc.usage = usageSummary(proc.resultUsage);
             finalizeClaudeCode(proc);
             return;
         }
@@ -1657,10 +1712,22 @@ Item {
             t.tokens = evt.usage.total_tokens || t.tokens || 0;
             t.durationMs = evt.usage.duration_ms || t.durationMs || 0;
         }
-        if (evt.subtype === "task_notification" && evt.status && evt.status !== "completed")
-            t.isError = true;
-        if (proc.chatId === currentChatId && evt.subtype === "task_progress" && t.progress !== "")
-            currentActionText = t.progress.length > 40 ? t.progress.substring(0, 40) + "…" : t.progress;
+        if (evt.subtype === "task_notification") {
+            if (evt.status && evt.status !== "completed")
+                t.isError = true;
+            if (t.async && !t.done) {
+                t.result = evt.summary || "";
+                t.done = true;
+                t.progress = "";
+                var st = t.steps || [];
+                for (var k = 0; k < st.length; k++)
+                    st[k].done = true;
+            }
+        }
+        if (proc.chatId === currentChatId && evt.subtype === "task_progress" && t.progress !== "") {
+            var shown = shortPaths(t.progress);
+            currentActionText = shown.length > 40 ? shown.substring(0, 40) + "…" : shown;
+        }
         updateClaudeCodeTools(proc);
     }
 
@@ -3730,7 +3797,7 @@ Item {
 
                                                              StyledText {
                                                                  Layout.fillWidth: true
-                                                                 text: toolCard.tool.summary || ""
+                                                                 text: root.shortPaths(toolCard.tool.summary)
                                                                  color: Colours.palette.m3onSurfaceVariant
                                                                  font: toolCard.isAgent ? Tokens.font.label.medium : Tokens.font.mono.small
                                                                  elide: Text.ElideRight
@@ -3761,7 +3828,7 @@ Item {
                                                          width: parent.width
                                                          text: {
                                                              const stats = root.agentStatsText(toolCard.tool);
-                                                             const step = !toolCard.tool.done ? (toolCard.tool.progress || "") : "";
+                                                             const step = !toolCard.tool.done ? root.shortPaths(toolCard.tool.progress) : "";
                                                              return step !== "" && stats !== "" ? step + " · " + stats : (step || stats);
                                                          }
                                                          color: Colours.palette.m3outline
@@ -3793,7 +3860,7 @@ Item {
 
                                                              StyledText {
                                                                  Layout.fillWidth: true
-                                                                 text: parent.modelData.summary || ""
+                                                                 text: root.shortPaths(parent.modelData.summary)
                                                                  color: Colours.palette.m3outline
                                                                  font: Tokens.font.mono.small
                                                                  elide: Text.ElideRight
@@ -3827,7 +3894,7 @@ Item {
                                                      TextEdit {
                                                          visible: toolCard.expanded && !toolCard.isAgent
                                                          width: parent.width
-                                                         text: (toolCard.tool.summary || "") + ((toolCard.tool.result || "") !== "" ? "\n\n" + toolCard.tool.result : "")
+                                                         text: root.shortPaths(toolCard.tool.summary) + ((toolCard.tool.result || "") !== "" ? "\n\n" + toolCard.tool.result : "")
                                                          textFormat: Text.PlainText
                                                          color: toolCard.tool.isError ? Colours.palette.m3error : Colours.palette.m3onSurfaceVariant
                                                          font: Tokens.font.mono.small
