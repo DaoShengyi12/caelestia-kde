@@ -259,11 +259,17 @@ os.replace(tmp, path)
 
                 function startRename(): void {
                     if (root.renamingDelegate && root.renamingDelegate !== delegateItem)
-                        root.renamingDelegate.cancelRename();
+                        root.renamingDelegate.commitRename();
                     root.renamingDelegate = delegateItem;
                     renaming = true;
                     // Launchers are renamed by their shown name, not the file name.
                     renameField.text = isDesktopFile ? displayName : fileName;
+                    // Preselect the base name so typing replaces it but keeps the extension.
+                    const dot = fileName.lastIndexOf(".");
+                    if (!isDesktopFile && !fileIsDir && dot > 0)
+                        renameField.select(0, dot);
+                    else
+                        renameField.selectAll();
                     renameField.forceActiveFocus();
                 }
 
@@ -524,11 +530,23 @@ os.replace(tmp, path)
                         Layout.fillWidth: true
                         onAccepted: delegateItem.commitRename()
                         onActiveFocusChanged: {
-                            // Clicking anywhere outside the editor cancels the rename.
+                            // Clicking anywhere outside the editor applies the rename.
                             if (!activeFocus && delegateItem.renaming)
-                                delegateItem.cancelRename();
+                                delegateItem.commitRename();
                         }
                         Keys.onEscapePressed: delegateItem.cancelRename()
+
+                        // The window only gets keyboard focus once the compositor applies the
+                        // exclusive grab, after startRename() has run; focus the editor then.
+                        Connections {
+                            target: renameField.Window.window
+                            enabled: delegateItem.renaming
+
+                            function onActiveChanged(): void {
+                                if (renameField.Window.window.active)
+                                    renameField.forceActiveFocus();
+                            }
+                        }
                     }
 
                     Item {
@@ -610,8 +628,8 @@ os.replace(tmp, path)
                         }
                         if (root.renameActive) {
                             // Another icon's editor is open: click outside it
-                            // cancels the rename instead of opening the file.
-                            root.renamingDelegate.cancelRename();
+                            // applies the rename instead of opening the file.
+                            root.renamingDelegate.commitRename();
                             return;
                         }
                         delegateItem.launch();
