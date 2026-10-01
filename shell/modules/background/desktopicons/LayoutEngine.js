@@ -1,25 +1,45 @@
 .pragma library
 
 // Grid layout helpers for the desktop icons. Positions are plain objects
-// mapping an item key to { col, row }; nothing here touches QML state.
+// mapping an item key to its top-left { col, row }; spans optionally map a key
+// to its { w, h } in cells (icons are 1x1). Nothing here touches QML state.
 
 function cellId(col, row) {
     return col + "," + row;
 }
 
-function inGrid(pos, cols, rows) {
-    return pos.col >= 0 && pos.row >= 0 && pos.col < cols && pos.row < rows;
+function spanOf(spans, key) {
+    const s = spans ? spans[key] : null;
+    return s ? { w: Math.max(1, s.w | 0), h: Math.max(1, s.h | 0) } : { w: 1, h: 1 };
 }
 
-function occupancy(positions, excludeKeys) {
+function inGrid(pos, cols, rows, span) {
+    const s = span ?? { w: 1, h: 1 };
+    return pos.col >= 0 && pos.row >= 0 && pos.col + s.w <= cols && pos.row + s.h <= rows;
+}
+
+function markRect(occ, pos, span, key) {
+    for (let c = 0; c < span.w; c++)
+        for (let r = 0; r < span.h; r++)
+            occ[cellId(pos.col + c, pos.row + r)] = key;
+}
+
+function occupancy(positions, excludeKeys, spans) {
     const occ = {};
     for (const key in positions) {
         if (excludeKeys && excludeKeys.indexOf(key) !== -1)
             continue;
-        const p = positions[key];
-        occ[cellId(p.col, p.row)] = key;
+        markRect(occ, positions[key], spanOf(spans, key), key);
     }
     return occ;
+}
+
+function rectFree(occ, pos, span) {
+    for (let c = 0; c < span.w; c++)
+        for (let r = 0; r < span.h; r++)
+            if (cellId(pos.col + c, pos.row + r) in occ)
+                return false;
+    return true;
 }
 
 // Column-major index, the order icons fill the desktop in.
@@ -31,34 +51,41 @@ function orderedKeys(positions, rows) {
     return Object.keys(positions).sort((a, b) => orderIndex(positions[a], rows) - orderIndex(positions[b], rows));
 }
 
-// First free cell in column-major order. Past a full grid, keeps counting
-// into the columns beyond the right edge rather than stacking icons.
-function firstFree(occ, cols, rows) {
+// First free place in column-major order. Past a full grid, keeps counting
+// into the columns beyond the right edge rather than stacking items.
+function firstFree(occ, cols, rows, span) {
+    const s = span ?? { w: 1, h: 1 };
+    const h = Math.min(s.h, rows);
     for (let i = 0; i < 100000; i++) {
-        const col = Math.floor(i / rows);
-        const row = i % rows;
-        if (!(cellId(col, row) in occ))
-            return { col, row };
+        const pos = { col: Math.floor(i / rows), row: i % rows };
+        if (pos.row + h > rows)
+            continue;
+        if (rectFree(occ, pos, { w: s.w, h }))
+            return pos;
     }
     return { col: cols, row: 0 };
 }
 
-// Free cell closest to (col, row), ties broken towards the fill order.
-function nearestFree(occ, col, row, cols, rows) {
+// Free place closest to (col, row), ties broken towards the fill order.
+function nearestFree(occ, col, row, cols, rows, span) {
+    const s = span ?? { w: 1, h: 1 };
     let best = null;
     let bestDist = Infinity;
-    for (let c = 0; c < cols; c++) {
-        for (let r = 0; r < rows; r++) {
-            if (cellId(c, r) in occ)
-                continue;
+    for (let c = 0; c + s.w <= cols; c++) {
+        for (let r = 0; r + s.h <= rows; r++) {
             const d = (c - col) * (c - col) + (r - row) * (r - row);
-            if (d < bestDist || (d === bestDist && orderIndex({ col: c, row: r }, rows) < orderIndex(best, rows))) {
-                best = { col: c, row: r };
-                bestDist = d;
-            }
+            if (d > bestDist)
+                continue;
+            const pos = { col: c, row: r };
+            if (d === bestDist && orderIndex(pos, rows) >= orderIndex(best, rows))
+                continue;
+            if (!rectFree(occ, pos, s))
+                continue;
+            best = pos;
+            bestDist = d;
         }
     }
-    return best ?? firstFree(occ, cols, rows);
+    return best ?? firstFree(occ, cols, rows, s);
 }
 
 function copyPositions(positions) {
@@ -68,11 +95,16 @@ function copyPositions(positions) {
     return out;
 }
 
+function rectsOverlap(a, sa, b, sb) {
+    return a.col < b.col + sb.w && b.col < a.col + sa.w && a.row < b.row + sb.h && b.row < a.row + sa.h;
+}
+
 // Moves the keys in `moving` so that `anchor` lands on `target`, keeping their
 // relative placement. The shift is clamped so every moved item stays on the
-// grid. Items already sitting on a destination cell step aside to the free
-// cell nearest to where they were.
-function planMove(positions, moving, anchor, target, cols, rows) {
+// grid. Items overlapping a destination step aside to the free place nearest
+// to where they were. `spans` may give new sizes, which also makes this the
+// resize operation.
+function planMove(positions, moving, anchor, target, cols, rows, spans) {
     const out = copyPositions(positions);
     const from = positions[anchor];
     if (!from)
@@ -83,58 +115,61 @@ function planMove(positions, moving, anchor, target, cols, rows) {
         const p = positions[key];
         if (!p)
             continue;
+        const s = spanOf(spans, key);
         dc = Math.max(dc, -p.col);
         dr = Math.max(dr, -p.row);
-    }
-    for (const key of moving) {
-        const p = positions[key];
-        if (!p)
-            continue;
-        dc = Math.min(dc, cols - 1 - p.col);
-        dr = Math.min(dr, rows - 1 - p.row);
+        dc = Math.min(dc, Math.max(-p.col, cols - s.w - p.col));
+        dr = Math.min(dr, Math.max(-p.row, rows - s.h - p.row));
     }
 
-    const dest = {};
+    const occ = {};
+    const moved = [];
     for (const key of moving) {
         const p = positions[key];
         if (!p)
             continue;
         out[key] = { col: p.col + dc, row: p.row + dr };
-        dest[cellId(out[key].col, out[key].row)] = key;
+        markRect(occ, out[key], spanOf(spans, key), key);
+        moved.push(key);
     }
 
-    // Everyone that is not moving keeps their cell unless a mover took it.
-    const occ = Object.assign({}, dest);
+    // Everyone that is not moving keeps their place unless a mover covers it.
     const displaced = [];
-    for (const key in positions) {
+    for (const key of orderedKeys(positions, rows)) {
         if (moving.indexOf(key) !== -1)
             continue;
-        const id = cellId(positions[key].col, positions[key].row);
-        if (id in dest)
+        const s = spanOf(spans, key);
+        if (moved.some(m => rectsOverlap(positions[key], s, out[m], spanOf(spans, m))))
             displaced.push(key);
         else
-            occ[id] = key;
+            markRect(occ, positions[key], s, key);
     }
     for (const key of displaced) {
         const p = positions[key];
-        const cell = nearestFree(occ, p.col, p.row, cols, rows);
+        const s = spanOf(spans, key);
+        const cell = nearestFree(occ, p.col, p.row, cols, rows, s);
         out[key] = cell;
-        occ[cellId(cell.col, cell.row)] = key;
+        markRect(occ, cell, s, key);
     }
     return out;
 }
 
-// Lays the keys out back to back in column-major order.
-function compact(keys, rows) {
+// Packs the keys in column-major order, each into the first place it fits.
+function compact(keys, rows, spans) {
     const out = {};
-    for (let i = 0; i < keys.length; i++)
-        out[keys[i]] = { col: Math.floor(i / rows), row: i % rows };
+    const occ = {};
+    for (const key of keys) {
+        const s = spanOf(spans, key);
+        const pos = firstFree(occ, Infinity, rows, s);
+        out[key] = pos;
+        markRect(occ, pos, s, key);
+    }
     return out;
 }
 
 // Auto-arrange drop: pulls the moving keys out of the order and inserts them
 // where `target` is, then packs everything again.
-function planInsert(positions, moving, target, rows) {
+function planInsert(positions, moving, target, rows, spans) {
     const order = orderedKeys(positions, rows);
     const targetIndex = orderIndex(target, rows);
     const rest = [];
@@ -150,37 +185,38 @@ function planInsert(positions, moving, target, rows) {
         insertAt = rest.length;
     const movers = order.filter(k => moving.indexOf(k) !== -1);
     rest.splice(insertAt, 0, ...movers);
-    return compact(rest, rows);
+    return compact(rest, rows, spans);
 }
 
-// Pulls items that fell off a shrunken grid back onto it.
-function fitIntoGrid(positions, cols, rows) {
+// Pulls items that fell off a shrunken grid, or overlap, back onto it.
+function fitIntoGrid(positions, cols, rows, spans) {
     const out = {};
     const outside = [];
     const occ = {};
     for (const key of orderedKeys(positions, rows)) {
         const p = positions[key];
-        const id = cellId(p.col, p.row);
-        if (inGrid(p, cols, rows) && !(id in occ)) {
+        const s = spanOf(spans, key);
+        if (inGrid(p, cols, rows, s) && rectFree(occ, p, s)) {
             out[key] = { col: p.col, row: p.row };
-            occ[id] = key;
+            markRect(occ, p, s, key);
         } else {
             outside.push(key);
         }
     }
     for (const key of outside) {
         const p = positions[key];
-        const cell = nearestFree(occ, Math.min(p.col, cols - 1), Math.min(p.row, rows - 1), cols, rows);
+        const s = spanOf(spans, key);
+        const cell = nearestFree(occ, Math.min(p.col, cols - s.w), Math.min(p.row, rows - s.h), cols, rows, s);
         out[key] = cell;
-        occ[cellId(cell.col, cell.row)] = key;
+        markRect(occ, cell, s, key);
     }
     return out;
 }
 
 // Stable sort for "Sort by". Items are { key, name, kind, type, modified, size };
-// folders and groups always come first, like Plasma's "folders first".
+// widgets, then folders and groups come first, like Plasma's "folders first".
 function sortItems(items, sortKey) {
-    const rank = it => it.kind === "dir" || it.kind === "group" ? 0 : 1;
+    const rank = it => it.kind === "widget" ? 0 : it.kind === "dir" || it.kind === "group" ? 1 : 2;
     const byName = (a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: "base" });
     const cmp = {
         name: byName,
@@ -191,20 +227,25 @@ function sortItems(items, sortKey) {
     return items.slice().sort((a, b) => rank(a) - rank(b) || cmp(a, b));
 }
 
-// Where keyboard focus goes from `fromKey` for an arrow key. Prefers the
-// closest item along the pressed axis, then the one closest to the same line.
-function navigate(positions, fromKey, dir) {
+// Where keyboard focus goes from `fromKey` for an arrow key. Measures from
+// the centre of each item, preferring the closest one along the pressed axis
+// and then the one closest to the same line.
+function navigate(positions, fromKey, dir, spans) {
     const from = positions[fromKey];
     if (!from)
         return null;
+    const fs = spanOf(spans, fromKey);
+    const fx = from.col + fs.w / 2;
+    const fy = from.row + fs.h / 2;
     let best = null;
     let bestScore = Infinity;
     for (const key in positions) {
         if (key === fromKey)
             continue;
         const p = positions[key];
-        const dc = p.col - from.col;
-        const dr = p.row - from.row;
+        const s = spanOf(spans, key);
+        const dc = p.col + s.w / 2 - fx;
+        const dr = p.row + s.h / 2 - fy;
         let primary;
         let secondary;
         if (dir === "left") {
@@ -241,17 +282,31 @@ function rangeBetween(positions, a, b, rows) {
     return order.slice(Math.min(ia, ib), Math.max(ia, ib) + 1);
 }
 
-// Keys whose cell rectangle intersects the given pixel rectangle.
-function keysInRect(positions, rect, cellWidth, cellHeight, inset) {
+// Keys whose rectangle intersects the given pixel rectangle.
+function keysInRect(positions, rect, cellWidth, cellHeight, inset, spans) {
     const out = [];
     for (const key in positions) {
         const p = positions[key];
+        const s = spanOf(spans, key);
         const x = p.col * cellWidth + inset;
         const y = p.row * cellHeight + inset;
-        const w = cellWidth - inset * 2;
-        const h = cellHeight - inset * 2;
+        const w = s.w * cellWidth - inset * 2;
+        const h = s.h * cellHeight - inset * 2;
         if (x < rect.x + rect.width && x + w > rect.x && y < rect.y + rect.height && y + h > rect.y)
             out.push(key);
     }
     return out;
+}
+
+// Key covering the cell, if any.
+function occupantAt(positions, col, row, exclude, spans) {
+    for (const key in positions) {
+        if (exclude && exclude.indexOf(key) !== -1)
+            continue;
+        const p = positions[key];
+        const s = spanOf(spans, key);
+        if (col >= p.col && col < p.col + s.w && row >= p.row && row < p.row + s.h)
+            return key;
+    }
+    return "";
 }

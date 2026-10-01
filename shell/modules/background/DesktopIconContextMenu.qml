@@ -22,6 +22,11 @@ Controls.Menu {
     readonly property var firstEntry: single && !firstIsGroup ? controller.entryOf(firstKey) : null
     readonly property DesktopEntry appEntry: firstEntry?.desktopEntry ?? null
     readonly property bool hasGroups: keys.some(k => controller.isGroupKey(k))
+    readonly property bool hasWidgets: keys.some(k => controller.isWidgetKey(k))
+    readonly property bool onlyWidgets: keys.length > 0 && keys.every(k => controller.isWidgetKey(k))
+    readonly property bool hasFiles: controller.entriesFor(keys).length > 0
+    readonly property var firstWidget: single ? controller.widgetOf(firstKey) : null
+    readonly property bool firstIsBig: single && controller.isBigKey(firstKey)
     readonly property bool isPinnedToDock: appEntry ? Strings.testRegexList(GlobalConfig.bar.dock.pinnedApps, appEntry.id) : false
 
     function openAt(x: real, y: real, selected: var, inGroup: string): void {
@@ -69,6 +74,7 @@ Controls.Menu {
         Controls.MenuItem {
             text: !root.single ? qsTr("Open %1 Items").arg(root.keys.length) : root.firstIsGroup ? qsTr("Open Group") : qsTr("Open")
             icon: "open_in_new"
+            visible: !root.onlyWidgets
             onClicked: root.controller.openKeys(root.keys)
         },
         Controls.MenuItem {
@@ -89,8 +95,32 @@ Controls.Menu {
         Controls.MenuItem {
             text: qsTr("Rename")
             icon: "edit"
-            visible: root.single
+            visible: root.single && !root.hasWidgets
             onClicked: root.controller.startRename(root.firstKey)
+        },
+        Controls.MenuItem {
+            text: root.firstIsBig ? qsTr("Show as Icon") : qsTr("Show as Large Folder")
+            icon: root.firstIsBig ? "collapse_content" : "expand_content"
+            visible: root.single && root.firstIsGroup && root.groupId === ""
+            onClicked: {
+                const size = root.controller.widgetCatalog.group.size;
+                if (root.firstIsBig)
+                    root.controller.resizeItem(root.firstKey, 1, 1);
+                else
+                    root.controller.resizeItem(root.firstKey, size.w, size.h);
+            }
+        },
+        Controls.MenuItem {
+            text: qsTr("Change Folder...")
+            icon: "drive_folder_upload"
+            visible: root.firstWidget?.type === "folder"
+            onClicked: root.controller.tiles[root.firstKey]?.content?.chooseFolder()
+        },
+        Controls.MenuItem {
+            text: qsTr("Open in File Manager")
+            icon: "folder_open"
+            visible: root.firstWidget?.type === "folder"
+            onClicked: root.controller.tiles[root.firstKey]?.content?.openInFileManager()
         },
         Controls.MenuItem {
             text: qsTr("Group Items")
@@ -117,17 +147,26 @@ Controls.Menu {
         Controls.MenuItem {
             text: qsTr("Copy")
             icon: "content_copy"
+            visible: root.hasFiles
             onClicked: root.controller.copyKeys(root.keys, false)
         },
         Controls.MenuItem {
             text: qsTr("Cut")
             icon: "content_cut"
+            visible: root.hasFiles
             onClicked: root.controller.copyKeys(root.keys, true)
         },
         Controls.MenuItem {
             text: root.hasGroups ? qsTr("Move Contents to Trash") : qsTr("Move to Trash")
             icon: "delete"
+            visible: root.hasFiles
             onClicked: root.controller.trashKeys(root.keys)
+        },
+        Controls.MenuItem {
+            text: root.keys.filter(k => root.controller.isWidgetKey(k)).length > 1 ? qsTr("Remove Widgets") : qsTr("Remove Widget")
+            icon: "close"
+            visible: root.hasWidgets
+            onClicked: root.controller.removeWidgets(root.keys)
         }
     ]
 }

@@ -17,8 +17,11 @@ Singleton {
     property bool loaded: false
     // Item key ("f/<file name>" or "g/<group id>") -> { col, row }.
     property var positions: ({})
-    // Group id -> { name, members: [file name, ...] }.
+    // Group id -> { name, members: [file name, ...], size: { w, h } }. A size
+    // above 1x1 shows the group as a large folder.
     property var groups: ({})
+    // Widget id -> { type, size: { w, h }, config: {} }.
+    property var widgets: ({})
     property int iconSize: 64
     property bool autoArrange: false
     // "" keeps the manual order; otherwise name, type, modified or size.
@@ -31,7 +34,7 @@ Singleton {
 
     signal pasteRequested(string screenName, real x, real y)
     signal viewOptionsRequested(string screenName, real x, real y)
-    signal arrangeRequested(string screenName, string sortKey)
+    signal addWidgetRequested(string screenName, real x, real y)
 
     function fileKey(name: string): string {
         return "f/" + name;
@@ -39,6 +42,24 @@ Singleton {
 
     function groupKey(id: string): string {
         return "g/" + id;
+    }
+
+    function widgetKey(id: string): string {
+        return "w/" + id;
+    }
+
+    function setWidgets(next: var): void {
+        widgets = next;
+        scheduleSave();
+    }
+
+    function setWidgetConfig(id: string, patch: var): void {
+        const w = widgets[id];
+        if (!w)
+            return;
+        const next = Object.assign({}, widgets);
+        next[id] = Object.assign({}, w, { config: Object.assign({}, w.config, patch) });
+        setWidgets(next);
     }
 
     function setPositions(next: var): void {
@@ -81,7 +102,7 @@ Singleton {
         let id;
         do
             id = Date.now().toString(36) + Math.floor(Math.random() * 1296).toString(36);
-        while (id in groups);
+        while (id in groups || id in widgets);
         return id;
     }
 
@@ -103,6 +124,8 @@ Singleton {
         }
         const nextPositions = {};
         const nextGroups = {};
+        const nextWidgets = {};
+        const size = v => v && v.w >= 1 && v.h >= 1 ? { w: v.w | 0, h: v.h | 0 } : { w: 1, h: 1 };
         if (Array.isArray(data)) {
             // Version 1: a bare list of { name, col, row }.
             for (const it of data)
@@ -114,7 +137,10 @@ Singleton {
                     nextPositions[it.key] = { col: it.col | 0, row: it.row | 0 };
             for (const g of data.groups ?? [])
                 if (g && typeof g.id === "string" && Array.isArray(g.members))
-                    nextGroups[g.id] = { name: String(g.name ?? ""), members: g.members.filter(m => typeof m === "string") };
+                    nextGroups[g.id] = { name: String(g.name ?? ""), members: g.members.filter(m => typeof m === "string"), size: size(g.size) };
+            for (const w of data.widgets ?? [])
+                if (w && typeof w.id === "string" && typeof w.type === "string")
+                    nextWidgets[w.id] = { type: w.type, size: size(w.size), config: w.config && typeof w.config === "object" ? w.config : {} };
             const prefs = data.prefs ?? {};
             if (iconSizes.indexOf(prefs.iconSize) !== -1)
                 iconSize = prefs.iconSize;
@@ -123,6 +149,7 @@ Singleton {
         }
         positions = nextPositions;
         groups = nextGroups;
+        widgets = nextWidgets;
         loaded = true;
     }
 
@@ -132,12 +159,16 @@ Singleton {
             items.push({ key, col: positions[key].col, row: positions[key].row });
         const groupList = [];
         for (const id in groups)
-            groupList.push({ id, name: groups[id].name, members: groups[id].members });
+            groupList.push({ id, name: groups[id].name, members: groups[id].members, size: groups[id].size ?? { w: 1, h: 1 } });
+        const widgetList = [];
+        for (const id in widgets)
+            widgetList.push({ id, type: widgets[id].type, size: widgets[id].size, config: widgets[id].config });
         return JSON.stringify({
             version: 2,
             prefs: { iconSize, autoArrange, sortKey },
             items,
-            groups: groupList
+            groups: groupList,
+            widgets: widgetList
         });
     }
 
