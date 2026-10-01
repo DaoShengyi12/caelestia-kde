@@ -26,9 +26,9 @@ Item {
     readonly property int iconSize: DesktopLayout.iconSize
     readonly property int cellWidth: iconSize + 36
     readonly property int cellHeight: iconSize + 56
-    readonly property int cols: Math.max(1, Math.floor(gridItem.width / cellWidth))
-    readonly property int rows: Math.max(1, Math.floor(gridItem.height / cellHeight))
-    readonly property bool gridReady: gridItem.width > 0 && gridItem.height > 0
+    readonly property int cols: Math.max(1, Math.floor(gridItem.areaWidth / cellWidth))
+    readonly property int rows: Math.max(1, Math.floor(gridItem.areaHeight / cellHeight))
+    readonly property bool gridReady: gridItem.areaWidth > 0 && gridItem.areaHeight > 0
     readonly property bool folderReady: folderModel.status === FolderListModel.Ready
 
     // File name -> FileEntry for everything in ~/Desktop.
@@ -1293,13 +1293,19 @@ wl-paste --no-newline --type text/uri-list`]
 
         readonly property int barZone: Visibilities.bars.get(root.screenData.name)?.visualThickness ?? (Tokens.sizes.bar.innerWidth + Math.max(Tokens.padding.small, Config.border.thickness))
         readonly property int baseMargin: Tokens.padding.large * 2
+        readonly property int marginLeft: Config.bar.position === "left" ? baseMargin + barZone : baseMargin
+        readonly property int marginRight: Config.bar.position === "right" ? baseMargin + barZone : baseMargin
+        readonly property int marginTop: Config.bar.position === "top" ? baseMargin + barZone : baseMargin
+        readonly property int marginBottom: Config.bar.position === "bottom" ? baseMargin + barZone : baseMargin
+        // Space the cells may use. Only whole cells fit, so the grid is centred in it
+        // and the leftover is split between both sides instead of all going right and down.
+        readonly property real areaWidth: root.width - marginLeft - marginRight
+        readonly property real areaHeight: root.height - marginTop - marginBottom
 
-        anchors.fill: parent
-        anchors.margins: baseMargin
-        anchors.leftMargin: Config.bar.position === "left" ? baseMargin + barZone : baseMargin
-        anchors.rightMargin: Config.bar.position === "right" ? baseMargin + barZone : baseMargin
-        anchors.topMargin: Config.bar.position === "top" ? baseMargin + barZone : baseMargin
-        anchors.bottomMargin: Config.bar.position === "bottom" ? baseMargin + barZone : baseMargin
+        x: marginLeft + Math.floor((areaWidth - width) / 2)
+        y: marginTop + Math.floor((areaHeight - height) / 2)
+        width: root.cols * root.cellWidth
+        height: root.rows * root.cellHeight
 
         // Where the dragged items would land.
         Repeater {
