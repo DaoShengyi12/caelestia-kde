@@ -53,7 +53,7 @@ ColumnLayout {
         _streamCount = Audio.appStreams.length;
     }
 
-    width: Math.max(440 * scaleOffset, _isSidebarOpen ? (Tokens.sizes.sidebar.width * scaleOffset) - Tokens.padding.extraLargeIncreased : 0)
+    width: Math.max(440 * scaleOffset, _isSidebarOpen ? (Visibilities.sidebarWidthFor(Tokens.sizes.sidebar.width) * scaleOffset) - Tokens.padding.extraLargeIncreased : 0)
     implicitWidth: width
     spacing: Tokens.spacing.small * scaleOffset
 
