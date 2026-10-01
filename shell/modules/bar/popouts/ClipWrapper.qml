@@ -4,6 +4,7 @@ import QtQuick
 import Quickshell
 import Caelestia.Config
 import qs.components
+import qs.services
 import qs.modules.bar.popouts
 
 Item {
@@ -86,6 +87,7 @@ Item {
         screen: root.screen
         offsetScale: root.offsetScale
         visibilities: root.visibilities
+        underSidebar: !root.isHorizontal || content.currentCenter - root.parent.leftMargin >= root.parent.width - Visibilities.sidebarWidthFor(Tokens.sizes.sidebar.width)
 
         anchors.leftMargin: bar.position === "left" ? (-implicitWidth - 5) * root.offsetScale : 0
         anchors.rightMargin: bar.position === "right" ? (-implicitWidth - 5) * root.offsetScale : 0
