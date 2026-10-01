@@ -3234,7 +3234,7 @@ Item {
                      anchors.right: parent.right
                      topPadding: Tokens.padding.medium
                      bottomPadding: Tokens.padding.medium
-                     placeholderText: qsTr("Search titles and messages")
+                     placeholderText: root.totalChatCount === 1 ? qsTr("Search 1 chat") : qsTr("Search %1 chats").arg(root.totalChatCount)
                      bg.color: Colours.tPalette.m3surfaceContainerHigh
 
                      onTextChanged: {
@@ -3794,17 +3794,8 @@ Item {
                          }
                      }
 
-                     StyledText {
+                     Item {
                          Layout.fillWidth: true
-                         horizontalAlignment: Text.AlignHCenter
-                         text: {
-                             if (root.historyQuery.trim())
-                                 return qsTr("%1 of %2").arg(historySessionsModel.count).arg(root.totalChatCount);
-                             return root.totalChatCount === 1 ? qsTr("1 chat") : qsTr("%1 chats").arg(root.totalChatCount);
-                         }
-                         color: Colours.palette.m3outline
-                         font: Tokens.font.label.small
-                         elide: Text.ElideRight
                      }
 
                      StyledRect {
