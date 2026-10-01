@@ -1,6 +1,7 @@
 pragma ComponentBehavior: Bound
 
 import QtQuick
+import QtQuick.Effects
 import Caelestia.Config
 import qs.components
 import qs.services
@@ -28,6 +29,8 @@ Item {
     readonly property bool hovered: hover.hovered
     readonly property bool resizing: grip.pressed
     readonly property alias content: loader.item
+    // Large folders carry their name under the card, like an icon label.
+    readonly property real labelHeight: isGroup ? Math.min(controller.cellHeight - controller.iconSize, 40) : 0
 
     signal pressed(var mouse)
     signal clicked(var mouse)
@@ -40,17 +43,18 @@ Item {
             DesktopLayout.setWidgetConfig(itemId, patch);
     }
 
-    // Renaming only applies to large folders, through their title.
+    // Renaming only applies to large folders, through their label.
     function startRename(text: string, selectUntil: int): void {
-        loader.item?.startRename?.(text);
+        if (isGroup)
+            title.startRename(text);
     }
 
     function commitRename(): void {
-        loader.item?.commitRename?.();
+        title.commitRename();
     }
 
     function cancelRename(): void {
-        loader.item?.cancelRename?.();
+        title.cancelRename();
     }
 
     function overIcon(x: real, y: real): bool {
@@ -79,15 +83,45 @@ Item {
         id: hover
     }
 
+    // Frosted glass: the wallpaper behind the card, blurred and clipped to it.
+    Loader {
+        anchors.fill: card
+        active: !!root.controller.wallpaper && !GameMode.enabled
+        asynchronous: true
+
+        sourceComponent: MultiEffect {
+            source: ShaderEffectSource {
+                sourceItem: root.controller.wallpaper
+                sourceRect: Qt.rect(root.controller.gridOrigin.x + root.x + card.x, root.controller.gridOrigin.y + root.y + card.y, card.width, card.height)
+            }
+            maskSource: cardMask
+            maskEnabled: true
+            blurEnabled: true
+            blur: 1
+            blurMax: 48
+            autoPaddingEnabled: false
+        }
+    }
+
+    StyledRect {
+        id: cardMask
+
+        anchors.fill: card
+        radius: card.radius
+        visible: false
+        layer.enabled: true
+    }
+
     StyledRect {
         id: card
 
         anchors.fill: parent
         anchors.margins: Tokens.padding.small
-        radius: Tokens.rounding.large
-        color: GlobalConfig.appearance.pitchBlack ? Qt.alpha("#000000", 0.85) : Qt.alpha(Colours.palette.m3surfaceContainer, 0.82)
-        border.width: root.selected || root.mergeTarget || root.focusVisible ? 2 : 0
-        border.color: Colours.palette.m3primary
+        anchors.bottomMargin: Tokens.padding.small + root.labelHeight
+        radius: root.isGroup ? Tokens.rounding.extraLarge : Tokens.rounding.large
+        color: GlobalConfig.appearance.pitchBlack ? Qt.alpha("#000000", 0.7) : Qt.alpha(Colours.palette.m3surfaceContainer, root.isGroup ? 0.35 : 0.55)
+        border.width: root.selected || root.mergeTarget || root.focusVisible ? 2 : 1
+        border.color: root.selected || root.mergeTarget || root.focusVisible ? Colours.palette.m3primary : Qt.alpha(Colours.palette.m3onSurface, 0.12)
 
         // Background of the card: selects, opens, drags and resizes the item.
         // Controls inside the content take their own clicks first.
@@ -137,7 +171,7 @@ Item {
             id: loader
 
             anchors.fill: parent
-            anchors.margins: Tokens.padding.medium
+            anchors.margins: root.isGroup ? Tokens.padding.small : Tokens.padding.medium
             asynchronous: true
             readonly property string wanted: root.info.source
 
@@ -156,6 +190,32 @@ Item {
         }
     }
 
+    StyledRect {
+        anchors.horizontalCenter: card.horizontalCenter
+        anchors.top: card.bottom
+        anchors.topMargin: Tokens.spacing.small
+        visible: root.isGroup
+        width: title.width + Tokens.padding.medium * 2
+        height: title.height + Tokens.padding.small
+        radius: Tokens.rounding.small
+        color: root.selected ? Qt.alpha(Colours.palette.m3primary, 0.24) : "transparent"
+
+        GroupTitle {
+            id: title
+
+            anchors.centerIn: parent
+            width: Math.min(implicitWidth, card.width)
+            desktopStyle: true
+            text: root.isGroup ? (DesktopLayout.groups[root.itemId]?.name ?? "") : ""
+            onRenameRequested: root.controller.startRename(root.key)
+            onRenameCommitted: text => {
+                root.controller.finishRename(root);
+                root.controller.renameGroup(root.itemId, text);
+            }
+            onRenameCancelled: root.controller.finishRename(root)
+        }
+    }
+
     // Drag the corner to resize in whole cells.
     MouseArea {
         id: grip
@@ -165,6 +225,7 @@ Item {
 
         anchors.right: card.right
         anchors.bottom: card.bottom
+        z: 2
         width: Tokens.padding.large * 2
         height: width
         hoverEnabled: true

@@ -1,14 +1,13 @@
 pragma ComponentBehavior: Bound
 
 import QtQuick
-import QtQuick.Layouts
 import Caelestia.Config
 import qs.components
-import qs.components.controls
 import qs.services
 
-// A group shown as a large folder: its apps sit right on the desktop and open
-// with one click; whatever does not fit is behind the "more" tile.
+// A group shown as a large folder: a grid of its app icons, each opening with
+// one click. When they do not all fit, the last slot previews the rest and
+// opens the full group. Names show when hovering, since the icons have none.
 Item {
     id: root
 
@@ -16,183 +15,200 @@ Item {
     property var controller
 
     readonly property string groupId: frame.itemId
-    readonly property var group: DesktopLayout.groups[groupId] ?? null
     readonly property var entries: controller.groupEntries(groupId)
-    readonly property real slotWidth: Math.max(controller.iconSize * 0.7, 48) + Tokens.padding.medium * 2
-    readonly property real slotHeight: controller.iconSize * 0.7 + Tokens.padding.small * 2 + 28
-    readonly property int columns: Math.max(1, Math.floor(grid.width / slotWidth))
-    readonly property int capacity: Math.max(1, columns * Math.max(1, Math.floor(grid.height / slotHeight)))
+    // Icons keep one size, a little under the desktop's, so a bigger folder
+    // shows more of them rather than bigger ones (3x3 at the 2x2 size).
+    readonly property real wantedSlot: controller.iconSize * 0.75
+    readonly property int columns: Math.max(2, Math.floor(width / wantedSlot))
+    readonly property int rows: Math.max(2, Math.floor(height / wantedSlot))
+    readonly property real slot: Math.min(width / columns, height / rows)
+    readonly property real iconSize: slot * 0.82
+    readonly property int capacity: columns * rows
     readonly property bool overflow: entries.length > capacity
     readonly property var shown: overflow ? entries.slice(0, capacity - 1) : entries
+    readonly property var rest: overflow ? entries.slice(capacity - 1) : []
+    property Item hoveredSlot: null
 
-    function startRename(text: string): void {
-        if (controller.renameActive && controller.renamingDelegate !== frame)
-            controller.renamingDelegate.commitRename();
-        controller.renamingDelegate = frame;
-        title.startRename(text);
-    }
+    // Filled from the top left, the full grid centred in the card.
+    Grid {
+        id: grid
 
-    function commitRename(): void {
-        title.commitRename();
-    }
+        x: (root.width - root.columns * root.slot) / 2
+        y: (root.height - root.rows * root.slot) / 2
+        columns: root.columns
 
-    function cancelRename(): void {
-        title.cancelRename();
-    }
+        Repeater {
+            model: root.shown
 
-    ColumnLayout {
-        anchors.fill: parent
-        spacing: Tokens.spacing.small
+            Item {
+                id: slotItem
 
-        RowLayout {
-            Layout.fillWidth: true
-            spacing: Tokens.spacing.small
+                required property var modelData
+                readonly property string memberKey: DesktopLayout.fileKey(modelData.fileName)
+                readonly property bool dragged: root.controller.dragGroup === root.groupId && root.controller.dragKeys.indexOf(memberKey) !== -1
 
-            GroupTitle {
-                id: title
+                width: root.slot
+                height: root.slot
+                opacity: dragged ? 0.35 : 1
 
-                Layout.fillWidth: true
-                text: root.group?.name ?? ""
-                onRenameRequested: root.startRename(root.group?.name ?? "")
-                onRenameCommitted: text => {
-                    root.controller.finishRename(root.frame);
-                    root.controller.renameGroup(root.groupId, text);
+                EntryIcon {
+                    id: icon
+
+                    anchors.centerIn: parent
+                    width: root.iconSize
+                    height: width
+                    entry: slotItem.modelData
+                    materialYou: root.controller.materialYou
+                    vibrant: root.controller.vibrant
+                    scale: slotArea.pressed ? 0.92 : slotArea.containsMouse ? 1.08 : 1
+
+                    Behavior on scale {
+                        Anim {
+                            type: Anim.FastSpatial
+                        }
+                    }
                 }
-                onRenameCancelled: root.controller.finishRename(root.frame)
-            }
 
-            IconButton {
-                type: IconButton.Text
-                icon: "open_in_full"
-                onClicked: root.controller.openGroup(root.groupId)
+                MouseArea {
+                    id: slotArea
+
+                    property point pressPos
+                    property bool dragSent: false
+
+                    anchors.fill: parent
+                    hoverEnabled: true
+                    cursorShape: Qt.PointingHandCursor
+                    acceptedButtons: Qt.LeftButton | Qt.RightButton
+                    onContainsMouseChanged: {
+                        if (containsMouse)
+                            root.hoveredSlot = slotItem;
+                        else if (root.hoveredSlot === slotItem)
+                            root.hoveredSlot = null;
+                    }
+                    onPressed: mouse => {
+                        pressPos = Qt.point(mouse.x, mouse.y);
+                        dragSent = false;
+                        root.controller.grabKeyboard();
+                    }
+                    onPositionChanged: mouse => {
+                        if (!(pressedButtons & Qt.LeftButton) || dragSent)
+                            return;
+                        const dx = mouse.x - pressPos.x;
+                        const dy = mouse.y - pressPos.y;
+                        if (dx * dx + dy * dy >= Qt.styleHints.startDragDistance * Qt.styleHints.startDragDistance) {
+                            dragSent = true;
+                            root.hoveredSlot = null;
+                            root.controller.beginMemberDrag(root.groupId, slotItem.modelData.fileName, icon, pressPos.x - icon.x, pressPos.y - icon.y);
+                        }
+                    }
+                    // Large folders act like a launcher: one click opens.
+                    onClicked: mouse => {
+                        if (dragSent)
+                            return;
+                        if (mouse.button === Qt.RightButton) {
+                            const p = mapToItem(root.controller, mouse.x, mouse.y);
+                            root.controller.memberContextMenu(root.groupId, slotItem.modelData.fileName, p.x, p.y);
+                        } else {
+                            slotItem.modelData.launch();
+                        }
+                    }
+                }
             }
         }
 
+        // The rest of the group in miniature; opens the whole group.
         Item {
-            id: grid
+            visible: root.overflow
+            width: root.slot
+            height: root.slot
 
-            Layout.fillWidth: true
-            Layout.fillHeight: true
+            Grid {
+                anchors.centerIn: parent
+                columns: 2
+                spacing: root.iconSize * 0.08
+                scale: moreArea.pressed ? 0.92 : moreArea.containsMouse ? 1.08 : 1
 
-            Flow {
-                anchors.horizontalCenter: parent.horizontalCenter
-                width: root.columns * root.slotWidth
-
-                Repeater {
-                    model: root.shown
-
-                    Item {
-                        id: slot
-
-                        required property var modelData
-                        readonly property string memberKey: DesktopLayout.fileKey(modelData.fileName)
-
-                        width: root.slotWidth
-                        height: root.slotHeight
-                        opacity: root.controller.dragGroup === root.groupId && root.controller.dragKeys.indexOf(memberKey) !== -1 ? 0.4 : 1
-
-                        StyledRect {
-                            anchors.fill: parent
-                            radius: Tokens.rounding.medium
-                            color: Qt.alpha(Colours.palette.m3onSurface, slotArea.containsMouse ? 0.1 : 0)
-                        }
-
-                        Column {
-                            anchors.centerIn: parent
-                            width: parent.width - Tokens.padding.small * 2
-                            spacing: Tokens.spacing.extraSmall
-
-                            EntryIcon {
-                                id: slotIcon
-
-                                anchors.horizontalCenter: parent.horizontalCenter
-                                width: root.controller.iconSize * 0.7
-                                height: width
-                                entry: slot.modelData
-                                materialYou: root.controller.materialYou
-                                vibrant: root.controller.vibrant
-                            }
-
-                            StyledText {
-                                width: parent.width
-                                horizontalAlignment: Text.AlignHCenter
-                                text: slot.modelData.displayName
-                                elide: Text.ElideRight
-                                font: Tokens.font.label.small
-                            }
-                        }
-
-                        MouseArea {
-                            id: slotArea
-
-                            property point pressPos
-                            property bool dragSent: false
-
-                            anchors.fill: parent
-                            hoverEnabled: true
-                            cursorShape: Qt.PointingHandCursor
-                            acceptedButtons: Qt.LeftButton | Qt.RightButton
-                            onPressed: mouse => {
-                                pressPos = Qt.point(mouse.x, mouse.y);
-                                dragSent = false;
-                                root.controller.grabKeyboard();
-                            }
-                            onPositionChanged: mouse => {
-                                if (!(pressedButtons & Qt.LeftButton) || dragSent)
-                                    return;
-                                const dx = mouse.x - pressPos.x;
-                                const dy = mouse.y - pressPos.y;
-                                if (dx * dx + dy * dy >= Qt.styleHints.startDragDistance * Qt.styleHints.startDragDistance) {
-                                    dragSent = true;
-                                    root.controller.beginMemberDrag(root.groupId, slot.modelData.fileName, slot, pressPos.x, pressPos.y);
-                                }
-                            }
-                            // Large folders act like a launcher: one click opens.
-                            onClicked: mouse => {
-                                if (dragSent)
-                                    return;
-                                if (mouse.button === Qt.RightButton) {
-                                    const p = mapToItem(root.controller, mouse.x, mouse.y);
-                                    root.controller.memberContextMenu(root.groupId, slot.modelData.fileName, p.x, p.y);
-                                } else {
-                                    slot.modelData.launch();
-                                }
-                            }
-                        }
+                Behavior on scale {
+                    Anim {
+                        type: Anim.FastSpatial
                     }
                 }
 
-                // Opens the full group when not everything fits.
-                Item {
-                    visible: root.overflow
-                    width: root.slotWidth
-                    height: root.slotHeight
+                Repeater {
+                    model: root.rest.slice(0, 4)
 
-                    StyledRect {
-                        anchors.centerIn: parent
-                        width: root.controller.iconSize * 0.7
+                    EntryIcon {
+                        required property var modelData
+
+                        width: root.iconSize * 0.46
                         height: width
-                        radius: Tokens.rounding.medium
-                        color: Qt.alpha(Colours.palette.m3primaryContainer, moreArea.containsMouse ? 1 : 0.8)
-
-                        StyledText {
-                            anchors.centerIn: parent
-                            text: "+" + (root.entries.length - root.shown.length)
-                            color: Colours.palette.m3onPrimaryContainer
-                            font: Tokens.font.title.small
-                        }
-                    }
-
-                    MouseArea {
-                        id: moreArea
-
-                        anchors.fill: parent
-                        hoverEnabled: true
-                        cursorShape: Qt.PointingHandCursor
-                        onClicked: root.controller.openGroup(root.groupId)
+                        entry: modelData
+                        materialYou: root.controller.materialYou
+                        vibrant: root.controller.vibrant
                     }
                 }
             }
+
+            MouseArea {
+                id: moreArea
+
+                anchors.fill: parent
+                hoverEnabled: true
+                cursorShape: Qt.PointingHandCursor
+                onClicked: root.controller.openGroup(root.groupId)
+            }
+        }
+    }
+
+    // Name of the hovered app.
+    StyledRect {
+        id: bubble
+
+        readonly property Item target: root.hoveredSlot
+        property string text
+
+        x: target ? Math.max(-Tokens.padding.large, Math.min(root.width - width + Tokens.padding.large, target.mapToItem(root, 0, 0).x + target.width / 2 - width / 2)) : x
+        y: target ? target.mapToItem(root, 0, 0).y - height + Tokens.padding.small : y
+        z: 5
+        implicitWidth: bubbleText.implicitWidth + Tokens.padding.medium * 2
+        implicitHeight: bubbleText.implicitHeight + Tokens.padding.small * 2
+        radius: Tokens.rounding.small
+        color: Colours.palette.m3inverseSurface
+        opacity: target && bubbleDelay.ready ? 1 : 0
+        visible: opacity > 0
+
+        onTargetChanged: {
+            if (target) {
+                text = target.modelData.displayName;
+                bubbleDelay.restart();
+            } else {
+                bubbleDelay.ready = false;
+                bubbleDelay.stop();
+            }
+        }
+
+        Behavior on opacity {
+            Anim {
+                type: Anim.FastEffects
+            }
+        }
+
+        Timer {
+            id: bubbleDelay
+
+            property bool ready: false
+
+            interval: 350
+            onTriggered: ready = true
+        }
+
+        StyledText {
+            id: bubbleText
+
+            anchors.centerIn: parent
+            text: bubble.text
+            color: Colours.palette.m3inverseOnSurface
+            font: Tokens.font.label.medium
         }
     }
 }
