@@ -854,7 +854,10 @@ StyledWindow {
         BlurMask {
             target: panels.popoutsWrapper
             contentItem: root.contentItem
-            blurOffsetTop: root.blurOffsetTop
+            // A popout attached to the sidebar reaches into it (see popoutBg); blur
+            // that gap too, far enough that the rounded blur corners end up under
+            // the sidebar instead of showing in the gap.
+            blurOffsetTop: root.blurOffsetTop - (popoutBg.connectedToSidebar ? Tokens.spacing.extraLarge + 10 + Tokens.rounding.extraLarge : 0)
             blurOffsetBottom: root.blurOffsetBottom
             blurOffsetLeft: root.blurOffsetLeft
             blurOffsetRight: root.blurOffsetRight

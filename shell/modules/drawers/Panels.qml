@@ -172,7 +172,7 @@ Item {
                 target: sidebar
                 anchors.topMargin: -4
                 anchors.bottomMargin: (root.notifAtBottom ? root.notifReservedHeight : 0)
-                    + (sidebar.shouldPush ? popoutsWrapper.implicitHeight + Tokens.spacing.extraLarge : 0)
+                    + (sidebar.shouldPush ? popoutsWrapper.implicitHeight + sidebar.pushSpacing : 0)
             }
         }
     ]
@@ -342,6 +342,9 @@ Item {
         property string vAnchor: "bottom"
         property string hAnchor: bar.position === "right" ? "left" : "right"
         property bool shouldPush: root.popoutIntersectsSidebar && !popoutsWrapper.content.isDockPopout
+        // A popout no wider than the sidebar is drawn joined to it (ContentWindow.qml),
+        // so it goes right below the sidebar instead of leaving a gap.
+        readonly property real pushSpacing: popoutsWrapper.content.implicitWidth <= Visibilities.sidebarWidthFor(Tokens.sizes.sidebar.width) + 1 ? 0 : Tokens.spacing.extraLarge
 
         visibilities: root.visibilities
         popouts: popoutsWrapper.content
@@ -350,9 +353,9 @@ Item {
         anchors.bottom: utilities.top
         anchors.right: parent.right
         anchors.topMargin: root.notifAtTop
-            ? (root.notifReservedHeight + ((bar.position === "top" && shouldPush) ? popoutsWrapper.implicitHeight + Tokens.spacing.extraLarge : 0))
-            : ((bar.position === "top" && shouldPush) ? (popoutsWrapper.implicitHeight + Tokens.spacing.extraLarge) : 0)
-        anchors.bottomMargin: (bar.position === "bottom" && shouldPush) ? (popoutsWrapper.implicitHeight + Tokens.spacing.extraLarge) : 0
+            ? (root.notifReservedHeight + ((bar.position === "top" && shouldPush) ? popoutsWrapper.implicitHeight + sidebar.pushSpacing : 0))
+            : ((bar.position === "top" && shouldPush) ? (popoutsWrapper.implicitHeight + sidebar.pushSpacing) : 0)
+        anchors.bottomMargin: (bar.position === "bottom" && shouldPush) ? (popoutsWrapper.implicitHeight + sidebar.pushSpacing) : 0
     }
     Overview.Wrapper {
         id: overview
