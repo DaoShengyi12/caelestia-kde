@@ -191,6 +191,8 @@ Item {
 
             visible: root.renaming
             Layout.fillWidth: true
+            // No outline: the editor takes the label's place and should look like it.
+            background.visible: false
             onAccepted: root.commitRename()
             onActiveFocusChanged: {
                 // Clicking anywhere outside the editor applies the rename.
