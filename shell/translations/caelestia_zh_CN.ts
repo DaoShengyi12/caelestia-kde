@@ -11464,6 +11464,10 @@
         <source>Disk</source>
         <translation>磁盘</translation>
     </message>
+    <message>
+        <source>Memory</source>
+        <translation>内存</translation>
+    </message>
 </context>
 <context>
     <name>ViewOptions</name>
