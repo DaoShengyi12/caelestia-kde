@@ -4,7 +4,8 @@ import qs.components
 import qs.services
 
 // Rendered off screen and grabbed into the image that follows the pointer
-// during a drag: the pressed icon, with a badge when several files go along.
+// during a drag: the pressed icon and its label, with a badge when several
+// files go along.
 Item {
     id: root
 
@@ -15,12 +16,10 @@ Item {
     readonly property bool isGroup: controller.isGroupKey(key)
 
     width: controller.cellWidth
-    height: controller.iconSize + Tokens.padding.small * 2
+    height: controller.cellHeight
 
     IconTile {
-        width: root.controller.cellWidth
-        height: root.controller.cellHeight
-        y: -Tokens.padding.small
+        anchors.fill: parent
         iconSize: root.controller.iconSize
         materialYou: root.controller.materialYou
         vibrant: root.controller.vibrant
