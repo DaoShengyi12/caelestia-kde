@@ -14,17 +14,22 @@ ColumnLayout {
     id: root
 
     required property PopoutState popouts
+    required property string label
+    required property int subPageIdx
 
     property real scaleOffset: 1.0
     property real fontScale: 1.0
     property bool _isSidebarOpen: false
 
-    width: 200 * scaleOffset
-    implicitWidth: 200 * scaleOffset
+    width: card.implicitWidth
+    implicitWidth: card.implicitWidth
     spacing: Tokens.spacing.medium * scaleOffset
 
     StyledRect {
+        id: card
+
         Layout.fillWidth: true
+        implicitWidth: cardLayout.implicitWidth + Tokens.padding.medium * 2 * root.scaleOffset
         implicitHeight: cardLayout.implicitHeight + Tokens.padding.medium * 2 * root.scaleOffset
         radius: Tokens.rounding.medium * root.scaleOffset
         color: Colours.tPalette.m3surfaceContainer
@@ -43,6 +48,7 @@ ColumnLayout {
                 id: settingsItem
 
                 Layout.fillWidth: true
+                implicitWidth: settingsRow.implicitWidth + Tokens.padding.medium * 2 * root.scaleOffset
                 implicitHeight: settingsRow.implicitHeight + Tokens.padding.small * 2 * root.scaleOffset
 
                 radius: Tokens.rounding.medium * root.scaleOffset
@@ -56,7 +62,7 @@ ColumnLayout {
                         root.popouts.hasCurrent = false;
                         WindowFactory.create(null, {
                             initialPageIdx: PageRegistry.indexForKey("panels"),
-                            initialSubPageIdx: 11
+                            initialSubPageIdx: root.subPageIdx
                         });
                     }
                 }
@@ -76,7 +82,7 @@ ColumnLayout {
 
                     StyledText {
                         Layout.alignment: Qt.AlignVCenter
-                        text: qsTr("Clock settings")
+                        text: root.label
                         color: Colours.palette.m3onSurface
                         font.pointSize: Tokens.font.body.medium.pointSize * root.fontScale
                     }

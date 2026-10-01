@@ -277,7 +277,21 @@ Item {
         property var _appsValues: DesktopEntries.applications.values
         on_AppsValuesChanged: root.rebuildModel()
 
+        MouseArea {
+            anchors.fill: parent
+            acceptedButtons: Qt.RightButton
+            enabled: dockModel.count > 0
 
+            onClicked: mouse => {
+                const popouts = root.bar?.popouts;
+                if (!popouts)
+                    return;
+                popouts.currentName = "dockbgcontext";
+                popouts.currentCenter = bar.isHorizontal ? container.mapToItem(null, container.width / 2, 0).x : (container.mapToItem(null, 0, container.height / 2).y ?? 0);
+                popouts.hasCurrent = true;
+                mouse.accepted = true;
+            }
+        }
 
         Item {
             id: layout
@@ -820,27 +834,45 @@ Item {
 
             if (appClass.toLowerCase().includes("xwaylandvideobridge")) continue;
 
+            // Ungrouped keeps every window on its own icon (pinned entries stay
+            // launchers); PinnedFirst caps a pinned entry at its first window and
+            // lets the rest stand alone. Per-window ids carry the address (or pid)
+            // so they stay stable for the window's lifetime.
+            const grouping = GlobalConfig.bar.dock.windowGrouping;
+            const ungrouped = grouping === DockWindowGrouping.Ungrouped;
+            const pinnedFirst = grouping === DockWindowGrouping.PinnedFirst;
             let found = false;
-            for (const app of apps) {
-                const isToplevelSteamGame = appClass.toLowerCase().startsWith("steam_app_");
+            let pinnedCapped = false;
+            if (!ungrouped) {
+                for (const app of apps) {
+                    const isToplevelSteamGame = appClass.toLowerCase().startsWith("steam_app_");
 
-                if (isToplevelSteamGame) {
-                    if (app.appClass.toLowerCase() === appClass.toLowerCase()) {
-                        app.toplevels.push(toplevel);
-                        found = true;
-                        break;
-                    }
-                } else {
-                    const isAppSteamGame = app.id.toLowerCase().startsWith("steam_app_") || app.appClass.toLowerCase().startsWith("steam_app_");
-                    if (isAppSteamGame) continue;
+                    if (isToplevelSteamGame) {
+                        if (app.appClass.toLowerCase() === appClass.toLowerCase()) {
+                            if (pinnedFirst && app.isPinned && app.toplevels.length > 0)
+                                pinnedCapped = true;
+                            else {
+                                app.toplevels.push(toplevel);
+                                found = true;
+                            }
+                            break;
+                        }
+                    } else {
+                        const isAppSteamGame = app.id.toLowerCase().startsWith("steam_app_") || app.appClass.toLowerCase().startsWith("steam_app_");
+                        if (isAppSteamGame) continue;
 
-                    const baseId = app.id.toLowerCase().replace(".desktop", "");
-                    if (app.appClass.toLowerCase() === appClass.toLowerCase() ||
-                        app.id.toLowerCase().includes(appClass.toLowerCase()) ||
-                        appClass.toLowerCase().includes(baseId)) {
-                        app.toplevels.push(toplevel);
-                        found = true;
-                        break;
+                        const baseId = app.id.toLowerCase().replace(".desktop", "");
+                        if (app.appClass.toLowerCase() === appClass.toLowerCase() ||
+                            app.id.toLowerCase().includes(appClass.toLowerCase()) ||
+                            appClass.toLowerCase().includes(baseId)) {
+                            if (pinnedFirst && app.isPinned && app.toplevels.length > 0)
+                                pinnedCapped = true;
+                            else {
+                                app.toplevels.push(toplevel);
+                                found = true;
+                            }
+                            break;
+                        }
                     }
                 }
             }
@@ -873,7 +905,7 @@ Item {
                     WinIcons.request(appClass, ipc.title || "", pid, ipc.address ? String(ipc.address) : "");
 
                 apps.push({
-                    id: appClass,
+                    id: ungrouped || pinnedCapped ? `${appClass}#${ipc.address || pid}` : appClass,
                     isPinned: false,
                     entry: entry,
                     toplevels: [toplevel],
@@ -1043,6 +1075,10 @@ Item {
         target: Config.bar.dock
 
         function onCurrentDesktopOnlyChanged(): void {
+            root.rebuildModel();
+        }
+
+        function onWindowGroupingChanged(): void {
             root.rebuildModel();
         }
     }
