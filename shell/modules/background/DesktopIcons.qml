@@ -48,6 +48,8 @@ Item {
     property var dragKeys: []
     property string dragGroup: ""
     property string dragAnchor: ""
+    // Where the anchor was grabbed, relative to its top-left corner.
+    property point dragHotSpot
     property var previewPositions: null
     property var dropCells: []
     property string mergeKey: ""
@@ -1052,6 +1054,7 @@ os.replace(tmp, path)
         dragKeys = keys;
         dragGroup = fromGroup;
         dragAnchor = anchor;
+        dragHotSpot = hotSpot;
         // Widgets have nothing to hand to other apps; the private type keeps
         // the drag alive for moving them around the desktop.
         const mime = { "application/x-caelestia-desktop-items": keys.join("\n") };
@@ -1099,7 +1102,13 @@ os.replace(tmp, path)
         };
         const moving = internal && dragGroup === "" ? dragKeys : [];
         const target = cellOccupant(cell.col, cell.row, moving);
-        const plan = { cell, target, mode: "place", dest: "" };
+        // Large items land where their top-left corner is closest to, not
+        // where the pointer is, so they stay under the dragged image.
+        const place = moving.length > 0 && isBigKey(dragAnchor) ? {
+            col: Math.max(0, Math.min(cols - 1, Math.round((gx - dragHotSpot.x) / cellWidth))),
+            row: Math.max(0, Math.min(rows - 1, Math.round((gy - dragHotSpot.y) / cellHeight)))
+        } : cell;
+        const plan = { cell, place, target, mode: "place", dest: "" };
         if (target === "")
             return plan;
         const draggingFiles = !internal || dragKeys.every(k => isGroupKey(k) ? dragGroup === "" : entryOf(k)?.fileIsDir === false);
@@ -1157,7 +1166,7 @@ os.replace(tmp, path)
             anchor = moving.indexOf(dragAnchor) !== -1 ? dragAnchor : moving[0];
             moving.forEach((k, i) => base[k] = { col: plan.cell.col, row: plan.cell.row + i });
         }
-        const next = DesktopLayout.autoArrange ? Engine.planInsert(base, moving, plan.cell, rows, spans) : Engine.planMove(base, moving, anchor, plan.cell, cols, rows, spans);
+        const next = DesktopLayout.autoArrange ? Engine.planInsert(base, moving, plan.place, rows, spans) : Engine.planMove(base, moving, anchor, plan.place, cols, rows, spans);
         dropCells = moving.map(k => Object.assign({}, next[k], spanOf(k)));
         // The dragged items stay faded where they were; only the others move aside.
         const shown = Object.assign({}, DesktopLayout.positions, next);
@@ -1209,7 +1218,7 @@ os.replace(tmp, path)
             removeFromGroup(fromGroup, keys.filter(k => !isGroupKey(k)).map(nameOf), plan.cell);
             return;
         }
-        const landed = DesktopLayout.autoArrange ? Engine.planInsert(contextPositionsTopLevel(), keys, plan.cell, rows, spans) : Engine.planMove(contextPositionsTopLevel(), keys, dragAnchor || keys[0], plan.cell, cols, rows, spans);
+        const landed = DesktopLayout.autoArrange ? Engine.planInsert(contextPositionsTopLevel(), keys, plan.place, rows, spans) : Engine.planMove(contextPositionsTopLevel(), keys, dragAnchor || keys[0], plan.place, cols, rows, spans);
         DesktopLayout.setPositions(Object.assign({}, DesktopLayout.positions, landed));
         if (DesktopLayout.sortKey !== "")
             DesktopLayout.setSortKey("");
