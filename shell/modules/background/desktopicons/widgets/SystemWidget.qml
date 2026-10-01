@@ -90,6 +90,8 @@ Item {
         visible: root.tier > 0
         spacing: Tokens.spacing.large
 
+        // Nothing fills the height, so the rows share the spare room evenly
+        // and the top and bottom gaps match.
         ColumnLayout {
             Layout.fillWidth: true
             Layout.fillHeight: true
@@ -136,10 +138,6 @@ Item {
             Speeds {
                 Layout.fillWidth: true
                 visible: root.tier === 1 && root.tall
-            }
-
-            Item {
-                Layout.fillHeight: true
             }
         }
 
