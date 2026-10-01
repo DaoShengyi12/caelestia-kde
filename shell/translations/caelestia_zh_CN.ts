@@ -11408,6 +11408,14 @@
         <source>Arrange Icons...</source>
         <translation>排列图标...</translation>
     </message>
+    <message>
+        <source>Show Desktop Icons</source>
+        <translation>显示桌面图标</translation>
+    </message>
+    <message>
+        <source>Hide Desktop Icons</source>
+        <translation>隐藏桌面图标</translation>
+    </message>
 </context>
 <context>
     <name>DropMenu</name>

@@ -3,6 +3,7 @@ pragma Singleton
 import QtQuick
 import Quickshell
 import Quickshell.Io
+import Caelestia.Config
 import qs.utils
 
 // Persistent state of the desktop icons: where each icon sits, the virtual
@@ -113,6 +114,19 @@ Singleton {
             id = Date.now().toString(36) + Math.floor(Math.random() * 1296).toString(36);
         while (id in groups || id in widgets);
         return id;
+    }
+
+    function iconsShownOn(screenName: string): bool {
+        return GlobalConfig.forScreen(screenName).background.desktopIconsEnabled;
+    }
+
+    // Flips the icons as seen on the given screen and applies the result to
+    // every screen, dropping per-screen overrides so they stay in step.
+    function toggleIcons(screenName: string): void {
+        GlobalConfig.background.desktopIconsEnabled = !iconsShownOn(screenName);
+        for (const screen of Quickshell.screens)
+            GlobalConfig.forScreen(screen.name)?.background.resetOption("desktopIconsEnabled");
+        GlobalConfig.save();
     }
 
     function refreshClipboard(): void {
