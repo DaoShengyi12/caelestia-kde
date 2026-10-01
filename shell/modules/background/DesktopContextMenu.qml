@@ -93,7 +93,7 @@ Controls.Menu {
         }
 
         root.entryByKey = nextEntryByKey;
-        root.dynamicModel = [pasteItem, arrangeItem, ...newArr];
+        root.dynamicModel = [pasteItem, addWidgetItem, arrangeItem, ...newArr];
         const buildMs = Date.now() - buildStartedAt;
         console.log("[perf][DesktopContextMenu] build model source=" + sourceName + " items=" + newArr.length + " ms=" + buildMs);
 
@@ -159,6 +159,15 @@ Controls.Menu {
         icon: "content_paste"
         visible: root.iconsShown && DesktopLayout.clipboardHasFiles
         onClicked: DesktopLayout.pasteRequested(root.screenName, root.attachTo.x, root.attachTo.y)
+    }
+
+    Controls.MenuItem {
+        id: addWidgetItem
+
+        text: qsTr("Add Widget...")
+        icon: "widgets"
+        visible: root.iconsShown
+        onClicked: DesktopLayout.addWidgetRequested(root.screenName, root.attachTo.x, root.attachTo.y)
     }
 
     Controls.MenuItem {
