@@ -35,6 +35,9 @@ Item {
     property alias dockModel: popoutState.dockModel
     property alias tasksModel: popoutState.tasksModel
     property real currentCenter
+    // Set by ClipWrapper: whether the current bar item sits under the sidebar,
+    // which can be narrower than the bar's right side now that it is resizable.
+    property bool underSidebar: true
     property string detachedMode
     readonly property QtObject dummy: QtObject {}
     property int animLength: dummy.Tokens.anim.durations.expressiveDefaultSpatial
@@ -85,7 +88,9 @@ Item {
     PopoutState {
         id: popoutState
 
-        sidebarOpen: root.visibilities.sidebar
+        // Only attach to the sidebar when the popout would open below it anyway;
+        // otherwise it would end up away from the item that opened it.
+        sidebarOpen: root.visibilities.sidebar && root.underSidebar
         isHorizontal: Config.bar.position === "top" || Config.bar.position === "bottom"
         onDetachRequested: mode => root.detach(mode)
     }
