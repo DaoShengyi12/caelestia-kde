@@ -4,7 +4,6 @@ import QtQuick
 import Quickshell
 import Caelestia.Config
 import qs.components
-import qs.services
 import qs.modules.bar.popouts
 
 Item {
@@ -33,12 +32,10 @@ Item {
             if (content.sidebarOpen && !content.isDockPopout)
                 return parent.width - content.nonAnimWidth;
 
-            // Popouts that don't push the sidebar would otherwise end up on top of it.
-            const right = content.sidebarOpen ? parent.width - Visibilities.sidebarWidthFor(Tokens.sizes.sidebar.width) - Tokens.spacing.extraLarge : parent.width;
             const off = content.currentCenter - parent.leftMargin - content.nonAnimWidth / 2;
-            const diff = right - Math.floor(off + content.nonAnimWidth);
+            const diff = parent.width - Math.floor(off + content.nonAnimWidth);
             if (diff < 0)
-                return Math.max(off + diff, 0);
+                return off + diff;
             return Math.max(off, 0);
         }
         if (bar.position === "right")
