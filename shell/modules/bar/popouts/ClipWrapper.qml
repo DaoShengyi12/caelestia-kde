@@ -26,7 +26,8 @@ Item {
     implicitWidth: isHorizontal ? content.implicitWidth : content.implicitWidth * (1 - offsetScale)
     implicitHeight: isHorizontal ? content.implicitHeight * (1 - offsetScale) : content.implicitHeight
 
-    x: {
+    // Where x is heading; x itself animates towards it.
+    readonly property real targetX: {
         if (content.isDetached)
             return (parent.width - content.nonAnimWidth) / 2;
         if (isHorizontal) {
@@ -46,6 +47,8 @@ Item {
             return parent.width - implicitWidth;
         return 0;
     }
+
+    x: targetX
     y: {
         if (content.isDetached)
             return (parent.height - content.nonAnimHeight) / 2;

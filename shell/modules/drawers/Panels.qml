@@ -72,8 +72,10 @@ Item {
         if (bar.isHorizontal) {
             const notifLeft = notifications.x;
             const notifRight = notifLeft + (notifications.implicitWidth > 0 ? notifications.implicitWidth : Tokens.sizes.notifs.width);
-            const popLeft = popoutsWrapper.x;
-            const popRight = popoutsWrapper.x + popoutsWrapper.content.nonAnimWidth;
+            // Use where the popout ends up, not where its slide currently is, so
+            // switching between bar items doesn't push the sidebar on the way.
+            const popLeft = popoutsWrapper.targetX;
+            const popRight = popoutsWrapper.targetX + popoutsWrapper.content.nonAnimWidth;
             return popLeft < notifRight && popRight > notifLeft;
         } else {
             const notifTop = notifications.y;
