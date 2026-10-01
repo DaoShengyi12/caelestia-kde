@@ -59,12 +59,6 @@ Controls.Menu {
     thisSideX: Controls.Menu.Left
     thisSideY: Controls.Menu.Top
 
-    Item {
-        id: anchor
-
-        parent: root.controller
-    }
-
     items: [
         Controls.MenuItem {
             text: !root.single ? qsTr("Open %1 Items").arg(root.keys.length) : root.firstIsGroup ? qsTr("Open Group") : qsTr("Open")
@@ -130,4 +124,10 @@ Controls.Menu {
             onClicked: root.controller.trashKeys(root.keys)
         }
     ]
+
+    Item {
+        id: anchor
+
+        parent: root.controller
+    }
 }

@@ -75,13 +75,13 @@ Item {
 
         // Focus once the compositor hands the window the keyboard, as for icon renames.
         Connections {
-            target: field.Window.window
-            enabled: root.renaming
-
             function onActiveChanged(): void {
                 if (field.Window.window.active)
                     field.forceActiveFocus();
             }
+
+            target: field.Window.window
+            enabled: root.renaming
         }
     }
 }

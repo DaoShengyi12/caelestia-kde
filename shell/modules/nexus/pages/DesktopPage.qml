@@ -12,8 +12,6 @@ import qs.modules.nexus.common
 PageBase {
     id: root
 
-    title: qsTr("Desktop & Tiling")
-
     readonly property list<MenuItem> iconSizeItems: [
         MenuItem {
             text: qsTr("Small")
@@ -32,6 +30,8 @@ PageBase {
             value: 96
         }
     ]
+
+    title: qsTr("Desktop & Tiling")
 
     ColumnLayout {
         property bool showTilingLogout: false

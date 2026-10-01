@@ -19,6 +19,7 @@ Controls.Menu {
     property var itemPool: ({})
     property var entryByKey: ({})
     property real perfMenuOpenStartedAt: 0
+    readonly property bool iconsShown: GlobalConfig.forScreen(screenName).background.wallpaperEnabled && GlobalConfig.forScreen(screenName).background.desktopIconsEnabled
 
     function executeEntryByKey(key) {
         let entry = root.entryByKey[key];
@@ -150,8 +151,6 @@ Controls.Menu {
 
         target: ContextMenuStore
     }
-
-    readonly property bool iconsShown: GlobalConfig.forScreen(screenName).background.wallpaperEnabled && GlobalConfig.forScreen(screenName).background.desktopIconsEnabled
 
     Controls.MenuItem {
         id: pasteItem
