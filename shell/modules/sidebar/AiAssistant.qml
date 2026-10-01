@@ -3676,11 +3676,30 @@ Item {
                      id: historyActions
 
                      readonly property int clearableCount: root.totalChatCount - root.pinnedChatCount
+                     readonly property string clearIdleLabel: root.pinnedChatCount > 0 ? qsTr("Clear unpinned") : qsTr("Clear all")
+                     readonly property string clearHoldLabel: qsTr("Hold to clear")
+                     // Both buttons share one width so the count stays centred, and the
+                     // clear label can change without the button resizing.
+                     readonly property real buttonWidth: Math.max(clearAllIcon.implicitWidth + Tokens.spacing.small + Math.max(idleLabelMetrics.advanceWidth, holdLabelMetrics.advanceWidth), newChatLayout.implicitWidth) + Tokens.padding.large * 2
 
                      anchors.bottom: parent.bottom
                      anchors.left: parent.left
                      anchors.right: parent.right
                      spacing: Tokens.spacing.small
+
+                     TextMetrics {
+                         id: idleLabelMetrics
+
+                         font: Tokens.font.body.small
+                         text: historyActions.clearIdleLabel
+                     }
+
+                     TextMetrics {
+                         id: holdLabelMetrics
+
+                         font: Tokens.font.body.small
+                         text: historyActions.clearHoldLabel
+                     }
 
                      // Press and hold to clear, so a stray click does nothing.
                      StyledClippingRect {
@@ -3688,8 +3707,9 @@ Item {
 
                          readonly property bool holding: clearLayer.pressed
                          property real holdProgress: 0
+                         property bool showHoldHint: false
 
-                         Layout.preferredWidth: clearAllLayout.implicitWidth + Tokens.padding.large * 2
+                         Layout.preferredWidth: historyActions.buttonWidth
                          Layout.preferredHeight: 32
                          radius: 16
                          visible: historyActions.clearableCount > 0
@@ -3701,9 +3721,21 @@ Item {
                              if (holding) {
                                  holdAnim.restart();
                              } else {
+                                 // Released too early: say why nothing happened.
+                                 if (holdProgress > 0 && holdProgress < 1) {
+                                     showHoldHint = true;
+                                     holdHintReset.restart();
+                                 }
                                  holdAnim.stop();
                                  holdProgress = 0;
                              }
+                         }
+
+                         Timer {
+                             id: holdHintReset
+
+                             interval: 2000
+                             onTriggered: clearAllButton.showHoldHint = false
                          }
 
                          NumberAnimation {
@@ -3743,16 +3775,14 @@ Item {
                              spacing: Tokens.spacing.small
 
                              MaterialIcon {
+                                 id: clearAllIcon
+
                                  text: "delete_sweep"
                                  color: clearAllButton.holding ? Colours.palette.m3onErrorContainer : Colours.palette.m3error
                                  font: Tokens.font.icon.small
                              }
                              Text {
-                                 text: {
-                                     if (clearAllButton.holding)
-                                         return qsTr("Keep holding…");
-                                     return root.pinnedChatCount > 0 ? qsTr("Hold to clear unpinned") : qsTr("Hold to clear all");
-                                 }
+                                 text: clearAllButton.holding || clearAllButton.showHoldHint ? historyActions.clearHoldLabel : historyActions.clearIdleLabel
                                  color: clearAllButton.holding ? Colours.palette.m3onErrorContainer : Colours.palette.m3error
                                  font: Tokens.font.body.small
                              }
@@ -3780,7 +3810,7 @@ Item {
                      StyledRect {
                          id: newChatButton
 
-                         Layout.preferredWidth: newChatLayout.implicitWidth + Tokens.padding.large * 2
+                         Layout.preferredWidth: historyActions.buttonWidth
                          Layout.preferredHeight: 32
                          radius: 16
                          color: Colours.palette.m3primaryContainer
