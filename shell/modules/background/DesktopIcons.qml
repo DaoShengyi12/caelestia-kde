@@ -376,8 +376,10 @@ os.replace(tmp, path)
                 }
 
                 function launch(): void {
-                    if (delegateItem.desktopEntry)
-                        Launch.launchEntry(delegateItem.desktopEntry);
+                    // Run the launcher file itself: its name need not match an installed app id,
+                    // and xdg-open would open it in an editor instead.
+                    if (isDesktopFile)
+                        Launch.exec(["gio", "launch", path]);
                     else
                         Launch.exec(["xdg-open", path]);
                 }
