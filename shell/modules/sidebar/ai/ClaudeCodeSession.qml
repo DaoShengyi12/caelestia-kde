@@ -14,6 +14,10 @@ Process {
     property string msgId
     property bool stopped: false
     readonly property var stream: ClaudeCode.createState()
+    // Live status of the run, shown while its chat is open.
+    property real startedAt: 0
+    property int outputTokens: 0
+    property bool toolRunning: false
 
     signal textUpdated(text: string)
     signal thoughtUpdated(text: string)

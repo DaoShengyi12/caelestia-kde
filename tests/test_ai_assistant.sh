@@ -236,12 +236,23 @@ test_only_the_chat_store_writes_chat_history() {
         "persist() should write only with history saving enabled"
 }
 
-test_messages_are_not_kept_alive_off_screen() {
+test_the_chat_is_laid_out_in_full() {
     local assistant
     assistant="$(cat "$SIDEBAR/AiAssistant.qml")"
-    assert_not_contains "$assistant" "cacheBuffer" "the chat list should not keep every delegate alive"
-    assert_contains "$assistant" "delegate: ChatMessage {" "messages should be drawn by ChatMessage"
+    assert_not_contains "$assistant" "cacheBuffer" "the chat should not rely on a ListView cache to keep its layout"
+    assert_contains "$assistant" $'Repeater {\n                                 model: chatStore.messages\n\n                                 ChatMessage {' \
+        "messages should be drawn by ChatMessage from the store's view"
     assert_not_contains "$assistant" "\"claudeCodeProc\"" "Claude Code should run through ClaudeCodeSession"
+}
+
+test_switching_chats_does_not_stop_claude_code() {
+    local assistant leave
+    assistant="$(cat "$SIDEBAR/AiAssistant.qml")"
+    leave="$(printf '%s\n' "$assistant" | sed -n '/^    function leaveChat() {/,/^    }/p')"
+    assert_ne "" "$leave" "leaveChat() should exist"
+    assert_not_contains "$leave" "stopClaudeCode" "leaving a chat should leave its Claude Code reply running"
+    assert_contains "$assistant" "readonly property var currentClaudeCodeProc: claudeCodeRuns[currentChatId] ?? null" \
+        "the status line should follow the run of the open chat"
 }
 
 test_the_sidebar_lifetime_does_not_depend_on_assistant_dialogs() {

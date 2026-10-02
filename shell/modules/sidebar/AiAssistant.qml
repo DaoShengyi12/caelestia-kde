@@ -38,8 +38,9 @@ Item {
     // The reply the current request writes to: { chatId, msgId }.
     property var activeReply: null
 
-    // Replying, or running the tools of a reply; the sidebar stays loaded meanwhile.
-    readonly property bool busy: isTyping || inAgentLoop
+    // Replying (in any chat), or running the tools of a reply; the sidebar stays
+    // loaded meanwhile.
+    readonly property bool busy: isTyping || inAgentLoop || Object.keys(claudeCodeRuns).length > 0
 
     property real savedContentY: -1
 
@@ -182,7 +183,11 @@ Item {
 
     readonly property bool isClaudeCode: provider === "claude-code"
 
-    property var currentClaudeCodeProc: null
+    // Running Claude Code replies by chat id. They keep going while another chat
+    // is open.
+    property var claudeCodeRuns: ({})
+
+    readonly property var currentClaudeCodeProc: claudeCodeRuns[currentChatId] ?? null
 
     // Working directory and permission mode of the current Claude Code chat. Both are
     // stored per chat (a CLI session only resumes from the directory it was created
@@ -263,13 +268,13 @@ Item {
 
     // Live status for a running Claude Code reply, shown under it the way the CLI
     // does: a rotating verb, elapsed time and output tokens.
-    property real claudeCodeStartedAt: 0
+    readonly property real claudeCodeStartedAt: currentClaudeCodeProc?.startedAt ?? 0
 
     property int claudeCodeElapsed: 0
 
-    property int claudeCodeOutTokens: 0
+    readonly property int claudeCodeOutTokens: currentClaudeCodeProc?.outputTokens ?? 0
 
-    property bool claudeCodeToolRunning: false
+    readonly property bool claudeCodeToolRunning: currentClaudeCodeProc?.toolRunning ?? false
 
     readonly property var thinkingVerbs: [
         "Thinking", "Pondering", "Musing", "Mulling", "Cogitating", "Ruminating",
@@ -967,18 +972,24 @@ Item {
             proc.destroy();
     }
 
-    function stopClaudeCode() {
-        if (currentClaudeCodeProc) {
-            currentClaudeCodeProc.stop();
-            currentClaudeCodeProc = null;
-        }
+    // Stops the Claude Code replies running in the given chats.
+    function stopClaudeCode(chatIds) {
+        for (var i = 0; i < chatIds.length; i++)
+            if (claudeCodeRuns[chatIds[i]])
+                claudeCodeRuns[chatIds[i]].stop();
+    }
+
+    function setClaudeCodeRun(chatId, proc) {
+        var runs = Object.assign({}, claudeCodeRuns);
+        if (proc)
+            runs[chatId] = proc;
+        else
+            delete runs[chatId];
+        claudeCodeRuns = runs;
     }
 
     function sendClaudeCode(promptText, attachments) {
-        claudeCodeStartedAt = Date.now();
         claudeCodeElapsed = 0;
-        claudeCodeOutTokens = 0;
-        claudeCodeToolRunning = false;
         currentActionText = randomThinkingVerb();
         const reply = startReply();
 
@@ -1026,7 +1037,8 @@ Item {
             chatStore.persist();
             return;
         }
-        currentClaudeCodeProc = proc;
+        proc.startedAt = Date.now();
+        setClaudeCodeRun(reply.chatId, proc);
         proc.running = true;
     }
 
@@ -1053,18 +1065,17 @@ Item {
     }
 
     function onClaudeCodeToolStarted(proc, name) {
+        proc.toolRunning = true;
         if (proc.chatId !== currentChatId)
             return;
         currentActionText = "Running " + name + "…";
-        claudeCodeToolRunning = true;
         isThinking = true;
     }
 
     function onClaudeCodeToolsDone(proc) {
-        if (proc.chatId !== currentChatId)
-            return;
-        claudeCodeToolRunning = false;
-        currentActionText = randomThinkingVerb();
+        proc.toolRunning = false;
+        if (proc.chatId === currentChatId)
+            currentActionText = randomThinkingVerb();
     }
 
     function onClaudeCodeProgress(proc, text) {
@@ -1075,8 +1086,7 @@ Item {
     }
 
     function onClaudeCodeTokens(proc, count) {
-        if (proc.chatId === currentChatId)
-            claudeCodeOutTokens = count;
+        proc.outputTokens = count;
     }
 
     function onClaudeCodeUsage(proc, usage) {
@@ -1096,20 +1106,19 @@ Item {
             "isFinished": true
         });
         chatStore.persist();
+        proc.toolRunning = false;
         if (proc.chatId === currentChatId) {
             isTyping = false;
             isThinking = false;
             inAgentLoop = false;
-            claudeCodeToolRunning = false;
-            claudeCodeStartedAt = 0;
             currentActionText = "Thinking...";
             listView.positionViewAtEnd();
         }
     }
 
     function onClaudeCodeEnded(proc) {
-        if (currentClaudeCodeProc === proc)
-            currentClaudeCodeProc = null;
+        if (claudeCodeRuns[proc.chatId] === proc)
+            setClaudeCodeRun(proc.chatId, null);
         proc.destroy();
     }
 
@@ -1210,22 +1219,54 @@ Item {
     }
 
     function createNewChat() {
-        stopReply();
+        leaveChat();
         chatStore.newChat({
             "claudeCodeCwd": claudeCodeChatCwd,
             "claudeCodePermissionMode": claudeCodePermissionMode
         });
+        enterChat();
         attachments.take();
         isHistoryTab = false;
     }
 
     function loadChat(id) {
-        stopReply();
-        if (!chatStore.open(id))
+        leaveChat();
+        if (!chatStore.open(id)) {
             createNewChat();
+            return;
+        }
+        enterChat();
         savedContentY = -1;
         Qt.callLater(function() { listView.positionViewAtEnd(); });
         isHistoryTab = false;
+    }
+
+    // Before another chat is opened. A Claude Code reply keeps running in the
+    // background; API replies, their tool loop and rate limit retries belong to
+    // the open chat and end with it.
+    function leaveChat() {
+        cancelRateLimitRetry();
+        if (currentRequest) {
+            const xhr = currentRequest;
+            currentRequest = null;
+            xhr.abort();
+        }
+        isTyping = false;
+        isThinking = false;
+        inAgentLoop = false;
+        currentThoughtText = "";
+    }
+
+    // After a chat is opened: pick up the status of a reply still running in it.
+    function enterChat() {
+        const proc = currentClaudeCodeProc;
+        if (!proc)
+            return;
+        activeReply = { "chatId": proc.chatId, "msgId": proc.msgId };
+        isTyping = true;
+        inAgentLoop = true;
+        claudeCodeElapsed = Math.floor((Date.now() - proc.startedAt) / 1000);
+        currentActionText = randomThinkingVerb();
     }
 
     function loadHistory() {
@@ -1239,16 +1280,8 @@ Item {
     // Ends whatever the current chat is waiting for: an API request, a rate
     // limit retry or a Claude Code process.
     function stopReply() {
-        cancelRateLimitRetry();
-        if (currentRequest) {
-            const xhr = currentRequest;
-            currentRequest = null;
-            xhr.abort();
-        }
-        stopClaudeCode();
-        isTyping = false;
-        isThinking = false;
-        inAgentLoop = false;
+        stopClaudeCode([currentChatId]);
+        leaveChat();
     }
 
     // Starts an empty reply in the current chat for a request to write to.
@@ -1267,6 +1300,7 @@ Item {
 
     function deleteChat(id) {
         cancelRateLimitRetry();
+        stopClaudeCode([id]);
         if (!chatStore.removeChats([id]))
             return;
         if (chatStore.sessions.length > 0)
@@ -1277,7 +1311,9 @@ Item {
 
     function clearAllHistory() {
         cancelRateLimitRetry();
-        chatStore.removeChats(chatStore.sessions.map(s => s.id));
+        const ids = chatStore.sessions.map(s => s.id);
+        stopClaudeCode(ids);
+        chatStore.removeChats(ids);
         createNewChat();
     }
 
@@ -2271,296 +2307,288 @@ Item {
 
                  Behavior on opacity { NumberAnimation { duration: 250; easing.type: Easing.InOutQuad } }
 
-                 VerticalFadeListView {
+                 VerticalFadeFlickable {
                      id: listView
+
+                     // Follows the end of the chat (new messages, a streaming reply)
+                     // until the user scrolls away from it.
+                     property bool pinnedToEnd: false
+                     property bool settingY: false
+
+                     function positionViewAtEnd(): void {
+                         pinnedToEnd = true;
+                         Qt.callLater(snapToEnd);
+                     }
+
+                     function snapToEnd(): void {
+                         if (!pinnedToEnd)
+                             return;
+                         settingY = true;
+                         contentY = Math.max(0, contentHeight - height);
+                         settingY = false;
+                     }
 
                      anchors.top: parent.top
                      anchors.bottom: attachmentStrip.visible ? attachmentStrip.top : inputBoxRow.top
                      anchors.left: parent.left
                      anchors.right: parent.right
                      anchors.bottomMargin: Tokens.spacing.medium
-                     spacing: Tokens.spacing.medium
-                     model: chatStore.messages
+                     // Every message is laid out, not just the ones in view: with
+                     // messages of very different heights a ListView can only estimate
+                     // the ones it has not created, and the estimate (the scrollbar's
+                     // size and position) changes as they are created while scrolling.
+                     contentWidth: width
+                     contentHeight: messageColumn.implicitHeight
                      boundsBehavior: Flickable.StopAtBounds
-                     
-                     ColumnLayout {
-                         anchors.centerIn: parent
-                         opacity: chatStore.messages.count === 0 && !isTyping && !isThinking ? 1.0 : 0.0
-                         visible: opacity > 0
-
-                         Behavior on opacity { NumberAnimation { duration: 250; easing.type: Easing.InOutQuad } }
-
-                         spacing: Tokens.spacing.large
-
-                         Item {
-                             Layout.alignment: Qt.AlignHCenter
-                             implicitWidth: 72
-                             implicitHeight: 72
-
-                             Logo {
-                                 id: emptyStateLogo
-
-                                 anchors.fill: parent
-                                 visible: false
-                             }
-
-                             MultiEffect {
-                                 anchors.fill: parent
-                                 source: emptyStateLogo
-                                 colorization: 1.0
-                                 colorizationColor: Colours.palette.m3primary
-                             }
-                         }
-
-                         StyledText {
-                             id: greetingText
-                             Layout.alignment: Qt.AlignHCenter
-                             Layout.maximumWidth: listView.width - (Tokens.padding.large * 2)
-
-                             horizontalAlignment: Text.AlignHCenter
-                             wrapMode: Text.Wrap
-                             font: Tokens.font.title.medium
-                             color: Colours.palette.m3onSurfaceVariant
-
-                             property var phrases: [
-                                 "Ask away, %1!",
-                                 "How can I help you today, %1?",
-                                 "What's on your mind, %1?",
-                                 "Ready when you are, %1!",
-                                 "Let's get started, %1.",
-                                 "What shall we explore today, %1?",
-                                 "I'm all ears, %1!"
-                             ]
-
-                             Component.onCompleted: {
-                                 var user = Quickshell.env("USER") || "user";
-                                 var userCapitalized = user.charAt(0).toUpperCase() + user.slice(1);
-                                 var phrase = phrases[Math.floor(Math.random() * phrases.length)];
-                                 text = phrase.replace("%1", userCapitalized);
-                             }
-                         }
+                     onContentHeightChanged: snapToEnd()
+                     onHeightChanged: snapToEnd()
+                     onContentYChanged: {
+                         if (!settingY && contentY < contentHeight - height - 2)
+                             pinnedToEnd = false;
                      }
+
 
                      ScrollBar.vertical: StyledScrollBar {
                          flickable: listView
                      }
 
-                     footer: Item {
-                         // Claude Code keeps its status line up for the whole reply,
-                         // below the text as it streams.
-                         id: statusFooter
-
-                         readonly property bool shown: isThinking || (root.isClaudeCode && root.isTyping)
-                         readonly property real maxBubbleWidth: listView.width * 0.85
-                         readonly property real naturalWidth: footerCol.implicitWidth + Tokens.padding.medium * 2 + 8
-                         // Widest the bubble has been during this reply. The verb, the
-                         // counters and the thoughts all change width as they update;
-                         // only growing keeps the bubble from wobbling.
-                         property real stableWidth: 0
-
-                         onNaturalWidthChanged: if (shown) stableWidth = Math.max(stableWidth, naturalWidth)
-                         onShownChanged: stableWidth = shown ? naturalWidth : 0
+                     Column {
+                         id: messageColumn
 
                          width: listView.width
-                         height: shown ? bubbleBg.height + Tokens.spacing.medium : 0
-                         visible: opacity > 0
-                         opacity: shown ? 1 : 0
-                         
-                         Behavior on height { Anim { type: Anim.DefaultSpatial } }
-                         Behavior on opacity { Anim { type: Anim.DefaultSpatial } }
 
-                         StyledRect {
-                             id: bubbleBg
+                         Column {
+                             width: parent.width
+                             spacing: Tokens.spacing.medium
 
-                             y: Tokens.spacing.medium / 2
-                             width: Math.min(statusFooter.maxBubbleWidth, Math.max(statusFooter.stableWidth, statusFooter.naturalWidth))
-                             height: footerCol.implicitHeight + Tokens.padding.medium * 2
-                             radius: Tokens.rounding.large
-                             color: Colours.tPalette.m3surfaceContainer
+                             Repeater {
+                                 model: chatStore.messages
 
-                             topLeftRadius: Tokens.rounding.large
-                             topRightRadius: Tokens.rounding.large
-                             bottomLeftRadius: 4
-                             bottomRightRadius: Tokens.rounding.large
+                                 ChatMessage {
+                                     width: listView.width - Tokens.padding.large
+                                     thinking: root.isThinking
+                                     onViewStateEdited: patch => chatStore.update(root.currentChatId, msgId, patch)
+                                 }
+                             }
+                         }
 
-                             Column {
-                                 id: footerCol
+                         // Claude Code keeps its status line up for the whole reply,
+                         // below the text as it streams.
+                         Item {
+                             id: statusFooter
 
-                                 anchors.fill: parent
-                                 anchors.margins: Tokens.padding.medium
-                                 spacing: Tokens.spacing.small
-                                 
-                                 Row {
+                             readonly property bool shown: isThinking || (root.isClaudeCode && root.isTyping)
+                             readonly property real maxBubbleWidth: listView.width * 0.85
+                             readonly property real naturalWidth: footerCol.implicitWidth + Tokens.padding.medium * 2 + 8
+                             // Widest the bubble has been during this reply. The verb, the
+                             // counters and the thoughts all change width as they update;
+                             // only growing keeps the bubble from wobbling.
+                             property real stableWidth: 0
+
+                             onNaturalWidthChanged: if (shown) stableWidth = Math.max(stableWidth, naturalWidth)
+                             onShownChanged: stableWidth = shown ? naturalWidth : 0
+
+                             width: listView.width
+                             height: shown ? bubbleBg.height + Tokens.spacing.medium : 0
+                             visible: opacity > 0
+                             opacity: shown ? 1 : 0
+                             
+                             Behavior on height { Anim { type: Anim.DefaultSpatial } }
+                             Behavior on opacity { Anim { type: Anim.DefaultSpatial } }
+
+                             StyledRect {
+                                 id: bubbleBg
+
+                                 y: Tokens.spacing.medium / 2
+                                 width: Math.min(statusFooter.maxBubbleWidth, Math.max(statusFooter.stableWidth, statusFooter.naturalWidth))
+                                 height: footerCol.implicitHeight + Tokens.padding.medium * 2
+                                 radius: Tokens.rounding.large
+                                 color: Colours.tPalette.m3surfaceContainer
+
+                                 topLeftRadius: Tokens.rounding.large
+                                 topRightRadius: Tokens.rounding.large
+                                 bottomLeftRadius: 4
+                                 bottomRightRadius: Tokens.rounding.large
+
+                                 Column {
+                                     id: footerCol
+
+                                     anchors.fill: parent
+                                     anchors.margins: Tokens.padding.medium
                                      spacing: Tokens.spacing.small
                                      
-                                     LoadingIndicator {
-                                         visible: !root.isClaudeCode
-                                         width: 20
-                                         height: 20
-                                         color: Colours.palette.m3primary
-                                     }
-
-                                     // Claude Code: the CLI's twinkling star.
-                                     StyledText {
-                                         id: starGlyph
-
-                                         readonly property var frames: ["·", "✢", "✳", "✶", "✻", "✽", "✻", "✶", "✳", "✢"]
-                                         property int frame: 0
-
-                                         visible: root.isClaudeCode
-                                         // The frames come from different fallback fonts with
-                                         // different line heights; a fixed box keeps the row
-                                         // (and the bubble) from bouncing with every frame.
-                                         width: 20
-                                         height: 20
-                                         horizontalAlignment: Text.AlignHCenter
-                                         verticalAlignment: Text.AlignVCenter
-                                         anchors.verticalCenter: parent.verticalCenter
-                                         text: frames[frame]
-                                         color: root.claudeCodeToolRunning ? Colours.palette.m3tertiary : Colours.palette.m3primary
-                                         font.pointSize: Tokens.font.body.small.pointSize * 1.2
-                                         font.family: Tokens.font.body.small.family
-
-                                         Behavior on color { CAnim {} }
-
-                                         Timer {
-                                             interval: 120
-                                             repeat: true
-                                             running: starGlyph.visible && root.isTyping
-                                             onTriggered: starGlyph.frame = (starGlyph.frame + 1) % starGlyph.frames.length
-                                         }
-                                     }
-                                     
-                                     Item {
-                                         width: mainText.implicitWidth
-                                         height: mainText.implicitHeight
-
-                                         Behavior on width { NumberAnimation { duration: 300; easing.type: Easing.OutCubic } }
+                                     Row {
+                                         spacing: Tokens.spacing.small
                                          
+                                         LoadingIndicator {
+                                             visible: !root.isClaudeCode
+                                             width: 20
+                                             height: 20
+                                             color: Colours.palette.m3primary
+                                         }
+
+                                         // Claude Code: the CLI's twinkling star.
                                          StyledText {
-                                             id: mainText
+                                             id: starGlyph
 
-                                             text: displayedText
-                                             color: Colours.palette.m3onSurfaceVariant
-                                             font: Tokens.font.body.small
+                                             readonly property var frames: ["·", "✢", "✳", "✶", "✻", "✽", "✻", "✶", "✳", "✢"]
+                                             property int frame: 0
+
+                                             visible: root.isClaudeCode
+                                             // The frames come from different fallback fonts with
+                                             // different line heights; a fixed box keeps the row
+                                             // (and the bubble) from bouncing with every frame.
+                                             width: 20
+                                             height: 20
+                                             horizontalAlignment: Text.AlignHCenter
+                                             verticalAlignment: Text.AlignVCenter
+                                             anchors.verticalCenter: parent.verticalCenter
+                                             text: frames[frame]
+                                             color: root.claudeCodeToolRunning ? Colours.palette.m3tertiary : Colours.palette.m3primary
+                                             font.pointSize: Tokens.font.body.small.pointSize * 1.2
+                                             font.family: Tokens.font.body.small.family
+
+                                             Behavior on color { CAnim {} }
+
+                                             Timer {
+                                                 interval: 120
+                                                 repeat: true
+                                                 running: starGlyph.visible && root.isTyping
+                                                 onTriggered: starGlyph.frame = (starGlyph.frame + 1) % starGlyph.frames.length
+                                             }
+                                         }
+                                         
+                                         Item {
+                                             width: mainText.implicitWidth
+                                             height: mainText.implicitHeight
+
+                                             Behavior on width { NumberAnimation { duration: 300; easing.type: Easing.OutCubic } }
                                              
-                                             property string displayedText: root.currentActionText
+                                             StyledText {
+                                                 id: mainText
 
-                                             property string nextText: ""
+                                                 text: displayedText
+                                                 color: Colours.palette.m3onSurfaceVariant
+                                                 font: Tokens.font.body.small
+                                                 
+                                                 property string displayedText: root.currentActionText
 
-                                             transform: Translate { id: textTrans; y: 0 }
-                                             opacity: 1.0
+                                                 property string nextText: ""
 
-                                             Connections {
-                                                 target: root
+                                                 transform: Translate { id: textTrans; y: 0 }
+                                                 opacity: 1.0
 
-                                                 function onCurrentActionTextChanged() {
-                                                     if (root.currentActionText !== mainText.displayedText) {
-                                                         mainText.nextText = root.currentActionText;
-                                                         switchAnim.restart();
+                                                 Connections {
+                                                     target: root
+
+                                                     function onCurrentActionTextChanged() {
+                                                         if (root.currentActionText !== mainText.displayedText) {
+                                                             mainText.nextText = root.currentActionText;
+                                                             switchAnim.restart();
+                                                         }
                                                      }
                                                  }
-                                             }
 
-                                             SequentialAnimation {
-                                                 id: switchAnim
+                                                 SequentialAnimation {
+                                                     id: switchAnim
 
-                                                 ParallelAnimation {
-                                                     NumberAnimation { target: textTrans; property: "y"; to: -8; duration: 150; easing.type: Easing.InCubic }
-                                                     NumberAnimation { target: mainText; property: "opacity"; to: 0.0; duration: 150; easing.type: Easing.InCubic }
+                                                     ParallelAnimation {
+                                                         NumberAnimation { target: textTrans; property: "y"; to: -8; duration: 150; easing.type: Easing.InCubic }
+                                                         NumberAnimation { target: mainText; property: "opacity"; to: 0.0; duration: 150; easing.type: Easing.InCubic }
+                                                     }
+                                                     PropertyAction { target: mainText; property: "displayedText"; value: mainText.nextText }
+                                                     PropertyAction { target: textTrans; property: "y"; value: 8 }
+                                                     ParallelAnimation {
+                                                         NumberAnimation { target: textTrans; property: "y"; to: 0; duration: 400; easing.type: Easing.OutBack; easing.overshoot: 1.5 }
+                                                         NumberAnimation { target: mainText; property: "opacity"; to: 1.0; duration: 250; easing.type: Easing.OutQuad }
+                                                     }
                                                  }
-                                                 PropertyAction { target: mainText; property: "displayedText"; value: mainText.nextText }
-                                                 PropertyAction { target: textTrans; property: "y"; value: 8 }
-                                                 ParallelAnimation {
-                                                     NumberAnimation { target: textTrans; property: "y"; to: 0; duration: 400; easing.type: Easing.OutBack; easing.overshoot: 1.5 }
-                                                     NumberAnimation { target: mainText; property: "opacity"; to: 1.0; duration: 250; easing.type: Easing.OutQuad }
+
+                                                 SequentialAnimation {
+                                                     running: isThinking && !switchAnim.running
+                                                     loops: Animation.Infinite
+
+                                                     NumberAnimation { target: mainText; property: "opacity"; from: 1.0; to: 0.4; duration: 800; easing.type: Easing.InOutSine }
+                                                     NumberAnimation { target: mainText; property: "opacity"; from: 0.4; to: 1.0; duration: 800; easing.type: Easing.InOutSine }
                                                  }
                                              }
-
-                                             SequentialAnimation {
-                                                 running: isThinking && !switchAnim.running
-                                                 loops: Animation.Infinite
-
-                                                 NumberAnimation { target: mainText; property: "opacity"; from: 1.0; to: 0.4; duration: 800; easing.type: Easing.InOutSine }
-                                                 NumberAnimation { target: mainText; property: "opacity"; from: 0.4; to: 1.0; duration: 800; easing.type: Easing.InOutSine }
-                                             }
                                          }
-                                     }
-                                     
-                                     Item {
-                                         visible: root.currentThoughtText !== ""
-                                         width: Tokens.spacing.medium
-                                         height: 1
-                                     }
-                                     
-                                     Item {
-                                         visible: root.currentThoughtText !== ""
-                                         width: thoughtRowFooter.implicitWidth
-                                         height: thoughtRowFooter.implicitHeight
-
-                                         Row {
-                                             id: thoughtRowFooter
-
-                                             spacing: Tokens.spacing.small
-
-                                             MaterialIcon {
-                                                 text: "expand_more"
-                                                 color: Colours.palette.m3onSurfaceVariant
-                                                 font: Tokens.font.icon.small
-                                                 rotation: root.isThoughtExpanded ? 180 : 0
-
-                                                 Behavior on rotation { NumberAnimation { duration: 150; easing.type: Easing.OutQuad } }
-                                             }
-                                         }
-                                         MouseArea {
-                                             anchors.fill: parent
-                                             anchors.margins: -10
-                                             cursorShape: Qt.PointingHandCursor
-                                             onClicked: root.isThoughtExpanded = !root.isThoughtExpanded
-                                         }
-                                     }
-                                 }
-                                 // Claude Code: elapsed time and output tokens on their own line.
-                                 StyledText {
-                                     visible: root.isClaudeCode && root.isTyping
-                                     width: Math.min(implicitWidth, statusFooter.maxBubbleWidth - Tokens.padding.medium * 2 - 8)
-                                     leftPadding: 20 + Tokens.spacing.small
-                                     text: root.formatElapsed(root.claudeCodeElapsed)
-                                         + (root.claudeCodeOutTokens > 0 ? " · ↓ " + ClaudeCode.formatTokens(root.claudeCodeOutTokens) + " tokens" : "")
-                                     color: Colours.palette.m3outline
-                                     font.family: Tokens.font.mono.small.family
-                                     font.pointSize: Tokens.font.label.small.pointSize
-                                     elide: Text.ElideRight
-                                 }
-
-                                 Item {
-                                     id: footerThoughtContentWrapper
-
-                                     width: root.isThoughtExpanded ? footerThoughtContent.width : 0
-                                     height: root.isThoughtExpanded ? footerThoughtContent.implicitHeight : 0
-                                     clip: true
-                                     
-                                     Behavior on height { NumberAnimation { duration: 200; easing.type: Easing.InOutQuad } }
-
-                                     TextEdit {
-                                         id: footerThoughtContent
-
-                                         width: Math.min(implicitWidth, listView.width * 0.85 - Tokens.padding.medium * 2)
-                                         textFormat: Text.MarkdownText
-                                         text: root.currentThoughtText
-                                         color: Colours.palette.m3onSurfaceVariant
-                                         font: Tokens.font.body.small
-                                         wrapMode: Text.Wrap
-                                         readOnly: true
-                                         selectByMouse: true
-                                         selectionColor: Colours.palette.m3primary
-                                         selectedTextColor: Colours.palette.m3onPrimary
-                                         opacity: root.isThoughtExpanded ? 1.0 : 0.0
                                          
-                                         Behavior on opacity {
-                                             SequentialAnimation {
-                                                 PauseAnimation { duration: root.isThoughtExpanded ? 100 : 0 }
-                                                 NumberAnimation { duration: 150; easing.type: Easing.InOutQuad }
+                                         Item {
+                                             visible: root.currentThoughtText !== ""
+                                             width: Tokens.spacing.medium
+                                             height: 1
+                                         }
+                                         
+                                         Item {
+                                             visible: root.currentThoughtText !== ""
+                                             width: thoughtRowFooter.implicitWidth
+                                             height: thoughtRowFooter.implicitHeight
+
+                                             Row {
+                                                 id: thoughtRowFooter
+
+                                                 spacing: Tokens.spacing.small
+
+                                                 MaterialIcon {
+                                                     text: "expand_more"
+                                                     color: Colours.palette.m3onSurfaceVariant
+                                                     font: Tokens.font.icon.small
+                                                     rotation: root.isThoughtExpanded ? 180 : 0
+
+                                                     Behavior on rotation { NumberAnimation { duration: 150; easing.type: Easing.OutQuad } }
+                                                 }
+                                             }
+                                             MouseArea {
+                                                 anchors.fill: parent
+                                                 anchors.margins: -10
+                                                 cursorShape: Qt.PointingHandCursor
+                                                 onClicked: root.isThoughtExpanded = !root.isThoughtExpanded
+                                             }
+                                         }
+                                     }
+                                     // Claude Code: elapsed time and output tokens on their own line.
+                                     StyledText {
+                                         visible: root.isClaudeCode && root.isTyping
+                                         width: Math.min(implicitWidth, statusFooter.maxBubbleWidth - Tokens.padding.medium * 2 - 8)
+                                         leftPadding: 20 + Tokens.spacing.small
+                                         text: root.formatElapsed(root.claudeCodeElapsed)
+                                             + (root.claudeCodeOutTokens > 0 ? " · ↓ " + ClaudeCode.formatTokens(root.claudeCodeOutTokens) + " tokens" : "")
+                                         color: Colours.palette.m3outline
+                                         font.family: Tokens.font.mono.small.family
+                                         font.pointSize: Tokens.font.label.small.pointSize
+                                         elide: Text.ElideRight
+                                     }
+
+                                     Item {
+                                         id: footerThoughtContentWrapper
+
+                                         width: root.isThoughtExpanded ? footerThoughtContent.width : 0
+                                         height: root.isThoughtExpanded ? footerThoughtContent.implicitHeight : 0
+                                         clip: true
+                                         
+                                         Behavior on height { NumberAnimation { duration: 200; easing.type: Easing.InOutQuad } }
+
+                                         TextEdit {
+                                             id: footerThoughtContent
+
+                                             width: Math.min(implicitWidth, listView.width * 0.85 - Tokens.padding.medium * 2)
+                                             textFormat: Text.MarkdownText
+                                             text: root.currentThoughtText
+                                             color: Colours.palette.m3onSurfaceVariant
+                                             font: Tokens.font.body.small
+                                             wrapMode: Text.Wrap
+                                             readOnly: true
+                                             selectByMouse: true
+                                             selectionColor: Colours.palette.m3primary
+                                             selectedTextColor: Colours.palette.m3onPrimary
+                                             opacity: root.isThoughtExpanded ? 1.0 : 0.0
+                                             
+                                             Behavior on opacity {
+                                                 SequentialAnimation {
+                                                     PauseAnimation { duration: root.isThoughtExpanded ? 100 : 0 }
+                                                     NumberAnimation { duration: 150; easing.type: Easing.InOutQuad }
+                                                 }
                                              }
                                          }
                                      }
@@ -2568,11 +2596,63 @@ Item {
                              }
                          }
                      }
+                 }
 
-                     delegate: ChatMessage {
-                         width: listView.width - Tokens.padding.large
-                         thinking: root.isThinking
-                         onViewStateEdited: patch => chatStore.update(root.currentChatId, msgId, patch)
+                 ColumnLayout {
+                     anchors.centerIn: listView
+                     opacity: chatStore.messages.count === 0 && !isTyping && !isThinking ? 1.0 : 0.0
+                     visible: opacity > 0
+
+                     Behavior on opacity { NumberAnimation { duration: 250; easing.type: Easing.InOutQuad } }
+
+                     spacing: Tokens.spacing.large
+
+                     Item {
+                         Layout.alignment: Qt.AlignHCenter
+                         implicitWidth: 72
+                         implicitHeight: 72
+
+                         Logo {
+                             id: emptyStateLogo
+
+                             anchors.fill: parent
+                             visible: false
+                         }
+
+                         MultiEffect {
+                             anchors.fill: parent
+                             source: emptyStateLogo
+                             colorization: 1.0
+                             colorizationColor: Colours.palette.m3primary
+                         }
+                     }
+
+                     StyledText {
+                         id: greetingText
+                         Layout.alignment: Qt.AlignHCenter
+                         Layout.maximumWidth: listView.width - (Tokens.padding.large * 2)
+
+                         horizontalAlignment: Text.AlignHCenter
+                         wrapMode: Text.Wrap
+                         font: Tokens.font.title.medium
+                         color: Colours.palette.m3onSurfaceVariant
+
+                         property var phrases: [
+                             "Ask away, %1!",
+                             "How can I help you today, %1?",
+                             "What's on your mind, %1?",
+                             "Ready when you are, %1!",
+                             "Let's get started, %1.",
+                             "What shall we explore today, %1?",
+                             "I'm all ears, %1!"
+                         ]
+
+                         Component.onCompleted: {
+                             var user = Quickshell.env("USER") || "user";
+                             var userCapitalized = user.charAt(0).toUpperCase() + user.slice(1);
+                             var phrase = phrases[Math.floor(Math.random() * phrases.length)];
+                             text = phrase.replace("%1", userCapitalized);
+                         }
                      }
                  }
 
