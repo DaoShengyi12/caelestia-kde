@@ -22,6 +22,12 @@ Item {
             area.text = savedText;
     }
 
+    // The widget is unloaded when its page is far away; keep what was typed.
+    Component.onDestruction: {
+        if (saveTimer.running)
+            root.frame?.setConfig({ text: area.text });
+    }
+
     Timer {
         id: saveTimer
 

@@ -51,6 +51,12 @@ Item {
     readonly property int pageCount: storedPages + (extraPage ? 1 : 0)
     readonly property int totalCols: pageCount * cols
     property int currentPage: 0
+    // Pages the strip shows right now, two of them while it slides. Items on
+    // other pages are hidden, and large ones only keep their content near
+    // the current page.
+    readonly property real stripOffset: pageStride > 0 ? -pageStrip.x / pageStride : 0
+    readonly property int firstShownPage: Math.floor(stripOffset + 0.001)
+    readonly property int lastShownPage: Math.ceil(stripOffset - 0.001)
     readonly property var layout: {
         const out = {};
         for (const key in DesktopLayout.positions) {
@@ -1786,9 +1792,12 @@ wl-paste --no-newline --type text/uri-list`]
                     id: big
 
                     readonly property var pos: root.displayPositions[key] ?? root.layout[key] ?? null
+                    readonly property int page: root.pageOfCol(pos?.col ?? 0)
+                    readonly property bool shown: page >= root.firstShownPage && page <= root.lastShownPage
 
                     controller: root
-                    visible: pos !== null
+                    visible: pos !== null && shown
+                    live: shown || Math.abs(page - root.currentPage) <= 1
                     width: span.w * root.cellWidth
                     height: span.h * root.cellHeight
                     x: root.cellX(pos?.col ?? 0)
@@ -1846,12 +1855,13 @@ wl-paste --no-newline --type text/uri-list`]
                     required property string key
                     readonly property var pos: root.displayPositions[key] ?? root.layout[key] ?? null
                     readonly property bool cut: !isGroup && root.cutUris.indexOf(entry?.url) !== -1
+                    readonly property int page: root.pageOfCol(pos?.col ?? 0)
 
                     isGroup: root.isGroupKey(key)
                     entry: root.entryOf(key)
                     groupName: root.groupOf(key)?.name ?? ""
                     groupMembers: isGroup ? root.groupEntries(root.nameOf(key)) : []
-                    visible: pos !== null
+                    visible: pos !== null && page >= root.firstShownPage && page <= root.lastShownPage
                     width: root.cellWidth
                     height: root.cellHeight
                     x: root.cellX(pos?.col ?? 0)

@@ -26,6 +26,8 @@ Item {
     property bool focusVisible: false
     property bool dimmed: false
     property bool mergeTarget: false
+    // Off near pages the content is unloaded, so widgets stop polling.
+    property bool live: true
     readonly property bool hovered: hover.hovered
     readonly property bool resizing: grip.pressed
     readonly property alias content: loader.item
@@ -182,7 +184,7 @@ Item {
             anchors.fill: parent
             anchors.margins: root.isGroup ? Tokens.padding.small : Tokens.padding.large
             asynchronous: true
-            readonly property string wanted: root.info.source
+            readonly property string wanted: root.live ? root.info.source : ""
 
             function load(): void {
                 if (wanted !== "")
