@@ -241,17 +241,10 @@ Item {
                                 Anim {}
                             }
 
-                            Component.onCompleted: {
-                                const next = Object.assign({}, root.controller.tiles);
-                                next[tileKey] = tile;
-                                root.controller.tiles = next;
-                            }
+                            Component.onCompleted: root.controller.tiles[tileKey] = tile
                             Component.onDestruction: {
-                                if (root.controller.tiles[tileKey] === tile) {
-                                    const next = Object.assign({}, root.controller.tiles);
-                                    delete next[tileKey];
-                                    root.controller.tiles = next;
-                                }
+                                if (root.controller.tiles[tileKey] === tile)
+                                    delete root.controller.tiles[tileKey];
                                 root.controller.finishRename(tile);
                             }
 

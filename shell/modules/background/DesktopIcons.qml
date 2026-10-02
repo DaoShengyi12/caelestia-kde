@@ -90,7 +90,11 @@ Item {
     property string dragImageKey: ""
 
     property string openGroupId: ""
-    property var tiles: ({})
+    // Delegates by key. Only looked up, never bound to, so it is changed in
+    // place: copying it for every delegate made startup quadratic.
+    readonly property var tiles: ({})
+    // Desktop files arriving together are added to files in one go.
+    property var fileChanges: null
 
     // Renames that are in flight: old file name -> new file name, so the new
     // file keeps the old one's cell or group slot.
@@ -226,19 +230,37 @@ Item {
     // ---- Syncing files, groups and positions ------------------------------
 
     function registerFile(entry: var): void {
-        const next = Object.assign({}, files);
-        next[entry.fileName] = entry;
-        files = next;
-        Qt.callLater(syncEntries);
+        queueFile(entry.fileName, entry);
     }
 
     function unregisterFile(entry: var): void {
-        if (files[entry.fileName] !== entry)
+        const name = entry.fileName;
+        const known = fileChanges && name in fileChanges ? fileChanges[name] : files[name];
+        if (known === entry)
+            queueFile(name, null);
+    }
+
+    function queueFile(name: string, entry: var): void {
+        if (!fileChanges) {
+            fileChanges = {};
+            Qt.callLater(flushFiles);
+        }
+        fileChanges[name] = entry;
+    }
+
+    function flushFiles(): void {
+        if (!fileChanges)
             return;
         const next = Object.assign({}, files);
-        delete next[entry.fileName];
+        for (const name in fileChanges) {
+            if (fileChanges[name])
+                next[name] = fileChanges[name];
+            else
+                delete next[name];
+        }
+        fileChanges = null;
         files = next;
-        Qt.callLater(syncEntries);
+        syncEntries();
     }
 
     function describe(key: string): var {
@@ -1824,17 +1846,10 @@ wl-paste --no-newline --type text/uri-list`]
                         Anim {}
                     }
 
-                    Component.onCompleted: {
-                        const next = Object.assign({}, root.tiles);
-                        next[key] = big;
-                        root.tiles = next;
-                    }
+                    Component.onCompleted: root.tiles[key] = big
                     Component.onDestruction: {
-                        if (root.tiles[key] === big) {
-                            const next = Object.assign({}, root.tiles);
-                            delete next[key];
-                            root.tiles = next;
-                        }
+                        if (root.tiles[key] === big)
+                            delete root.tiles[key];
                         root.finishRename(big);
                     }
 
@@ -1884,17 +1899,10 @@ wl-paste --no-newline --type text/uri-list`]
                         Anim {}
                     }
 
-                    Component.onCompleted: {
-                        const next = Object.assign({}, root.tiles);
-                        next[key] = tile;
-                        root.tiles = next;
-                    }
+                    Component.onCompleted: root.tiles[key] = tile
                     Component.onDestruction: {
-                        if (root.tiles[key] === tile) {
-                            const next = Object.assign({}, root.tiles);
-                            delete next[key];
-                            root.tiles = next;
-                        }
+                        if (root.tiles[key] === tile)
+                            delete root.tiles[key];
                         root.finishRename(tile);
                     }
 
