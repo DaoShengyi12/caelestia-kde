@@ -17,6 +17,7 @@ import qs.components.filedialog
 import qs.services
 import qs.utils
 import "ai"
+import "ai/attachments.js" as AttachmentPaths
 import "ai/claudecode.js" as ClaudeCode
 
 Item {
@@ -244,63 +245,13 @@ Item {
         return text.split(home + "/").join("~/");
     }
 
-    // Files attached to the next message: [{ path, isImage }].
-    property var pendingAttachments: []
+    Attachments {
+        id: attachments
 
-    readonly property bool canSend: inputArea.text.length > 0 || pendingAttachments.length > 0
-
-    readonly property string attachmentDir: (Quickshell.env("XDG_CACHE_HOME") || ((Quickshell.env("HOME") || "") + "/.cache")) + "/caelestia/ai-attachments"
-
-    function isImagePath(p) {
-        return /\.(png|jpe?g|gif|webp|bmp)$/i.test(p || "");
+        onPasteText: inputArea.paste()
     }
 
-    function addAttachment(path) {
-        path = (path || "").trim();
-        if (path.indexOf("file://") === 0)
-            path = decodeURIComponent(path.substring(7));
-        if (path === "")
-            return;
-        for (var i = 0; i < pendingAttachments.length; i++)
-            if (pendingAttachments[i].path === path)
-                return;
-        pendingAttachments = pendingAttachments.concat([{ path: path, isImage: isImagePath(path) }]);
-    }
-
-    function removeAttachment(path) {
-        pendingAttachments = pendingAttachments.filter(a => a.path !== path);
-    }
-
-    // Save a clipboard image to the attachment cache and attach it; without an
-    // image on the clipboard this falls back to a normal text paste.
-    function pasteClipboardImage() {
-        var file = attachmentDir + "/paste-" + Date.now() + ".png";
-        var script = "t=$(wl-paste --list-types 2>/dev/null | grep -m1 '^image/') || exit 3; "
-            + "mkdir -p \"$1\" && wl-paste --no-newline --type \"$t\" > \"$2\" && echo \"$2\"";
-        var cmd = ["sh", "-c", script, "--", attachmentDir, file];
-        var qml =
-            "import QtQuick\n" +
-            "import Quickshell.Io\n" +
-            "Process {\n" +
-            "    id: pp\n" +
-            "    command: " + JSON.stringify(cmd) + "\n" +
-            "    stdout: StdioCollector { id: ppOut }\n" +
-            "    onExited: code => { root.onClipboardImageSaved(code, ppOut.text || \"\"); pp.destroy(); }\n" +
-            "}";
-        try {
-            var o = Qt.createQmlObject(qml, root, "pasteImageProc");
-            o.running = true;
-        } catch (e) {
-            Logger.log("[AI] paste process error: " + e.message);
-        }
-    }
-
-    function onClipboardImageSaved(code, out) {
-        if (code === 0 && out.trim() !== "")
-            addAttachment(out.trim());
-        else
-            inputArea.paste();
-    }
+    readonly property bool canSend: inputArea.text.length > 0 || attachments.pending.length > 0
 
     // Open the current Claude Code session in a terminal (`claude --resume`).
     function openClaudeCodeInTerminal() {
@@ -1270,7 +1221,7 @@ Item {
             "claudeCodeCwd": claudeCodeChatCwd,
             "claudeCodePermissionMode": claudeCodePermissionMode
         });
-        pendingAttachments = [];
+        attachments.take();
         isHistoryTab = false;
     }
 
@@ -1458,9 +1409,9 @@ Item {
     }
 
     function sendPrompt(promptText, isSystemToolResult = false, base64Image = null, toolName = "", isRetry = false) {
-        var attachments = (!isSystemToolResult && !isRetry && root.isClaudeCode) ? pendingAttachments.map(a => a.path) : [];
-        if (!promptText.trim() && !base64Image && attachments.length === 0) return;
-        pendingAttachments = [];
+        var attachmentPaths = (!isSystemToolResult && !isRetry && root.isClaudeCode) ? attachments.pending.map(a => a.path) : [];
+        if (!promptText.trim() && !base64Image && attachmentPaths.length === 0) return;
+        attachments.take();
 
         promptSuggestions = [];
 
@@ -1471,7 +1422,7 @@ Item {
             chatStore.append(currentChatId, {
                 "isUser": true,
                 "text": promptText || "",
-                "attachments": attachments.join("\n")
+                "attachments": attachmentPaths.join("\n")
             });
             listView.positionViewAtEnd();
             chatStore.persist();
@@ -1512,7 +1463,7 @@ Item {
         }
 
         if (root.isClaudeCode) {
-            root.sendClaudeCode(ClaudeCode.withAttachmentList(promptText, attachments), attachments);
+            root.sendClaudeCode(ClaudeCode.withAttachmentList(promptText, attachmentPaths), attachmentPaths);
             return;
         }
 
@@ -3094,7 +3045,7 @@ Item {
                                          spacing: Tokens.spacing.small
 
                                          MaterialIcon {
-                                             text: root.isImagePath(parent.modelData) ? "image" : "attach_file"
+                                             text: AttachmentPaths.isImagePath(parent.modelData) ? "image" : "attach_file"
                                              color: delegateItem.isUser ? Colours.palette.m3onPrimary : Colours.palette.m3onSurfaceVariant
                                              font: Tokens.font.icon.small
                                          }
@@ -3260,10 +3211,10 @@ Item {
                      anchors.right: parent.right
                      z: 10
                      spacing: Tokens.spacing.small
-                     visible: root.isClaudeCode && root.pendingAttachments.length > 0
+                     visible: root.isClaudeCode && attachments.pending.length > 0
 
                      Repeater {
-                         model: root.pendingAttachments
+                         model: attachments.pending
 
                          StyledRect {
                              id: attachChip
@@ -3312,7 +3263,7 @@ Item {
                                      MouseArea {
                                          anchors.fill: parent
                                          cursorShape: Qt.PointingHandCursor
-                                         onClicked: root.removeAttachment(attachChip.modelData.path)
+                                         onClicked: attachments.remove(attachChip.modelData.path)
                                      }
                                  }
                              }
@@ -3324,7 +3275,7 @@ Item {
                      id: attachDialog
 
                      title: qsTr("Attach a file")
-                     onAccepted: path => root.addAttachment(path)
+                     onAccepted: path => attachments.add(path)
                  }
 
                  StyledRect {
@@ -3377,7 +3328,7 @@ Item {
                              if (!drop.hasUrls)
                                  return;
                              for (var i = 0; i < drop.urls.length; i++)
-                                 root.addAttachment(drop.urls[i].toString());
+                                 attachments.add(drop.urls[i].toString());
                              drop.acceptProposedAction();
                          }
                      }
@@ -3428,7 +3379,7 @@ Item {
                                          // An image on the clipboard becomes an attachment;
                                          // anything else is pasted as text as usual.
                                          event.accepted = true;
-                                         root.pasteClipboardImage();
+                                         attachments.pasteImage();
                                      }
                                  }
                              }
@@ -3505,7 +3456,7 @@ Item {
                                              if (root.activeReply)
                                                  chatStore.update(root.activeReply.chatId, root.activeReply.msgId, { "isFinished": true });
                                              chatStore.persist();
-                                         } else if (inputArea.text.length > 0 || root.pendingAttachments.length > 0) {
+                                         } else if (root.canSend) {
                                              root.sendPrompt(inputArea.text);
                                              inputArea.clear();
                                          }
