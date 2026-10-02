@@ -16,60 +16,29 @@ import qs.components.effects
 import qs.components.filedialog
 import qs.services
 import qs.utils
+import "ai"
 
 Item {
     id: root
 
-    ListModel { id: chatHistory }
-    ListModel { id: historySessionsModel }
+    ChatStore {
+        id: chatStore
+
+        onTitleNeeded: (chatId, firstMessage) => root.generateChatTitleAsync(chatId, firstMessage)
+    }
 
     property bool isHistoryTab: false
 
-    property string currentChatId: ""
+    readonly property string currentChatId: chatStore.currentChatId
 
     property var currentRequest: null
-    
 
-    Timer {
-        id: typingTimer
+    // The reply the current request writes to: { chatId, msgId }.
+    property var activeReply: null
 
-        interval: 16
-        repeat: true
+    // Replying, or running the tools of a reply; the sidebar stays loaded meanwhile.
+    readonly property bool busy: isTyping || inAgentLoop
 
-        property string fullText: ""
-
-        property string currentText: ""
-
-        property int charIndex: 0
-
-        property int targetIdx: -1
-        
-        onTriggered: {
-            if (targetIdx < 0 || targetIdx >= chatHistory.count) {
-                stop();
-                isTyping = false;
-                isThinking = false;
-                inAgentLoop = false;
-                return;
-            }
-            if (charIndex >= fullText.length) {
-                stop();
-                chatHistory.setProperty(targetIdx, "text", fullText);
-                chatHistory.setProperty(targetIdx, "isFinished", true);
-                saveHistory();
-                isTyping = false;
-                isThinking = false;
-                inAgentLoop = false;
-                return;
-            }
-            var chunkSize = Math.max(1, Math.ceil(fullText.length / 30));
-            currentText += fullText.substr(charIndex, chunkSize);
-            charIndex += chunkSize;
-            chatHistory.setProperty(targetIdx, "text", currentText);
-            listView.positionViewAtEnd();
-        }
-    }
-    
     property real savedContentY: -1
 
     onProviderChanged: {
@@ -89,16 +58,6 @@ Item {
         } else {
             savedContentY = listView.contentY;
         }
-    }
-
-    function startTypingAnimation(text) {
-        isThinking = false;
-        typingTimer.targetIdx = chatHistory.count - 1;
-        typingTimer.fullText = text;
-        typingTimer.currentText = "";
-        typingTimer.charIndex = 0;
-        typingTimer.start();
-        listView.positionViewAtEnd();
     }
 
     // Ask every enabled provider what it offers, rather than shipping lists that
@@ -125,20 +84,17 @@ Item {
         Logger.log("[AI] Network error fetching models from " + (provider || "unknown"));
     }
 
-    function handleSendError() {
+    function handleSendError(reply) {
         isTyping = false;
         isThinking = false;
         inAgentLoop = false;
         currentActionText = "";
-        for (var ei = chatHistory.count - 1; ei >= 0; ei--) {
-            var em = chatHistory.get(ei);
-            if (!em.isUser && !em.isFinished) {
-                chatHistory.setProperty(ei, "isFinished", true);
-                if (!em.text)
-                    chatHistory.setProperty(ei, "text",
-                        "⚠️ Network error - check your connection and try again.");
-                break;
-            }
+        const m = chatStore.message(reply.chatId, reply.msgId);
+        if (m && !m.isFinished) {
+            chatStore.update(reply.chatId, reply.msgId, {
+                "isFinished": true,
+                "text": m.text || "⚠️ Network error - check your connection and try again."
+            });
         }
     }
 
@@ -288,16 +244,14 @@ Item {
 
     readonly property bool isClaudeCode: provider === "claude-code"
 
-    property var claudeCodeSessions: ({})
-
     property var currentClaudeCodeProc: null
 
     // Working directory and permission mode of the current Claude Code chat. Both are
     // stored per chat (a CLI session only resumes from the directory it was created
     // in); a new chat inherits whatever was selected last.
-    property string claudeCodeChatCwd: Quickshell.env("HOME") || "."
+    readonly property string claudeCodeChatCwd: chatStore.currentProp("claudeCodeCwd") || Quickshell.env("HOME") || "."
 
-    property string claudeCodePermissionMode: defaultClaudeCodePermissionMode()
+    readonly property string claudeCodePermissionMode: chatStore.currentProp("claudeCodePermissionMode") || defaultClaudeCodePermissionMode()
 
     // Bypass is only offered once it has been allowed in the AI settings.
     readonly property var claudeCodePermissionModes: GlobalConfig.ai.claudeCodeSkipPermissions
@@ -330,38 +284,17 @@ Item {
         return mode;
     }
 
-    function sessionEntry(chatId) {
-        for (var i = 0; i < allChatSessions.length; i++)
-            if (allChatSessions[i].id === chatId)
-                return allChatSessions[i];
-        return null;
-    }
-
     function setClaudeCodeCwd(dir) {
         dir = (dir || "").replace(/\/+$/, "") || "/";
         if (dir === claudeCodeChatCwd)
             return;
-        claudeCodeChatCwd = dir;
         // The old session lives under the previous directory's project, so --resume
         // would fail; the next send seeds a fresh session with the transcript instead.
-        delete claudeCodeSessions[currentChatId];
-        var s = sessionEntry(currentChatId);
-        if (s) {
-            s.claudeCodeSessionId = "";
-            s.claudeCodeCwd = dir;
-            if (GlobalConfig.ai.saveChatHistory)
-                GlobalConfig.ai.ollamaHistoryJson = JSON.stringify(allChatSessions);
-        }
+        chatStore.setChatProps(currentChatId, { "claudeCodeCwd": dir, "claudeCodeSessionId": "" });
     }
 
     function setClaudeCodePermissionMode(mode) {
-        claudeCodePermissionMode = mode;
-        var s = sessionEntry(currentChatId);
-        if (s) {
-            s.claudeCodePermissionMode = mode;
-            if (GlobalConfig.ai.saveChatHistory)
-                GlobalConfig.ai.ollamaHistoryJson = JSON.stringify(allChatSessions);
-        }
+        chatStore.setChatProps(currentChatId, { "claudeCodePermissionMode": mode });
     }
 
     // A file dialog is open (keeps the sidebar loaded, see Content.aiBusy).
@@ -611,8 +544,9 @@ Item {
         promptSuggestions = [];
 
         var lines = [];
-        for (var li = 0; li < chatHistory.count; li++) {
-            var lm = chatHistory.get(li);
+        var msgs = chatStore.current().messages;
+        for (var li = 0; li < msgs.length; li++) {
+            var lm = msgs[li];
             if (!lm.isUser && !lm.isFinished)
                 continue;
             var lt = (lm.text || "").trim();
@@ -684,32 +618,20 @@ Item {
         }
     }
 
+    // The CLI session a chat resumes, if it was started with the active account.
     function claudeCodeSessionFor(chatId) {
-        var active = GlobalConfig.ai.activeClaudeAccount || "";
-        var c = claudeCodeSessions[chatId];
-        if (c && c.acc === active)
-            return c.sid;
-        for (var i = 0; i < allChatSessions.length; i++)
-            if (allChatSessions[i].id === chatId) {
-                if ((allChatSessions[i].claudeCodeSessionAccount || "") === active)
-                    return allChatSessions[i].claudeCodeSessionId || "";
-                return "";
-            }
-        return "";
+        var s = chatStore.session(chatId);
+        if (!s || (s.claudeCodeSessionAccount || "") !== (GlobalConfig.ai.activeClaudeAccount || ""))
+            return "";
+        return s.claudeCodeSessionId || "";
     }
 
     function setClaudeCodeSession(chatId, sid) {
-        if (!sid)
-            return;
-        var active = GlobalConfig.ai.activeClaudeAccount || "";
-        claudeCodeSessions[chatId] = { sid: sid, acc: active };
-        for (var i = 0; i < allChatSessions.length; i++) {
-            if (allChatSessions[i].id === chatId) {
-                allChatSessions[i].claudeCodeSessionId = sid;
-                allChatSessions[i].claudeCodeSessionAccount = active;
-                break;
-            }
-        }
+        if (sid)
+            chatStore.setChatProps(chatId, {
+                "claudeCodeSessionId": sid,
+                "claudeCodeSessionAccount": GlobalConfig.ai.activeClaudeAccount || ""
+            });
     }
 
     function withAttachmentList(text, paths) {
@@ -722,8 +644,9 @@ Item {
     function claudeCodeTranscript() {
         var lines = [];
         var count = 0;
-        for (var i = 0; i < chatHistory.count; i++) {
-            var m = chatHistory.get(i);
+        var msgs = chatStore.current().messages;
+        for (var i = 0; i < msgs.length; i++) {
+            var m = msgs[i];
             if (!m.isUser && !m.isFinished)
                 continue;
             var t = (m.text || "").trim();
@@ -1361,21 +1284,7 @@ Item {
         claudeCodeOutTokens = 0;
         claudeCodeToolRunning = false;
         currentActionText = randomThinkingVerb();
-        for (var i = chatHistory.count - 1; i >= 0; i--) {
-            var m = chatHistory.get(i);
-            if (!m.isUser && !m.isFinished && m.text === "" && (m.toolsJson || "") === "")
-                chatHistory.remove(i);
-        }
-        chatHistory.append({
-            "isUser": false,
-            "text": "",
-            "isFinished": false,
-            "thoughtText": "",
-            "toolsJson": "",
-            "usageText": "",
-            "attachments": ""
-        });
-        listView.positionViewAtEnd();
+        const reply = startReply();
 
         var bin = claudeCodeBinPath();
         var sid = claudeCodeSessionFor(currentChatId);
@@ -1434,8 +1343,8 @@ Item {
             "    command: " + commandStr + "\n" +
             "    workingDirectory: " + cwdStr + "\n" +
             claudeCodeEnvSnippet() +
-            "    property string chatId: " + JSON.stringify(currentChatId) + "\n" +
-            "    property int idx: " + (chatHistory.count - 1) + "\n" +
+            "    property string chatId: " + JSON.stringify(reply.chatId) + "\n" +
+            "    property string msgId: " + JSON.stringify(reply.msgId) + "\n" +
             "    property string acc: \"\"\n" +
             "    property string thought: \"\"\n" +
             "    property string sess: \"\"\n" +
@@ -1460,21 +1369,22 @@ Item {
             obj.running = true;
         } catch (e) {
             console.error("CLAUDE CODE PROCESS ERROR: " + e.message);
-            chatHistory.setProperty(chatHistory.count - 1, "text", "⚠️ Failed to launch Claude Code: " + e.message);
-            chatHistory.setProperty(chatHistory.count - 1, "isFinished", true);
+            chatStore.update(reply.chatId, reply.msgId, {
+                "text": "⚠️ Failed to launch Claude Code: " + e.message,
+                "isFinished": true
+            });
             isTyping = false;
             isThinking = false;
             inAgentLoop = false;
-            saveHistory();
+            chatStore.persist();
         }
     }
 
-    // Write to the bubble this process streams into, unless the user has since
-    // switched to another chat.
+    // Write to the message this process streams into, in whichever chat it is.
     function setClaudeCodeBubble(proc, role, value) {
-        if (proc.chatId !== currentChatId || proc.idx < 0 || proc.idx >= chatHistory.count)
-            return;
-        chatHistory.setProperty(proc.idx, role, value);
+        var patch = {};
+        patch[role] = value;
+        chatStore.update(proc.chatId, proc.msgId, patch);
     }
 
     function updateClaudeCodeTools(proc) {
@@ -1664,10 +1574,8 @@ Item {
             // turn, so a later result only updates the usage line.
             if (proc.done) {
                 proc.usage = usageSummary(proc.resultUsage);
-                if (proc.chatId === currentChatId) {
-                    setClaudeCodeBubble(proc, "usageText", proc.usage);
-                    saveHistory();
-                }
+                setClaudeCodeBubble(proc, "usageText", proc.usage);
+                chatStore.persist();
                 return;
             }
             // With a backgrounded subagent still running, the CLI starts another
@@ -1778,31 +1686,21 @@ Item {
             finalText = proc.stopped ? qsTr("(stopped)") : "(no output)";
         if (proc.sess !== "")
             setClaudeCodeSession(proc.chatId, proc.sess);
+        chatStore.update(proc.chatId, proc.msgId, {
+            "text": finalText,
+            "toolsJson": proc.tools.length > 0 ? JSON.stringify(proc.tools) : "",
+            "usageText": proc.usage,
+            "isFinished": true
+        });
+        chatStore.persist();
         if (proc.chatId === currentChatId) {
-            setClaudeCodeBubble(proc, "text", finalText);
-            setClaudeCodeBubble(proc, "toolsJson", proc.tools.length > 0 ? JSON.stringify(proc.tools) : "");
-            setClaudeCodeBubble(proc, "usageText", proc.usage);
-            setClaudeCodeBubble(proc, "isFinished", true);
             isTyping = false;
             isThinking = false;
             inAgentLoop = false;
             claudeCodeToolRunning = false;
             claudeCodeStartedAt = 0;
             currentActionText = "Thinking...";
-            saveHistory();
             listView.positionViewAtEnd();
-        } else {
-            // The user moved to another chat meanwhile: store the finished reply
-            // straight into that chat's saved history.
-            var s = sessionEntry(proc.chatId);
-            if (s && s.messages && proc.idx < s.messages.length) {
-                var msg = s.messages[proc.idx];
-                msg.text = finalText;
-                msg.toolsJson = proc.tools.length > 0 ? JSON.stringify(proc.tools) : "";
-                msg.usageText = proc.usage;
-                msg.isFinished = true;
-                GlobalConfig.ai.ollamaHistoryJson = JSON.stringify(allChatSessions);
-            }
         }
     }
 
@@ -1923,194 +1821,75 @@ Item {
         xhr.send();
     }
 
-    property var allChatSessions: []
-
-    // Set while a saved chat is being put back into the list (no pop-in animation).
-    property bool loadingChat: false
-
     function createNewChat() {
-        cancelRateLimitRetry();
-        typingTimer.stop();
-        stopClaudeCode();
-        isTyping = false;
-        isThinking = false;
-        inAgentLoop = false;
-        currentChatId = "chat_" + Date.now();
-        chatHistory.clear();
+        stopReply();
+        chatStore.newChat({
+            "claudeCodeCwd": claudeCodeChatCwd,
+            "claudeCodePermissionMode": claudeCodePermissionMode
+        });
         pendingAttachments = [];
         isHistoryTab = false;
     }
 
     function loadChat(id) {
-        cancelRateLimitRetry();
-        typingTimer.stop();
-        stopClaudeCode();
-        isTyping = false;
-        isThinking = false;
-        inAgentLoop = false;
-        currentChatId = id;
-        chatHistory.clear();
-        loadingChat = true;
-        var found = false;
-        for (var i = 0; i < allChatSessions.length; i++) {
-            if (allChatSessions[i].id === id) {
-                var msgs = allChatSessions[i].messages;
-                for (var j = 0; j < msgs.length; j++) {
-                    chatHistory.append({
-                        "isUser": msgs[j].isUser === true,
-                        "text": msgs[j].text || "",
-                        "isFinished": msgs[j].isFinished !== false,
-                        "thoughtText": msgs[j].thoughtText || "",
-                        "toolsJson": msgs[j].toolsJson || "",
-                        "usageText": msgs[j].usageText || "",
-                        "attachments": msgs[j].attachments || ""
-                    });
-                }
-                claudeCodeChatCwd = allChatSessions[i].claudeCodeCwd || Quickshell.env("HOME") || ".";
-                claudeCodePermissionMode = allChatSessions[i].claudeCodePermissionMode || defaultClaudeCodePermissionMode();
-                found = true;
-                break;
-            }
-        }
-        if (!found) createNewChat();
-        Qt.callLater(function() { root.loadingChat = false; });
+        stopReply();
+        if (!chatStore.open(id))
+            createNewChat();
         savedContentY = -1;
         Qt.callLater(function() { listView.positionViewAtEnd(); });
         isHistoryTab = false;
     }
 
     function loadHistory() {
-        allChatSessions = [];
-        var jsonStr = GlobalConfig.ai.ollamaHistoryJson;
-        if (jsonStr) {
-            try {
-                var parsed = JSON.parse(jsonStr);
-                if (Array.isArray(parsed)) {
-                    allChatSessions = parsed.filter(s => s !== null && s.id);
-                }
-            } catch (e) {}
-        }
-
-        historySessionsModel.clear();
-        for (var i = 0; i < allChatSessions.length; i++) {
-            historySessionsModel.append({
-                "id": allChatSessions[i].id || ("chat_" + Date.now()),
-                "title": allChatSessions[i].title || "Chat"
-            });
-        }
-
-        if (allChatSessions.length > 0) {
-            loadChat(allChatSessions[0].id);
-        } else {
+        chatStore.load();
+        if (chatStore.sessions.length > 0)
+            loadChat(chatStore.sessions[0].id);
+        else
             createNewChat();
-        }
     }
 
-    function saveHistory() {
-        if (!GlobalConfig.ai.saveChatHistory)
-            return;
-        var msgs = [];
-        for (var i = 0; i < chatHistory.count; i++) {
-            var msg = chatHistory.get(i);
-            msgs.push({
-                "isUser": msg.isUser === true,
-                "text": msg.text || "",
-                "isFinished": msg.isFinished !== false,
-                "thoughtText": msg.thoughtText || "",
-                "toolsJson": msg.toolsJson || "",
-                "usageText": msg.usageText || "",
-                "attachments": msg.attachments || ""
-            });
+    // Ends whatever the current chat is waiting for: an API request, a rate
+    // limit retry or a Claude Code process.
+    function stopReply() {
+        cancelRateLimitRetry();
+        if (currentRequest) {
+            const xhr = currentRequest;
+            currentRequest = null;
+            xhr.abort();
         }
-        
-        if (msgs.length === 0) return;
-        
-        var found = false;
-        for (var j = 0; j < allChatSessions.length; j++) {
-            if (allChatSessions[j].id === currentChatId) {
-                allChatSessions[j].messages = msgs;
-                allChatSessions[j].claudeCodeCwd = claudeCodeChatCwd;
-                allChatSessions[j].claudeCodePermissionMode = claudeCodePermissionMode;
-                
-                var firstUser = null;
-                for (var k = 0; k < msgs.length; k++) {
-                    if (msgs[k].isUser) { firstUser = msgs[k]; break; }
-                }
-                if (msgs.length > 1 && (allChatSessions[j].title === "Legacy Chat" || allChatSessions[j].title === "New Chat" || allChatSessions[j].title.indexOf("New Chat") === 0 || !allChatSessions[j].title)) {
-                    if (firstUser) {
-                        generateChatTitleAsync(currentChatId, firstUser.text);
-                    }
-                }
-                found = true;
-                break;
-            }
-        }
-        
-        if (!found) {
-            var firstUserMsg = null;
-            for (var m = 0; m < msgs.length; m++) {
-                if (msgs[m].isUser) { firstUserMsg = msgs[m]; break; }
-            }
-            
-            var initialTitle = "New Chat";
-            
-            allChatSessions.unshift({
-                "id": currentChatId || ("chat_" + Date.now()),
-                "title": initialTitle,
-                "messages": msgs,
-                "claudeCodeCwd": claudeCodeChatCwd,
-                "claudeCodePermissionMode": claudeCodePermissionMode
-            });
-            
-            historySessionsModel.insert(0, {
-                "id": currentChatId || ("chat_" + Date.now()),
-                "title": initialTitle
-            });
-            
-            if (firstUserMsg) {
-                generateChatTitleAsync(currentChatId, firstUserMsg.text);
-            }
-        }
-        
-        GlobalConfig.ai.ollamaHistoryJson = JSON.stringify(allChatSessions);
+        stopClaudeCode();
+        isTyping = false;
+        isThinking = false;
+        inAgentLoop = false;
+    }
+
+    // Starts an empty reply in the current chat for a request to write to.
+    function startReply() {
+        const msgs = chatStore.current().messages;
+        const empty = msgs.filter(m => !m.isUser && !m.isFinished && m.text === "" && m.toolsJson === "");
+        for (var i = 0; i < empty.length; i++)
+            chatStore.remove(currentChatId, empty[i].msgId);
+        activeReply = {
+            "chatId": currentChatId,
+            "msgId": chatStore.append(currentChatId, { "isFinished": false })
+        };
+        listView.positionViewAtEnd();
+        return activeReply;
     }
 
     function deleteChat(id) {
         cancelRateLimitRetry();
-        var idx = -1;
-        for (var i = 0; i < allChatSessions.length; i++) {
-            if (allChatSessions[i].id === id) {
-                idx = i;
-                break;
-            }
-        }
-        if (idx !== -1) {
-            allChatSessions.splice(idx, 1);
-            for (var j = 0; j < historySessionsModel.count; j++) {
-                if (historySessionsModel.get(j).id === id) {
-                    historySessionsModel.remove(j);
-                    break;
-                }
-            }
-            
-            GlobalConfig.ai.ollamaHistoryJson = JSON.stringify(allChatSessions);
-
-            if (currentChatId === id) {
-                chatHistory.clear();
-                if (allChatSessions.length > 0) {
-                    loadChat(allChatSessions[0].id);
-                } else {
-                    createNewChat();
-                }
-            }
-        }
+        if (!chatStore.removeChats([id]))
+            return;
+        if (chatStore.sessions.length > 0)
+            loadChat(chatStore.sessions[0].id);
+        else
+            createNewChat();
     }
 
     function clearAllHistory() {
         cancelRateLimitRetry();
-        allChatSessions = [];
-        historySessionsModel.clear();
-        GlobalConfig.ai.ollamaHistoryJson = "[]";
+        chatStore.removeChats(chatStore.sessions.map(s => s.id));
         createNewChat();
     }
 
@@ -2225,46 +2004,14 @@ Item {
     }
 
     function updateChatTitle(chatId, title) {
-        if (!title || !chatId) return;
-        
-        for (var i = 0; i < allChatSessions.length; i++) {
-            if (allChatSessions[i].id === chatId) {
-                allChatSessions[i].title = title;
-                
-                var inModel = false;
-                for (var j = 0; j < historySessionsModel.count; j++) {
-                    if (historySessionsModel.get(j).id === chatId) {
-                        historySessionsModel.setProperty(j, "title", title);
-                        inModel = true;
-                        break;
-                    }
-                }
-                
-                if (!inModel) {
-                    historySessionsModel.insert(0, {
-                        "id": chatId || "",
-                        "title": title || "New Chat"
-                    });
-                }
-                
-                GlobalConfig.ai.ollamaHistoryJson = JSON.stringify(allChatSessions);
-                break;
-            }
-        }
+        if (title && chatId)
+            chatStore.setTitle(chatId, title);
     }
 
     function addAiMessage(message) {
-        chatHistory.append({
-            "isUser": false,
-            "text": message || "",
-            "isFinished": true,
-            "thoughtText": "",
-            "toolsJson": "",
-            "usageText": "",
-            "attachments": ""
-        });
+        chatStore.append(currentChatId, { "text": message || "" });
         listView.positionViewAtEnd();
-        saveHistory();
+        chatStore.persist();
     }
 
     function sendPrompt(promptText, isSystemToolResult = false, base64Image = null, toolName = "", isRetry = false) {
@@ -2278,17 +2025,13 @@ Item {
             cancelRateLimitRetry();
 
         if (!isSystemToolResult && !isRetry) {
-            chatHistory.append({
+            chatStore.append(currentChatId, {
                 "isUser": true,
                 "text": promptText || "",
-                "isFinished": true,
-                "thoughtText": "",
-                "toolsJson": "",
-                "usageText": "",
                 "attachments": attachments.join("\n")
             });
             listView.positionViewAtEnd();
-            saveHistory();
+            chatStore.persist();
         }
 
         if (root.needsApiKey && root.getApiKey() === "") {
@@ -2363,27 +2106,10 @@ Item {
         var accumulatedContentText = "";
         var rawAccumulatedContentText = "";
         var finalToolCalls = null;
-        
-        for (var i = chatHistory.count - 1; i >= 0; i--) {
-            var m = chatHistory.get(i);
-            if (!m.isUser && !m.isFinished && m.text === "") {
-                chatHistory.remove(i);
-            }
-        }
-        
-        chatHistory.append({
-            "isUser": false,
-            "text": "",
-            "isFinished": false,
-            "thoughtText": "",
-            "toolsJson": "",
-            "usageText": "",
-            "attachments": ""
-        });
-        
-        listView.positionViewAtEnd();
-        
-        xhr.onerror = () => { root.handleSendError(); };
+
+        const reply = startReply();
+
+        xhr.onerror = () => { root.handleSendError(reply); };
         xhr.onreadystatechange = () => {
             if (xhr.readyState === 3 || xhr.readyState === XMLHttpRequest.DONE) {
                 if (xhr.status === 200) {
@@ -2500,17 +2226,21 @@ Item {
                             if (isThinking) isThinking = false;
                         }
 
-                        chatHistory.setProperty(chatHistory.count - 1, "thoughtText", displayThought.trim());
-                        chatHistory.setProperty(chatHistory.count - 1, "text", displayContent.trim());
+                        chatStore.update(reply.chatId, reply.msgId, {
+                            "thoughtText": displayThought.trim(),
+                            "text": displayContent.trim()
+                        });
                         listView.positionViewAtEnd();
                     }
                 }
                 
                 if (xhr.readyState === XMLHttpRequest.DONE) {
+                    if (root.currentRequest === xhr)
+                        root.currentRequest = null;
                     if (xhr.status === 200) {
-                            root.rateLimitRetries = 0;
-                    chatHistory.setProperty(chatHistory.count - 1, "isFinished", true);
-                        saveHistory();
+                        root.rateLimitRetries = 0;
+                        chatStore.update(reply.chatId, reply.msgId, { "isFinished": true });
+                        chatStore.persist();
                         
                         var enableTools = GlobalConfig.ai.enableCelestialMode;
                         var textToolCalls = enableTools ? parseTextToolCalls(rawAccumulatedContentText) : [];
@@ -2645,17 +2375,15 @@ Item {
                         else if (root.needsApiKey && (xhr.status === 401 || xhr.status === 403))
                             hint = " Check your API key.";
                         var errMsg = (xhr.status === 0) ? "Generation canceled" : (providerName + " request failed (status " + xhr.status + ")." + hint + apiDetail);
-                        var currentText = chatHistory.get(chatHistory.count - 1).text;
-                        if (currentText.trim() === "") {
-                            chatHistory.setProperty(chatHistory.count - 1, "text", errMsg);
-                        } else {
-                            chatHistory.setProperty(chatHistory.count - 1, "text", currentText + "\n\n*[" + errMsg + "]*");
-                        }
-                        chatHistory.setProperty(chatHistory.count - 1, "isFinished", true);
+                        var currentText = (chatStore.message(reply.chatId, reply.msgId) || {}).text || "";
+                        chatStore.update(reply.chatId, reply.msgId, {
+                            "text": currentText.trim() === "" ? errMsg : currentText + "\n\n*[" + errMsg + "]*",
+                            "isFinished": true
+                        });
                         isTyping = false;
                         isThinking = false;
                         inAgentLoop = false;
-                        saveHistory();
+                        chatStore.persist();
                     }
                 }
             }
@@ -2670,8 +2398,9 @@ Item {
         var requestBody;
         if (useAnthropic) {
             var claudeMessages = [];
-            for (var i = 0; i < chatHistory.count; i++) {
-                var msg = chatHistory.get(i);
+            var history = chatStore.session(reply.chatId).messages;
+            for (var i = 0; i < history.length; i++) {
+                var msg = history[i];
                 if (!msg.isUser && !msg.isFinished && (msg.text || "") === "")
                     continue;
                 if ((msg.text || "") === "")
@@ -2709,8 +2438,9 @@ Item {
                 "content": sysPrompt
             });
 
-            for (var j = 0; j < chatHistory.count; j++) {
-                var m = chatHistory.get(j);
+            var chatMsgs = chatStore.session(reply.chatId).messages;
+            for (var j = 0; j < chatMsgs.length; j++) {
+                var m = chatMsgs[j];
                 messages.push({
                     "role": m.isUser ? "user" : "assistant",
                     "content": m.text || ""
@@ -3162,7 +2892,7 @@ Item {
                      anchors.right: parent.right
                      anchors.bottomMargin: Tokens.spacing.medium
                      spacing: Tokens.spacing.medium
-                     model: chatHistory
+                     model: chatStore.messages
                      boundsBehavior: Flickable.StopAtBounds
                      // Keep off-screen messages alive. Recreating them while dragging the
                      // scrollbar re-measures them, so the content height (and with it the
@@ -3171,7 +2901,7 @@ Item {
                      
                      ColumnLayout {
                          anchors.centerIn: parent
-                         opacity: chatHistory.count === 0 && !isTyping && !isThinking ? 1.0 : 0.0
+                         opacity: chatStore.messages.count === 0 && !isTyping && !isThinking ? 1.0 : 0.0
                          visible: opacity > 0
 
                          Behavior on opacity { NumberAnimation { duration: 250; easing.type: Easing.InOutQuad } }
@@ -3511,14 +3241,16 @@ Item {
                          scale: 0.0
                          opacity: 0.0
                          
-                         required property int index
+                         required property string msgId
+                         required property bool isNew
 
-                         // Only a message that was just added pops in; one being created
-                         // again as it scrolls into view appears as is.
+                         // Only a message that was just added pops in, once; one being
+                         // created again as it scrolls into view appears as is.
                          Component.onCompleted: {
-                             if (index === chatHistory.count - 1 && !root.loadingChat)
+                             if (isNew) {
                                  popInAnim.start();
-                             else {
+                                 chatStore.update(root.currentChatId, msgId, { "isNew": false });
+                             } else {
                                  scale = 1;
                                  opacity = 1;
                              }
@@ -3957,7 +3689,7 @@ Item {
                      width: 36
                      height: 36
                      z: 20
-                     opacity: (!listView.atYEnd && chatHistory.count > 0) ? 1.0 : 0.0
+                     opacity: (!listView.atYEnd && chatStore.messages.count > 0) ? 1.0 : 0.0
                      visible: opacity > 0
 
                      Behavior on opacity { NumberAnimation { duration: 200; easing.type: Easing.InOutQuad } }
@@ -4326,17 +4058,10 @@ Item {
                                      cursorShape: (root.canSend || root.isTyping) ? Qt.PointingHandCursor : Qt.ArrowCursor
                                      onClicked: {
                                          if (root.isTyping) {
-                                             root.cancelRateLimitRetry();
-                                             if (root.currentRequest) {
-                                                 root.currentRequest.abort();
-                                             }
-                                             root.stopClaudeCode();
-                                             root.isTyping = false;
-                                             root.isThinking = false;
-                                             root.inAgentLoop = false;
-                                             typingTimer.stop();
-                                             chatHistory.setProperty(chatHistory.count - 1, "isFinished", true);
-                                             saveHistory();
+                                             root.stopReply();
+                                             if (root.activeReply)
+                                                 chatStore.update(root.activeReply.chatId, root.activeReply.msgId, { "isFinished": true });
+                                             chatStore.persist();
                                          } else if (inputArea.text.length > 0 || root.pendingAttachments.length > 0) {
                                              root.sendPrompt(inputArea.text);
                                              inputArea.clear();
@@ -4375,7 +4100,7 @@ Item {
                      
                      cellWidth: width / 2
                      cellHeight: 90
-                     model: historySessionsModel
+                     model: chatStore.chats
 
                      delegate: Item {
                          required property var model
