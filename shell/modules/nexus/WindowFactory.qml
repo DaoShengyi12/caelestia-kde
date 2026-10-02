@@ -67,12 +67,6 @@ Singleton {
             }
 
             onVisibleChanged: {
-                if (!visible && UpdateChecker.updateRunning) {
-                    visible = true;
-                    nexus.requestClose();
-                    return;
-                }
-
                 if (!visible)
                     destroy();
             }

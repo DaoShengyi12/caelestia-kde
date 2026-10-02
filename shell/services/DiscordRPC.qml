@@ -171,12 +171,12 @@ Item {
         let topTargetTitle = "";
         let topTargetMatchIdx = -1;
 
-        const activeClass = Kwin.activeWindow.class ?? "";
+        const activeClass = Kwin.activeWindow?.class ?? "";
         if (activeClass !== "") {
             const activeIdx = Strings.findMatchingIndex(GlobalConfig.services.arpcTargetWindows, activeClass);
             if (activeIdx >= 0) {
                 topTargetClass = activeClass;
-                topTargetTitle = Kwin.activeWindow.title ?? "";
+                topTargetTitle = Kwin.activeWindow?.title ?? "";
                 topTargetMatchIdx = activeIdx;
             }
         }

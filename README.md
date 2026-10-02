@@ -38,11 +38,16 @@ Shell settings are preserved across updates.
 
 ### Uninstalling
 
-Choose *Uninstall* from the installer TUI, or run:
+Choose *Uninstall* from the installer TUI, run the script directly:
 
 ```bash
 bash ./uninstall.sh
 ```
+
+or use Nexus -> About -> *Uninstall Caelestia*, which opens the script in a terminal.
+That row finds the script by looking in `$CAELESTIA_DIR`, then `~/caelestia-kde`, then
+the updater's clone. A packaged install has no script: the row names the package
+manager's command instead.
 
 ## Keybinds
 

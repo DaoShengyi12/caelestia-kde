@@ -85,7 +85,7 @@ test_the_machine_steps_stay_out_of_a_packaged_install() {
     local calls
     calls="$(cat "$CALLS")"
     local absent
-    for absent in 00-refresh-mirrors.sh 00a-system-update.sh 01-ensure-prereqs.sh 02-all-packages.sh 02a-submodules.sh 07-kde-apps.sh 11-optional-apps.sh; do
+    for absent in 00a-system-update.sh 01-ensure-prereqs.sh 02-all-packages.sh 02a-submodules.sh 07-kde-apps.sh 11-optional-apps.sh; do
         assert_not_contains "$calls" "$absent" "$absent belongs to the package, not to the user's half"
     done
 }

@@ -40,7 +40,7 @@ class BarWorkspaces : public settings::ObjectNode {
     CONFIG_PROPERTY(bool, showWindows, true)
     CONFIG_PROPERTY(bool, showWindowsOnSpecialWorkspaces, true)
     CONFIG_PROPERTY(int, maxWindowIcons, 5)
-    CONFIG_PROPERTY(bool, activeTrail, false)
+    CONFIG_PROPERTY(bool, activeTrail, true)
     CONFIG_PROPERTY(bool, monitorCenter, false)
     CONFIG_PROPERTY(bool, perMonitor, true)
     CONFIG_GLOBAL_PROPERTY(bool, perMonitorWorkspaces, true)

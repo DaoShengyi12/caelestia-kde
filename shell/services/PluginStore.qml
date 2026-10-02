@@ -49,8 +49,17 @@ Item {
         fetchProc.running = true;
     }
 
+    // Store ids come from a remote index and become filesystem paths, so only
+    // plain directory names are accepted.
+    function isValidPluginId(id) {
+        return typeof id === "string" && /^[A-Za-z0-9][A-Za-z0-9._-]*$/.test(id) && !id.includes("..");
+    }
+
     function installPlugin(id, repoPath, branch, restart) {
-        if (!id) return;
+        if (!isValidPluginId(id)) {
+            console.warn("PluginStore: refusing to install plugin with unsafe id:", id);
+            return;
+        }
 
         let installBranch = branch || "main";
 
@@ -84,6 +93,10 @@ echo "DONE"`;
     }
 
     function removePlugin(id) {
+        if (!isValidPluginId(id)) {
+            console.warn("PluginStore: refusing to remove plugin with unsafe id:", id);
+            return;
+        }
         let targetDir = (Quickshell.env("XDG_CONFIG_HOME") || (Quickshell.env("HOME") + "/.config")) + "/caelestia/plugins/" + id;
         removeProc.pendingId = id;
         let requiresRestart = false;

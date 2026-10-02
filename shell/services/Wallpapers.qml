@@ -126,16 +126,12 @@ Searcher {
         }
     }
 
-    // Mirrors the wallpaper onto Plasma's own desktop background so it doesn't
-    // stay stale (e.g. showing the deploy-time default) whenever the shell
-    // isn't running to keep it in sync itself, such as after a crash/exit.
     function syncPlasmaWallpaper(imagePath: string): void {
         if (!imagePath)
             return;
         const script = 'var allDesktops = desktops();' +
             'for (var i = 0; i < allDesktops.length; i++) {' +
             '    var d = allDesktops[i];' +
-            '    d.wallpaperPlugin = "org.kde.image";' +
             '    d.currentConfigGroup = ["Wallpaper", "org.kde.image", "General"];' +
             '    d.writeConfig("Image", "file://" + ' + JSON.stringify(imagePath) + ');' +
             '}';

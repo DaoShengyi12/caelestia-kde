@@ -596,6 +596,7 @@ install -m 755 "$BUNDLE_DIR/src/bin/caelestia" ~/.local/bin/caelestia
 install -m 755 "$BUNDLE_DIR/src/bin/caelestia-color" ~/.local/bin/caelestia-color
 install -m 755 "$BUNDLE_DIR/src/bin/caelestia-update" ~/.local/bin/caelestia-update
 install -m 755 "$BUNDLE_DIR/src/bin/caelestia-check-updates" ~/.local/bin/caelestia-check-updates
+install -m 644 "$BUNDLE_DIR/scripts/lib/update-state.sh" "$(install_lib_dir)/update-state.sh"
 ok "Caelestia bin wrappers installed to ~/.local/bin"
 
 info "Installing the update-checker units..."

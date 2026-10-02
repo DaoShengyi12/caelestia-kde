@@ -19,7 +19,7 @@ if(NOT DEFINED VERSION)
     endif()
 
     # Fallback for a tree without version.env (e.g. a standalone shell
-    # checkout): the nearest git tag. No maintenance needed.
+    # checkout): the nearest git tag.
     if(NOT VERSION OR "${VERSION}" STREQUAL "" OR "${VERSION}" STREQUAL "rolling")
         execute_process(COMMAND git describe --tags --match "v*" --abbrev=0
             WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
@@ -60,7 +60,6 @@ endif()
 
 set(DISPLAY_VERSION "${VERSION}")
 
-# On dev branch: append -dev+<short-hash> to distinguish from stable
 execute_process(COMMAND git rev-parse --abbrev-ref HEAD
     WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
     OUTPUT_VARIABLE _GIT_BRANCH
@@ -93,7 +92,6 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-# Use ccache if available for dramatically faster rebuilds
 find_program(CCACHE_PROGRAM ccache)
 if(CCACHE_PROGRAM)
     set(CMAKE_C_COMPILER_LAUNCHER "${CCACHE_PROGRAM}")
@@ -179,10 +177,17 @@ if("plugin" IN_LIST ENABLE_MODULES)
 endif()
 
 if("shell" IN_LIST ENABLE_MODULES)
-    foreach(dir assets components modules scripts services utils)
+    foreach(dir assets components modules services utils)
         install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${dir}
                 DESTINATION ${INSTALL_QSCONFDIR})
     endforeach()
+
+    # scripts/ installs with the dev tooling stripped: the conventions
+    # linter runs in CI and the perf profiler is not runtime code.
+    install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/scripts/
+            DESTINATION ${INSTALL_QSCONFDIR}/scripts
+            PATTERN "qml-lint-conventions.py" EXCLUDE
+            PATTERN "menu_perf_stats.py" EXCLUDE)
 
     install(PROGRAMS assets/wrap_term_launch.sh DESTINATION "${INSTALL_QSCONFDIR}/assets")
 

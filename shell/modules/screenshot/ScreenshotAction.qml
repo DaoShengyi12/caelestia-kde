@@ -11,9 +11,7 @@ import qs.utils
 Singleton {
     id: root
 
-    // The single snip-action enum. Lives next to the command builder so the
-    // switch and its values can't drift apart. UI files reference it via
-    // ScreenshotAction.SnipAction.
+    // Lives next to the command builder so the switch and its values can't drift apart.
     enum SnipAction {
         Copy,
         Edit,
@@ -96,7 +94,9 @@ Singleton {
                 const tmpFile = Paths.runtimeTemp("snip-search.png")
                 return `set -euo pipefail; ` +
                     `${cropToFile(tmpFile)} && ` +
-                    `xdg-open "${root.imageSearchEngineBaseUrl}$(${uploadAndGetUrl(tmpFile)})"; ` +
+                    `URL="$(${uploadAndGetUrl(tmpFile)})"; ` +
+                    `case "$URL" in https://*|http://*) ;; *) echo "screenshot search: unexpected upload response" >&2; exit 1;; esac; ` +
+                    `xdg-open "${root.imageSearchEngineBaseUrl}$URL"; ` +
                     `rm -f '${tmpFile}'; ${cleanup}`
             }
 

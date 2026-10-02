@@ -129,7 +129,6 @@ const vector<Phase> phases = {
 };
 
 vector<Step> steps = {
-    {"Refresh mirrors", "scripts/00-refresh-mirrors.sh", "PENDING", "prepare"},
     {"Update system", "scripts/00a-system-update.sh", "PENDING", "prepare"},
     {"Ensure prerequisites", "scripts/01-ensure-prereqs.sh", "PENDING",
      "prepare"},

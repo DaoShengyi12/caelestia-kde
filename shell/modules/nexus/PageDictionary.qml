@@ -239,11 +239,10 @@ QtObject {
             category: "system",
             settings: [
                 { label: qsTr("Device Info"), keywords: ["hardware", "specs", "cpu", "ram"] },
-                { label: qsTr("OS Version"), keywords: ["caelestia", "quickshell", "release"] }
+                { label: qsTr("OS Version"), keywords: ["caelestia", "quickshell", "release"] },
+                { label: qsTr("Uninstall Caelestia"), keywords: ["remove", "delete", "uninstall", "purge"] }
             ]
         },
-        // Last, to stay aligned with PageCompRegistry.pageComps — this list is
-        // indexed by position, so entries cannot be reordered independently.
         {
             label: qsTr("AI Assistant"),
             key: "ai",
