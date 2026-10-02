@@ -1920,6 +1920,7 @@ wl-paste --no-newline --type text/uri-list`]
         y: gridItem.y + gridItem.height + Tokens.spacing.small
         count: root.pageCount
         current: root.currentPage
+        maxWidth: gridItem.width
         opacity: root.pageCount > 1 ? 1 : 0
         visible: opacity > 0
         onPageRequested: page => root.setPage(page)
