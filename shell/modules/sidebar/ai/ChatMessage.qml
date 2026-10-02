@@ -233,40 +233,14 @@ Item {
                     visible: segment.text !== "" || segment.tools.length > 0
                     spacing: bubbleLayout.spacing
 
-                    TextEdit {
-                        id: messageText
-
-                        property string fullText: segmentItem.segment.text
-                        property bool cursorVisible: true
-
+                    ChatMarkdown {
                         // Nothing to show yet (e.g. only tool calls so far): no
                         // empty line with a lone blinking cursor.
-                        visible: fullText !== ""
-                        textFormat: Text.MarkdownText
-                        width: Math.min(implicitWidth, bubbleRect.maxBubbleWidth - Tokens.padding.medium * 2)
-                        text: root.isFinished || !segmentItem.isLast ? fullText : fullText + (cursorVisible ? "▌" : "")
+                        visible: text !== ""
+                        text: segmentItem.segment.text
+                        showCursor: !root.isFinished && segmentItem.isLast
+                        maxWidth: bubbleRect.maxBubbleWidth - Tokens.padding.medium * 2
                         color: root.isUser ? Colours.palette.m3onPrimary : Colours.palette.m3onSurface
-                        font: Tokens.font.body.small
-                        wrapMode: Text.Wrap
-                        readOnly: true
-                        selectByMouse: true
-                        selectionColor: Colours.palette.m3primary
-                        selectedTextColor: Colours.palette.m3onPrimary
-
-                        Timer {
-                            running: !root.isFinished && segmentItem.isLast
-                            repeat: true
-                            interval: 400
-                            onTriggered: messageText.cursorVisible = !messageText.cursorVisible
-                        }
-
-                        MouseArea {
-                            anchors.fill: parent
-                            hoverEnabled: true
-                            cursorShape: Qt.IBeamCursor
-                            propagateComposedEvents: true
-                            onPressed: mouse => mouse.accepted = false
-                        }
                     }
 
                     Repeater {

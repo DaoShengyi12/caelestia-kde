@@ -172,18 +172,11 @@ StyledRect {
         }
 
         // Subagent report, rendered as Markdown.
-        TextEdit {
-            visible: toolCard.isAgent && toolCard.expanded && (toolCard.tool.result || "") !== ""
-            width: parent.width
+        ChatMarkdown {
+            visible: toolCard.isAgent && toolCard.expanded && text !== ""
             text: toolCard.tool.result || ""
-            textFormat: Text.MarkdownText
+            maxWidth: parent.width
             color: toolCard.tool.isError ? Colours.palette.m3error : Colours.palette.m3onSurface
-            font: Tokens.font.body.small
-            wrapMode: Text.Wrap
-            readOnly: true
-            selectByMouse: true
-            selectionColor: Colours.palette.m3primary
-            selectedTextColor: Colours.palette.m3onPrimary
         }
 
         TextEdit {
