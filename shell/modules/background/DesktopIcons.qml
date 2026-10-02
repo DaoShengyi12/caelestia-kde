@@ -1178,6 +1178,18 @@ os.replace(tmp, path)
             edgeFlipTimer.stop();
     }
 
+    // A quick move can jump from the outer column straight onto the border
+    // without passing through the margin, so that counts as the edge too.
+    function dragLeftSide(): void {
+        if (edgeDir !== 0)
+            return;
+        const dir = edgePoint.x < gridItem.x + cellWidth ? -1 : edgePoint.x > gridItem.x + gridItem.width - cellWidth ? 1 : 0;
+        if (dir === 0)
+            return;
+        edgeDir = dir;
+        edgeFlipTimer.restart();
+    }
+
     function stopEdgeFlip(): void {
         edgeDir = 0;
         edgeFlipTimer.stop();
@@ -1203,12 +1215,13 @@ os.replace(tmp, path)
     property real wheelAngle: 0
 
     // Mouse wheels turn one page per notch. Touchpads drag the pages along
-    // sideways and settle on the nearest one when the fingers lift.
+    // sideways and settle on the nearest one when the fingers lift. Only
+    // touchpads report scroll phases; wheels may still carry pixel deltas.
     function pageWheel(event: var): void {
         if (wheelCooldown.running || event.phase === Qt.ScrollMomentum)
             return;
         const px = event.pixelDelta;
-        if (px.x === 0 && px.y === 0) {
+        if (event.phase === Qt.NoScrollPhase || (px.x === 0 && px.y === 0)) {
             wheelAngle += Math.abs(event.angleDelta.x) > Math.abs(event.angleDelta.y) ? event.angleDelta.x : event.angleDelta.y;
             if (Math.abs(wheelAngle) >= 120) {
                 setPage(currentPage + (wheelAngle < 0 ? 1 : -1));
@@ -1427,7 +1440,9 @@ os.replace(tmp, path)
         };
         event.accepted = true;
 
-        if (event.key in dirs) {
+        if (ctrl && openGroupId === "" && (event.key === Qt.Key_Left || event.key === Qt.Key_Right)) {
+            setPage(currentPage + (event.key === Qt.Key_Right ? 1 : -1));
+        } else if (event.key in dirs) {
             if (current === "")
                 focusOn(order[0] ?? "", false);
             else
@@ -1553,7 +1568,7 @@ os.replace(tmp, path)
     Timer {
         id: edgeFlipTimer
 
-        interval: 600
+        interval: 350
         repeat: true
         onTriggered: root.flipFromEdge()
     }
@@ -1694,17 +1709,16 @@ wl-paste --no-newline --type text/uri-list`]
             }
         }
 
-        WheelHandler {
-            acceptedModifiers: Qt.NoModifier
-            enabled: root.openGroupId === ""
-            onWheel: event => root.pageWheel(event)
-        }
-
+        // Ctrl resizes the icons; otherwise the wheel turns pages.
         WheelHandler {
             property real accumulated: 0
 
-            acceptedModifiers: Qt.ControlModifier
             onWheel: event => {
+                if (!(event.modifiers & Qt.ControlModifier)) {
+                    if (root.openGroupId === "")
+                        root.pageWheel(event);
+                    return;
+                }
                 accumulated += event.angleDelta.y;
                 if (Math.abs(accumulated) >= 120) {
                     DesktopLayout.stepIconSize(accumulated > 0 ? 1 : -1);
@@ -1750,8 +1764,13 @@ wl-paste --no-newline --type text/uri-list`]
             root.trackDragEdge(drag.x, drag.y, root.isInternal(drag));
             root.updateDropPreview(drag.x, drag.y, root.isInternal(drag));
         }
+        // Past the edge the pointer is over the screen border, which takes no
+        // drops. Our own drags keep turning pages from there until they end.
         onExited: {
-            root.stopEdgeFlip();
+            if (root.dragKeys.length === 0)
+                root.stopEdgeFlip();
+            else
+                root.dragLeftSide();
             root.clearDropPreview();
         }
         onDropped: drop => {
@@ -1793,7 +1812,7 @@ wl-paste --no-newline --type text/uri-list`]
                 enabled: !root.swiping
 
                 Anim {
-                    type: Anim.Emphasized
+                    type: Anim.EmphasizedLarge
                 }
             }
 
