@@ -191,6 +191,14 @@ function toolSummary(name, input) {
     return s.length > 200 ? s.substring(0, 200) + "…" : s;
 }
 
+// Every path under the home directory written as ~/..., for tool summaries
+// (file paths, shell commands).
+function shortPaths(text, home) {
+    if (!text || !home)
+        return text || "";
+    return String(text).split(home + "/").join("~/");
+}
+
 function toolResultText(content) {
     var t = "";
     if (typeof content === "string")
