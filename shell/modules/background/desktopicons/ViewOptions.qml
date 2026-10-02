@@ -176,7 +176,7 @@ Item {
                 }
 
                 StyledText {
-                    text: qsTr("Tip: Ctrl+scroll on the desktop also resizes icons")
+                    text: qsTr("Tip: Ctrl+Plus and Ctrl+Minus on the desktop also resize icons")
                     color: Colours.palette.m3outline
                 }
             }

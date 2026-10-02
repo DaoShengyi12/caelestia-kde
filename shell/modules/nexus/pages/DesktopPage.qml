@@ -113,7 +113,7 @@ PageBase {
             Layout.topMargin: Tokens.spacing.extraSmall / 2 - parent.spacing
             Layout.fillWidth: true
             label: qsTr("Desktop Icon Size")
-            subtext: qsTr("Ctrl+scroll on the desktop also changes it")
+            subtext: qsTr("Ctrl+Plus and Ctrl+Minus on the desktop also change it")
             menuItems: root.iconSizeItems
             active: root.iconSizeItems.find(i => i.value === DesktopLayout.iconSize) ?? root.iconSizeItems[1]
             enabled: Config.background.wallpaperEnabled && Config.background.desktopIconsEnabled

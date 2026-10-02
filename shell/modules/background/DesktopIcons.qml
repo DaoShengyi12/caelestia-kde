@@ -48,9 +48,6 @@ Item {
     readonly property int pageCount: storedPages + (extraPage ? 1 : 0)
     readonly property int totalCols: pageCount * cols
     property int currentPage: 0
-    // Pages the view is dragged off currentPage by a touchpad swipe.
-    property real swipeOffset: 0
-    property bool swiping: false
     readonly property var layout: {
         const out = {};
         for (const key in DesktopLayout.positions) {
@@ -1212,50 +1209,6 @@ os.replace(tmp, path)
         updateDropPreview(edgePoint.x, edgePoint.y, edgeInternal);
     }
 
-    property real wheelAngle: 0
-
-    // Mouse wheels turn one page per notch. Touchpads drag the pages along
-    // sideways and settle on the nearest one when the fingers lift. Only
-    // touchpads report scroll phases; wheels may still carry pixel deltas.
-    function pageWheel(event: var): void {
-        if (wheelCooldown.running || event.phase === Qt.ScrollMomentum)
-            return;
-        const px = event.pixelDelta;
-        if (event.phase === Qt.NoScrollPhase || (px.x === 0 && px.y === 0)) {
-            wheelAngle += Math.abs(event.angleDelta.x) > Math.abs(event.angleDelta.y) ? event.angleDelta.x : event.angleDelta.y;
-            if (Math.abs(wheelAngle) >= 120) {
-                setPage(currentPage + (wheelAngle < 0 ? 1 : -1));
-                wheelAngle = 0;
-                wheelCooldown.restart();
-            }
-            return;
-        }
-        // Scrolling up and down on a touchpad does nothing, like on a phone.
-        if (!swiping && Math.abs(px.x) <= Math.abs(px.y))
-            return;
-        swiping = true;
-        let d = -px.x / pageStride;
-        const at = currentPage + swipeOffset;
-        if ((at < 0 && d < 0) || (at > pageCount - 1 && d > 0))
-            d *= 0.3;
-        swipeOffset = Math.max(-1, Math.min(1, swipeOffset + d));
-        if (event.phase === Qt.ScrollEnd)
-            settleSwipe();
-        else
-            swipeEndTimer.restart();
-    }
-
-    function settleSwipe(): void {
-        swipeEndTimer.stop();
-        if (!swiping)
-            return;
-        const step = swipeOffset > 0.25 ? 1 : swipeOffset < -0.25 ? -1 : 0;
-        swiping = false;
-        const page = Math.max(0, Math.min(pageCount - 1, currentPage + step));
-        swipeOffset = 0;
-        currentPage = page;
-        wheelCooldown.restart();
-    }
 
     function clearDropPreview(): void {
         previewPositions = null;
@@ -1574,19 +1527,6 @@ os.replace(tmp, path)
     }
 
     Timer {
-        id: swipeEndTimer
-
-        interval: 150
-        onTriggered: root.settleSwipe()
-    }
-
-    Timer {
-        id: wheelCooldown
-
-        interval: 250
-    }
-
-    Timer {
         id: typeAheadTimer
 
         interval: 900
@@ -1709,24 +1649,6 @@ wl-paste --no-newline --type text/uri-list`]
             }
         }
 
-        // Ctrl resizes the icons; otherwise the wheel turns pages.
-        WheelHandler {
-            property real accumulated: 0
-
-            onWheel: event => {
-                if (!(event.modifiers & Qt.ControlModifier)) {
-                    if (root.openGroupId === "")
-                        root.pageWheel(event);
-                    return;
-                }
-                accumulated += event.angleDelta.y;
-                if (Math.abs(accumulated) >= 120) {
-                    DesktopLayout.stepIconSize(accumulated > 0 ? 1 : -1);
-                    accumulated = 0;
-                }
-            }
-        }
-
         StyledRect {
             id: band
 
@@ -1804,13 +1726,11 @@ wl-paste --no-newline --type text/uri-list`]
         Item {
             id: pageStrip
 
-            x: -(root.currentPage + root.swipeOffset) * root.pageStride
+            x: -root.currentPage * root.pageStride
             width: root.pageCount * root.pageStride
             height: parent.height
 
             Behavior on x {
-                enabled: !root.swiping
-
                 Anim {
                     type: Anim.EmphasizedLarge
                 }

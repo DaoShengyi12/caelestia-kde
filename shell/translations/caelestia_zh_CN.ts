@@ -4058,8 +4058,8 @@
         <translation>桌面图标大小</translation>
     </message>
     <message>
-        <source>Ctrl+scroll on the desktop also changes it</source>
-        <translation>在桌面上按住 Ctrl 滚动也可以调整</translation>
+        <source>Ctrl+Plus and Ctrl+Minus on the desktop also change it</source>
+        <translation>在桌面上按 Ctrl+加号 / Ctrl+减号也可以调整</translation>
     </message>
     <message>
         <source>Arrange Icons Automatically</source>
@@ -11528,8 +11528,8 @@
         <translation>特大</translation>
     </message>
     <message>
-        <source>Tip: Ctrl+scroll on the desktop also resizes icons</source>
-        <translation>提示：在桌面上按住 Ctrl 滚动也能调整图标大小</translation>
+        <source>Tip: Ctrl+Plus and Ctrl+Minus on the desktop also resize icons</source>
+        <translation>提示：在桌面上按 Ctrl+加号 / Ctrl+减号也能调整图标大小</translation>
     </message>
 </context>
 <context>
