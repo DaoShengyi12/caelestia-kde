@@ -2257,7 +2257,7 @@ Item {
 
                  menuItems: modelVariants.instances
 
-                 fallbackIcon: "smart_toy"
+                 fallbackIcon: "auto_awesome"
                  fallbackText: qsTr("Select Model")
                  stateLayer.disabled: true
 
