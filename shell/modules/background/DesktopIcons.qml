@@ -3,6 +3,7 @@ pragma ComponentBehavior: Bound
 import "desktopicons"
 import "desktopicons/LayoutEngine.js" as Engine
 import QtQuick
+import QtQuick.Effects
 import Qt.labs.folderlistmodel
 import Quickshell
 import Quickshell.Io
@@ -20,6 +21,8 @@ Item {
     // Wallpaper layer, sampled for the frosted cards of large items.
     property Item wallpaper: null
     readonly property point gridOrigin: Qt.point(gridItem.x, gridItem.y)
+    // The wallpaper blurred once for all frosted cards, null when unused.
+    readonly property Item glass: glassLoader.item
 
     readonly property var screenConfig: GlobalConfig.forScreen(screenData.name).background
     readonly property bool materialYou: screenConfig.materialYouIconsEnabled
@@ -1520,6 +1523,28 @@ wl-paste --no-newline --type text/uri-list`]
         onPositionChanged: drag => root.updateDropPreview(drag.x, drag.y, root.isInternal(drag))
         onExited: root.clearDropPreview()
         onDropped: drop => root.commitDrop(drop)
+    }
+
+    // Frosted glass for the cards of large items: the wallpaper is blurred
+    // once here and each card shows its own part of it. The blur starts at
+    // half size anyway, so the wallpaper is taken at half size too.
+    Loader {
+        id: glassLoader
+
+        anchors.fill: parent
+        visible: false
+        active: !!root.wallpaper && !GameMode.enabled && bigModel.count > 0
+
+        sourceComponent: MultiEffect {
+            source: ShaderEffectSource {
+                sourceItem: root.wallpaper
+                textureSize: Qt.size(Math.ceil(root.width / 2), Math.ceil(root.height / 2))
+            }
+            blurEnabled: true
+            blur: 1
+            blurMax: 48
+            autoPaddingEnabled: false
+        }
     }
 
     Item {
