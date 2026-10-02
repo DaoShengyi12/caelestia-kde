@@ -17,6 +17,7 @@ import qs.components.filedialog
 import qs.services
 import qs.utils
 import "ai"
+import "ai/claudecode.js" as ClaudeCode
 
 Item {
     id: root
@@ -142,46 +143,8 @@ Item {
 
     property var claudeCodeModelsList: ["default"]
 
-    function effortLevelsFor(model) {
-        var m = String(model || "default").toLowerCase();
-        if (m === "haiku")
-            return [];
-        if (m === "default" || m === "opus" || m === "sonnet" || m === "fable")
-            return ["low", "medium", "high", "xhigh", "max"];
-
-        var fam = m.indexOf("opus") !== -1 ? "opus"
-                : m.indexOf("sonnet") !== -1 ? "sonnet"
-                : m.indexOf("haiku") !== -1 ? "haiku"
-                : m.indexOf("fable") !== -1 ? "fable" : "";
-        var nums = (m.match(/\d+/g) || []).map(Number);
-        var major = nums.length >= 1 ? nums[0] : 0;
-        var minor = nums.length >= 2 ? nums[1] : 0;
-
-        if (fam === "haiku")
-            return [];
-        if (fam === "fable")
-            return ["low", "medium", "high", "xhigh", "max"];
-        if (fam === "opus") {
-            if (major > 4 || (major === 4 && minor >= 7))
-                return ["low", "medium", "high", "xhigh", "max"];
-            if (major === 4 && minor === 6)
-                return ["low", "medium", "high", "max"];
-            if (major === 4 && minor === 5)
-                return ["low", "medium", "high"];
-            return [];
-        }
-        if (fam === "sonnet") {
-            if (major >= 5)
-                return ["low", "medium", "high", "xhigh", "max"];
-            if (major === 4 && minor === 6)
-                return ["low", "medium", "high", "max"];
-            return [];
-        }
-        return [];
-    }
-
     readonly property var claudeCodeEffortOptions: {
-        var lv = effortLevelsFor(activeModel());
+        var lv = ClaudeCode.effortLevelsFor(activeModel());
         return lv.length > 0 ? ["default"].concat(lv) : [];
     }
 
@@ -209,33 +172,7 @@ Item {
     }
 
     function applyClaudeCodeModels(text) {
-        var ids = [];
-        var seen = {};
-        const lines = (text || "").split("\n");
-        for (var i = 0; i < lines.length; i++) {
-            const id = lines[i].trim();
-            if (id === "" || seen[id])
-                continue;
-            if (/-\d{5,}$/.test(id) || /-0$/.test(id))
-                continue;
-            seen[id] = true;
-            ids.push(id);
-        }
-
-        ids = ids.filter(id => !ids.some(other => other !== id && other.indexOf(id + "-") === 0));
-
-        ids.sort((a, b) => {
-            const va = (a.match(/\d+/g) || []).map(Number);
-            const vb = (b.match(/\d+/g) || []).map(Number);
-            for (var k = 0; k < Math.max(va.length, vb.length); k++) {
-                const d = (vb[k] || 0) - (va[k] || 0);
-                if (d !== 0)
-                    return d;
-            }
-            return a.localeCompare(b);
-        });
-
-        claudeCodeModelsList = ["default"].concat(ids);
+        claudeCodeModelsList = ClaudeCode.parseModelList(text);
     }
 
     readonly property string provider: GlobalConfig.ai.defaultProvider || "ollama"
@@ -262,15 +199,6 @@ Item {
 
     function defaultClaudeCodePermissionMode() {
         return GlobalConfig.ai.claudeCodeSkipPermissions ? "bypassPermissions" : "default";
-    }
-
-    // The mode actually used for a request: a chat saved in bypass mode falls back
-    // to the CLI default once bypass is no longer allowed.
-    function effectiveClaudeCodePermissionMode(mode) {
-        mode = mode || defaultClaudeCodePermissionMode();
-        if (mode === "bypassPermissions" && !GlobalConfig.ai.claudeCodeSkipPermissions)
-            return "default";
-        return mode;
     }
 
     function permissionModeLabel(mode) {
@@ -435,104 +363,6 @@ Item {
         onTriggered: root.currentActionText = root.randomThinkingVerb()
     }
 
-    // Short one-line description of a tool call for its card header.
-    function toolSummary(name, input) {
-        if (!input)
-            return "";
-        if (isAgentTool(name))
-            return input.description || "";
-        var s = input.command || input.skill || input.file_path || input.notebook_path || input.pattern
-            || input.url || input.query || input.description || input.prompt || "";
-        if (s === "" && name === "TodoWrite" && Array.isArray(input.todos))
-            s = input.todos.length + " todos";
-        if (s === "") {
-            try { s = JSON.stringify(input); } catch (e) {}
-        }
-        s = String(s).replace(/\s+/g, " ").trim();
-        return s.length > 200 ? s.substring(0, 200) + "…" : s;
-    }
-
-    function isAgentTool(name) {
-        return name === "Agent" || name === "Task";
-    }
-
-    // "2 tools · 23.9k tokens · 6.6s" for a subagent card.
-    function agentStatsText(t) {
-        var parts = [];
-        if (t.toolUses)
-            parts.push(t.toolUses + (t.toolUses === 1 ? " tool" : " tools"));
-        if (t.tokens)
-            parts.push(formatTokens(t.tokens) + " tokens");
-        if (t.durationMs)
-            parts.push((t.durationMs / 1000).toFixed(1) + "s");
-        return parts.join(" · ");
-    }
-
-    // Find the top-level card a (possibly nested) subagent event belongs to.
-    function agentCardFor(proc, parentId) {
-        var top = proc.agentOf[parentId] || parentId;
-        return claudeCodeTool(proc, top);
-    }
-
-    function toolResultText(content) {
-        var t = "";
-        if (typeof content === "string")
-            t = content;
-        else if (Array.isArray(content))
-            for (var i = 0; i < content.length; i++) {
-                if (content[i].type === "text")
-                    t += (t ? "\n" : "") + (content[i].text || "");
-                else if (content[i].type === "image")
-                    t += (t ? "\n" : "") + "[image]";
-            }
-        t = t.trim();
-        return t.length > 2000 ? t.substring(0, 2000) + "\n…" : t;
-    }
-
-    function formatTokens(n) {
-        n = n || 0;
-        if (n >= 1000000) return (n / 1000000).toFixed(1) + "M";
-        if (n >= 1000) return (n / 1000).toFixed(1) + "k";
-        return String(n);
-    }
-
-    // "12.3s · 4 turns · 1.2k in / 800 out · $0.04" from the CLI's result event.
-    // Usage over all the turns of one reply (a backgrounded subagent adds a turn
-    // with its own result). The cost the CLI reports is already a running total.
-    function mergeResultUsage(prev, evt) {
-        if (!prev)
-            return evt;
-        var a = prev.usage || {};
-        var b = evt.usage || {};
-        return {
-            duration_ms: (prev.duration_ms || 0) + (evt.duration_ms || 0),
-            num_turns: (prev.num_turns || 0) + (evt.num_turns || 0),
-            usage: {
-                input_tokens: (a.input_tokens || 0) + (b.input_tokens || 0),
-                cache_read_input_tokens: (a.cache_read_input_tokens || 0) + (b.cache_read_input_tokens || 0),
-                cache_creation_input_tokens: (a.cache_creation_input_tokens || 0) + (b.cache_creation_input_tokens || 0),
-                output_tokens: (a.output_tokens || 0) + (b.output_tokens || 0)
-            },
-            total_cost_usd: typeof evt.total_cost_usd === "number" ? evt.total_cost_usd : prev.total_cost_usd
-        };
-    }
-
-    function usageSummary(evt) {
-        var parts = [];
-        if (evt.duration_ms)
-            parts.push((evt.duration_ms / 1000).toFixed(1) + "s");
-        if (evt.num_turns)
-            parts.push(evt.num_turns + (evt.num_turns === 1 ? " turn" : " turns"));
-        var u = evt.usage;
-        if (u) {
-            var inTok = (u.input_tokens || 0) + (u.cache_read_input_tokens || 0) + (u.cache_creation_input_tokens || 0);
-            parts.push(formatTokens(inTok) + " in / " + formatTokens(u.output_tokens) + " out");
-        }
-        if (typeof evt.total_cost_usd === "number")
-            parts.push("$" + evt.total_cost_usd.toFixed(evt.total_cost_usd < 1 ? 3 : 2));
-        return parts.join(" · ");
-    }
-
     property var promptSuggestions: []
 
     property bool loadingSuggestions: false
@@ -632,34 +462,6 @@ Item {
                 "claudeCodeSessionId": sid,
                 "claudeCodeSessionAccount": GlobalConfig.ai.activeClaudeAccount || ""
             });
-    }
-
-    function withAttachmentList(text, paths) {
-        if (!paths || paths.length === 0)
-            return text;
-        return ((text || "").trim() + "\n\nAttached files (use the Read tool to view them):\n"
-            + paths.map(p => "- " + p).join("\n")).trim();
-    }
-
-    function claudeCodeTranscript() {
-        var lines = [];
-        var count = 0;
-        var msgs = chatStore.current().messages;
-        for (var i = 0; i < msgs.length; i++) {
-            var m = msgs[i];
-            if (!m.isUser && !m.isFinished)
-                continue;
-            var t = (m.text || "").trim();
-            if (m.isUser && (m.attachments || "") !== "")
-                t = withAttachmentList(t, m.attachments.split("\n"));
-            if (t === "")
-                continue;
-            lines.push((m.isUser ? "User: " : "Assistant: ") + t);
-            count++;
-        }
-        if (count <= 1)
-            return "";
-        return "Continue this conversation. Conversation so far:\n\n" + lines.join("\n\n") + "\n\nReply to the last user message.";
     }
 
     readonly property bool isOpenaiCompat: root.openaiCompatProviders.indexOf(provider) !== -1
@@ -1091,22 +893,6 @@ Item {
         return b;
     }
 
-    function claudeCodePermissionArgs(mode) {
-        mode = effectiveClaudeCodePermissionMode(mode);
-        if (mode === "bypassPermissions")
-            return ["--dangerously-skip-permissions"];
-        if (mode === "default")
-            return [];
-        var args = ["--permission-mode", mode];
-        // There is no approval prompt in the sidebar, so in accept-edits mode
-        // commands, web access and reads outside the working directory would just
-        // be denied. Allow them for sidebar sessions only; edits outside the
-        // working directory still need permission.
-        if (mode === "acceptEdits")
-            args = args.concat(["--allowedTools", claudeCodeSidebarAllowedTools.join(",")]);
-        return args;
-    }
-
     function claudeAccounts() {
         var list = [{ "id": "", "name": "Default", "dir": "" }];
         try {
@@ -1197,38 +983,6 @@ Item {
         return "";
     }
 
-    function logClaudeCodeStderr(proc, line) {
-        if (!line)
-            return;
-        var t = line.trim();
-        if (t === "")
-            return;
-        proc.errAcc = (proc.errAcc || "") + t + "\n";
-        Logger.log("[ClaudeCode] " + t);
-    }
-
-    function isClaudeCodeAuthError(text) {
-        if (!text)
-            return false;
-        var t = String(text).toLowerCase();
-        return t.indexOf("login") !== -1
-            || t.indexOf("log in") !== -1
-            || t.indexOf("logged in") !== -1
-            || t.indexOf("not authenticated") !== -1
-            || t.indexOf("unauthorized") !== -1
-            || t.indexOf("authentication") !== -1
-            || t.indexOf("oauth") !== -1
-            || t.indexOf("invalid api key") !== -1
-            || t.indexOf("api key") !== -1
-            || t.indexOf("expired") !== -1
-            || t.indexOf("sign in") !== -1
-            || t.indexOf("credentials") !== -1;
-    }
-
-    function claudeCodeAuthHint() {
-        return "It appears that Claude is not logged into your account.\n\nOpen a terminal, run the command `claude`, and log in with your subscription, then try again here.";
-    }
-
     function generateClaudeCodeTitleAsync(chatId, firstMessage) {
         if (!firstMessage)
             return;
@@ -1269,12 +1023,9 @@ Item {
     }
 
     function stopClaudeCode() {
-        if (root.currentClaudeCodeProc) {
-            try {
-                root.currentClaudeCodeProc.stopped = true;
-                root.currentClaudeCodeProc.running = false;
-            } catch (e) {}
-            root.currentClaudeCodeProc = null;
+        if (currentClaudeCodeProc) {
+            currentClaudeCodeProc.stop();
+            currentClaudeCodeProc = null;
         }
     }
 
@@ -1286,410 +1037,117 @@ Item {
         currentActionText = randomThinkingVerb();
         const reply = startReply();
 
-        var bin = claudeCodeBinPath();
-        var sid = claudeCodeSessionFor(currentChatId);
+        var sid = claudeCodeSessionFor(reply.chatId);
 
         // Fresh session (new chat, the active account changed, or the working
         // directory changed) → seed it with the prior transcript so the conversation
         // carries over.
         var promptToSend = promptText;
         if (sid === "") {
-            var transcript = claudeCodeTranscript();
+            var transcript = ClaudeCode.transcript(chatStore.session(reply.chatId).messages);
             if (transcript !== "")
                 promptToSend = transcript;
         }
 
-        var cmd = [bin, "-p", promptToSend];
+        var props = {
+            "chatId": reply.chatId,
+            "msgId": reply.msgId,
+            "workingDirectory": claudeCodeCwd(),
+            "command": ClaudeCode.replyCommand({
+                "bin": claudeCodeBinPath(),
+                "prompt": promptToSend,
+                "attachments": attachments,
+                "permissionMode": claudeCodePermissionMode,
+                "bypassAllowed": GlobalConfig.ai.claudeCodeSkipPermissions,
+                "allowedTools": claudeCodeSidebarAllowedTools,
+                "model": GlobalConfig.ai.defaultClaudeCodeModel,
+                "effort": GlobalConfig.ai.claudeCodeEffort,
+                "sessionId": sid
+            })
+        };
+        var configDir = activeClaudeConfigDir();
+        if (configDir !== "")
+            props.environment = { "CLAUDE_CONFIG_DIR": configDir };
 
-        // Attachments usually live outside the working directory (e.g. pasted
-        // screenshots in the cache); allow the CLI to read them in any mode.
-        var dirs = [];
-        for (var a = 0; a < (attachments || []).length; a++) {
-            var d = attachments[a].replace(/\/[^\/]*$/, "") || "/";
-            if (dirs.indexOf(d) === -1)
-                dirs.push(d);
-        }
-        if (dirs.length > 0)
-            cmd = cmd.concat(["--add-dir"], dirs);
-
-        cmd = cmd.concat(["--output-format", "stream-json", "--verbose", "--include-partial-messages"]);
-
-        cmd = cmd.concat(claudeCodePermissionArgs(claudeCodePermissionMode));
-
-        var mdl = GlobalConfig.ai.defaultClaudeCodeModel || "default";
-        if (mdl && mdl !== "default") {
-            cmd.push("--model");
-            cmd.push(mdl);
-        }
-
-        var eff = GlobalConfig.ai.claudeCodeEffort || "default";
-        if (eff && eff !== "default" && effortLevelsFor(mdl).indexOf(eff) !== -1) {
-            cmd.push("--effort");
-            cmd.push(eff);
-        }
-
-        if (sid !== "") {
-            cmd.push("--resume");
-            cmd.push(sid);
-        }
-
-        var commandStr = JSON.stringify(cmd);
-        var cwdStr = JSON.stringify(claudeCodeCwd());
-        var processQml =
-            "import QtQuick\n" +
-            "import Quickshell.Io\n" +
-            "Process {\n" +
-            "    id: proc\n" +
-            "    command: " + commandStr + "\n" +
-            "    workingDirectory: " + cwdStr + "\n" +
-            claudeCodeEnvSnippet() +
-            "    property string chatId: " + JSON.stringify(reply.chatId) + "\n" +
-            "    property string msgId: " + JSON.stringify(reply.msgId) + "\n" +
-            "    property string acc: \"\"\n" +
-            "    property string thought: \"\"\n" +
-            "    property string sess: \"\"\n" +
-            "    property string errAcc: \"\"\n" +
-            "    property string usage: \"\"\n" +
-            "    property var resultUsage: null\n" +
-            "    property var tools: []\n" +
-            "    property bool needSep: false\n" +
-            "    property bool thoughtSep: false\n" +
-            "    property int doneTokens: 0\n" +
-            "    property var agentOf: ({})\n" +
-            "    property int msgChars: 0\n" +
-            "    property bool stopped: false\n" +
-            "    property bool done: false\n" +
-            "    stdout: SplitParser { onRead: line => root.onClaudeCodeLine(proc, line) }\n" +
-            "    stderr: SplitParser { onRead: line => root.logClaudeCodeStderr(proc, line) }\n" +
-            "    onExited: code => root.onClaudeCodeExit(proc, code)\n" +
-            "}";
-        try {
-            var obj = Qt.createQmlObject(processQml, root, "claudeCodeProc");
-            root.currentClaudeCodeProc = obj;
-            obj.running = true;
-        } catch (e) {
-            console.error("CLAUDE CODE PROCESS ERROR: " + e.message);
+        var proc = claudeCodeSessionComponent.createObject(root, props);
+        if (!proc) {
             chatStore.update(reply.chatId, reply.msgId, {
-                "text": "⚠️ Failed to launch Claude Code: " + e.message,
+                "text": "⚠️ Failed to launch Claude Code: " + claudeCodeSessionComponent.errorString(),
                 "isFinished": true
             });
             isTyping = false;
             isThinking = false;
             inAgentLoop = false;
             chatStore.persist();
+            return;
         }
+        currentClaudeCodeProc = proc;
+        proc.running = true;
     }
 
-    // Write to the message this process streams into, in whichever chat it is.
-    function setClaudeCodeBubble(proc, role, value) {
-        var patch = {};
-        patch[role] = value;
-        chatStore.update(proc.chatId, proc.msgId, patch);
+    // Updates from a running Claude Code session. They go to the session's own
+    // message; the live status line only follows the chat that is open.
+    function onClaudeCodeText(proc, text) {
+        chatStore.update(proc.chatId, proc.msgId, { "text": text });
+        if (proc.chatId !== currentChatId)
+            return;
+        isThinking = false;
+        listView.positionViewAtEnd();
     }
 
-    function updateClaudeCodeTools(proc) {
-        setClaudeCodeBubble(proc, "toolsJson", proc.tools.length > 0 ? JSON.stringify(proc.tools) : "");
+    function onClaudeCodeThought(proc, text) {
+        chatStore.update(proc.chatId, proc.msgId, { "thoughtText": text });
+        if (proc.chatId === currentChatId)
+            currentThoughtText = text;
+    }
+
+    function onClaudeCodeTools(proc, tools) {
+        chatStore.update(proc.chatId, proc.msgId, { "toolsJson": tools.length > 0 ? JSON.stringify(tools) : "" });
         if (proc.chatId === currentChatId)
             listView.positionViewAtEnd();
     }
 
-    // Length of the reply text so far; tool calls store it so their cards can be
-    // placed between the text written before and after them.
-    function claudeCodeTextPos(proc) {
-        return (proc.acc || "").trim().length;
-    }
-
-    function claudeCodeTool(proc, id) {
-        for (var i = 0; i < proc.tools.length; i++)
-            if (proc.tools[i].id === id)
-                return proc.tools[i];
-        return null;
-    }
-
-    function appendClaudeCodeText(proc, text) {
-        if (!text)
+    function onClaudeCodeToolStarted(proc, name) {
+        if (proc.chatId !== currentChatId)
             return;
-        // A new text block after a tool call (or a new assistant turn) starts a
-        // new paragraph instead of running on from the previous sentence.
-        if (proc.needSep && proc.acc.trim() !== "")
-            proc.acc = proc.acc.replace(/\s+$/, "") + "\n\n";
-        proc.needSep = false;
-        proc.acc += text;
-        if (isThinking)
-            isThinking = false;
-        setClaudeCodeBubble(proc, "text", proc.acc.trim());
+        currentActionText = "Running " + name + "…";
+        claudeCodeToolRunning = true;
+        isThinking = true;
+    }
+
+    function onClaudeCodeToolsDone(proc) {
+        if (proc.chatId !== currentChatId)
+            return;
+        claudeCodeToolRunning = false;
+        currentActionText = randomThinkingVerb();
+    }
+
+    function onClaudeCodeProgress(proc, text) {
+        if (proc.chatId !== currentChatId)
+            return;
+        var shown = shortPaths(text);
+        currentActionText = shown.length > 40 ? shown.substring(0, 40) + "…" : shown;
+    }
+
+    function onClaudeCodeTokens(proc, count) {
         if (proc.chatId === currentChatId)
-            listView.positionViewAtEnd();
+            claudeCodeOutTokens = count;
     }
 
-    function onClaudeCodeLine(proc, line) {
-        line = (line || "").trim();
-        if (line === "")
-            return;
-
-        var evt;
-        try {
-            evt = JSON.parse(line);
-        } catch (e) {
-            return;
-        }
-
-        if (evt.session_id)
-            proc.sess = evt.session_id;
-
-        if (evt.type === "system") {
-            onClaudeCodeTaskEvent(proc, evt);
-            return;
-        }
-
-        // Events from subagents (Task/Agent tool) belong to that tool's card, not
-        // to the main reply.
-        if (evt.parent_tool_use_id) {
-            onClaudeCodeSubagentEvent(proc, evt);
-            return;
-        }
-
-        if (evt.type === "stream_event" && evt.event) {
-            var ev = evt.event;
-            if (ev.type === "message_start") {
-                proc.needSep = true;
-                proc.msgChars = 0;
-            } else if (ev.type === "message_delta" && ev.usage && ev.usage.output_tokens) {
-                // The real count arrives once per message; until then it is estimated.
-                proc.doneTokens += ev.usage.output_tokens;
-                proc.msgChars = 0;
-                if (proc.chatId === currentChatId)
-                    claudeCodeOutTokens = proc.doneTokens;
-            } else if (ev.type === "content_block_start" && ev.content_block) {
-                var cb = ev.content_block;
-                if (cb.type === "thinking")
-                    proc.thoughtSep = true;
-                if (cb.type === "tool_use") {
-                    proc.needSep = true;
-                    if (!claudeCodeTool(proc, cb.id)) {
-                        proc.tools.push({ id: cb.id, name: cb.name || "tool", summary: "", result: "", isError: false, done: false, at: claudeCodeTextPos(proc) });
-                        updateClaudeCodeTools(proc);
-                    }
-                    currentActionText = "Running " + (cb.name || "tool") + "…";
-                    claudeCodeToolRunning = true;
-                    isThinking = true;
-                }
-            } else if (ev.type === "content_block_delta" && ev.delta) {
-                proc.msgChars += (ev.delta.text || ev.delta.thinking || ev.delta.partial_json || "").length;
-                if (proc.chatId === currentChatId)
-                    claudeCodeOutTokens = proc.doneTokens + Math.round(proc.msgChars / 3);
-                if (ev.delta.type === "text_delta") {
-                    appendClaudeCodeText(proc, ev.delta.text || "");
-                } else if (ev.delta.type === "thinking_delta") {
-                    if (proc.thoughtSep && proc.thought.trim() !== "")
-                        proc.thought = proc.thought.replace(/\s+$/, "") + "\n\n";
-                    proc.thoughtSep = false;
-                    proc.thought += ev.delta.thinking || "";
-                    root.currentThoughtText = proc.thought.trim();
-                    setClaudeCodeBubble(proc, "thoughtText", proc.thought.trim());
-                }
-            }
-            return;
-        }
-
-        // Whole assistant messages carry the complete tool_use inputs; they are also
-        // the fallback when token-level partials aren't emitted.
-        if (evt.type === "assistant" && evt.message && evt.message.content) {
-            var hasTool = false;
-            for (var i = 0; i < evt.message.content.length; i++) {
-                var b = evt.message.content[i];
-                if (b.type === "tool_use") {
-                    hasTool = true;
-                    var t = claudeCodeTool(proc, b.id);
-                    if (!t) {
-                        t = { id: b.id, name: b.name || "tool", summary: "", result: "", isError: false, done: false, at: claudeCodeTextPos(proc) };
-                        proc.tools.push(t);
-                    }
-                    t.summary = toolSummary(b.name, b.input);
-                    if (b.name) {
-                        currentActionText = "Running " + b.name + "…";
-                        claudeCodeToolRunning = true;
-                    }
-                } else if (b.type === "text") {
-                    // Appended in order so a later tool call is placed after it.
-                    var bt = (b.text || "").trim();
-                    if (bt !== "" && proc.acc.indexOf(bt) === -1) {
-                        proc.needSep = true;
-                        appendClaudeCodeText(proc, b.text);
-                    }
-                }
-            }
-            if (hasTool)
-                updateClaudeCodeTools(proc);
-            if (hasTool)
-                isThinking = true;
-            return;
-        }
-
-        // Tool results come back as a user message.
-        if (evt.type === "user" && evt.message && Array.isArray(evt.message.content)) {
-            var changed = false;
-            for (var j = 0; j < evt.message.content.length; j++) {
-                var r = evt.message.content[j];
-                if (r.type !== "tool_result")
-                    continue;
-                var tr = claudeCodeTool(proc, r.tool_use_id);
-                if (!tr)
-                    continue;
-                tr.result = toolResultText(r.content);
-                var tur = evt.tool_use_result;
-                // A backgrounded subagent answers at once with a placeholder; its
-                // report arrives later in a task_notification.
-                if (isAgentTool(tr.name) && tur && tur.isAsync === true) {
-                    tr.result = "";
-                    tr.async = true;
-                    changed = true;
-                    continue;
-                }
-                if (isAgentTool(tr.name) && tur && typeof tur === "object") {
-                    if (tur.content)
-                        tr.result = toolResultText(tur.content);
-                    tr.toolUses = tur.totalToolUseCount || tr.toolUses || 0;
-                    tr.tokens = tur.totalTokens || tr.tokens || 0;
-                    tr.durationMs = tur.totalDurationMs || tr.durationMs || 0;
-                }
-                tr.isError = r.is_error === true;
-                tr.done = true;
-                tr.progress = "";
-                changed = true;
-            }
-            if (changed) {
-                updateClaudeCodeTools(proc);
-                claudeCodeToolRunning = false;
-                currentActionText = randomThinkingVerb();
-            }
-            return;
-        }
-
-        if (evt.type === "result") {
-            var resText = (evt.result !== undefined && evt.result !== null) ? String(evt.result) : "";
-            var errored = (evt.is_error === true) || (evt.subtype && String(evt.subtype).indexOf("error") !== -1);
-            proc.resultUsage = mergeResultUsage(proc.resultUsage, evt);
-            // The CLI sends one result per turn and a backgrounded subagent adds a
-            // turn, so a later result only updates the usage line.
-            if (proc.done) {
-                proc.usage = usageSummary(proc.resultUsage);
-                setClaudeCodeBubble(proc, "usageText", proc.usage);
-                chatStore.persist();
-                return;
-            }
-            // With a backgrounded subagent still running, the CLI starts another
-            // turn once it reports back, and that turn ends with its own result.
-            if (!errored && proc.tools.some(t => t.async && !t.done)) {
-                proc.usage = usageSummary(proc.resultUsage);
-                return;
-            }
-            if (errored && (isClaudeCodeAuthError(resText) || isClaudeCodeAuthError(proc.errAcc))) {
-                proc.acc = claudeCodeAuthHint();
-            } else if (proc.acc.trim() === "" && resText !== "") {
-                proc.acc = resText;
-            } else if (errored && resText !== "" && proc.acc.indexOf(resText) === -1) {
-                proc.acc = proc.acc.replace(/\s+$/, "") + "\n\n⚠️ " + resText;
-            }
-            proc.usage = usageSummary(proc.resultUsage);
-            finalizeClaudeCode(proc);
-            return;
-        }
+    function onClaudeCodeUsage(proc, usage) {
+        chatStore.update(proc.chatId, proc.msgId, { "usageText": usage });
+        chatStore.persist();
     }
 
-    // task_started / task_progress / task_notification for subagents.
-    function onClaudeCodeTaskEvent(proc, evt) {
-        if (!evt.tool_use_id || String(evt.subtype || "").indexOf("task_") !== 0)
-            return;
-        var t = claudeCodeTool(proc, evt.tool_use_id);
-        if (!t) {
-            // A nested subagent: its progress rolls up into the top-level card.
-            var top = agentCardFor(proc, evt.tool_use_id);
-            if (top && top.id !== evt.tool_use_id && evt.description && evt.subtype === "task_progress") {
-                top.progress = evt.description;
-                updateClaudeCodeTools(proc);
-            }
-            return;
-        }
-        if (evt.subagent_type)
-            t.agentType = evt.subagent_type;
-        if (evt.subtype === "task_progress" && evt.description)
-            t.progress = evt.description;
-        if (evt.usage) {
-            t.toolUses = evt.usage.tool_uses || t.toolUses || 0;
-            t.tokens = evt.usage.total_tokens || t.tokens || 0;
-            t.durationMs = evt.usage.duration_ms || t.durationMs || 0;
-        }
-        if (evt.subtype === "task_notification") {
-            if (evt.status && evt.status !== "completed")
-                t.isError = true;
-            if (t.async && !t.done) {
-                t.result = evt.summary || "";
-                t.done = true;
-                t.progress = "";
-                var st = t.steps || [];
-                for (var k = 0; k < st.length; k++)
-                    st[k].done = true;
-            }
-        }
-        if (proc.chatId === currentChatId && evt.subtype === "task_progress" && t.progress !== "") {
-            var shown = shortPaths(t.progress);
-            currentActionText = shown.length > 40 ? shown.substring(0, 40) + "…" : shown;
-        }
-        updateClaudeCodeTools(proc);
-    }
-
-    // Tool calls and results made inside a subagent, listed on its card.
-    function onClaudeCodeSubagentEvent(proc, evt) {
-        var card = agentCardFor(proc, evt.parent_tool_use_id);
-        if (!card || !evt.message || !Array.isArray(evt.message.content))
-            return;
-        if (!card.steps)
-            card.steps = [];
-        var changed = false;
-        for (var i = 0; i < evt.message.content.length; i++) {
-            var b = evt.message.content[i];
-            if (evt.type === "assistant" && b.type === "tool_use") {
-                proc.agentOf[b.id] = card.id;
-                card.steps.push({ id: b.id, name: b.name || "tool", summary: toolSummary(b.name, b.input), done: false, isError: false });
-                changed = true;
-            } else if (evt.type === "user" && b.type === "tool_result") {
-                for (var j = 0; j < card.steps.length; j++)
-                    if (card.steps[j].id === b.tool_use_id) {
-                        card.steps[j].done = true;
-                        card.steps[j].isError = b.is_error === true;
-                        changed = true;
-                    }
-            }
-        }
-        // Long-running subagents: keep only the latest steps on the card.
-        if (card.steps.length > 30)
-            card.steps = card.steps.slice(card.steps.length - 30);
-        if (changed)
-            updateClaudeCodeTools(proc);
-    }
-
-    function finalizeClaudeCode(proc) {
-        if (proc.done)
-            return;
-        proc.done = true;
-        // A tool the CLI never answered (stopped, crashed) is no longer running.
-        for (var i = 0; i < proc.tools.length; i++) {
-            proc.tools[i].done = true;
-            proc.tools[i].progress = "";
-            var st = proc.tools[i].steps || [];
-            for (var k = 0; k < st.length; k++)
-                st[k].done = true;
-        }
-        var finalText = (proc.acc || "").trim();
-        if (finalText === "" && proc.tools.length === 0)
-            finalText = proc.stopped ? qsTr("(stopped)") : "(no output)";
-        if (proc.sess !== "")
-            setClaudeCodeSession(proc.chatId, proc.sess);
+    function onClaudeCodeCompleted(proc, reply) {
+        var text = reply.text;
+        if (text === "" && reply.tools.length === 0)
+            text = proc.stopped ? qsTr("(stopped)") : "(no output)";
+        setClaudeCodeSession(proc.chatId, reply.sessionId);
         chatStore.update(proc.chatId, proc.msgId, {
-            "text": finalText,
-            "toolsJson": proc.tools.length > 0 ? JSON.stringify(proc.tools) : "",
-            "usageText": proc.usage,
+            "text": text,
+            "toolsJson": reply.tools.length > 0 ? JSON.stringify(reply.tools) : "",
+            "usageText": reply.usage,
             "isFinished": true
         });
         chatStore.persist();
@@ -1704,24 +1162,9 @@ Item {
         }
     }
 
-    function onClaudeCodeExit(proc, code) {
-        if (!proc.done) {
-            if ((proc.acc || "").trim() === "" && !proc.stopped) {
-                if (isClaudeCodeAuthError(proc.errAcc)) {
-                    proc.acc = claudeCodeAuthHint();
-                } else if (code !== 0) {
-                    var err = (proc.errAcc || "").trim();
-                    var lines = err.split("\n");
-                    if (lines.length > 20)
-                        err = lines.slice(lines.length - 20).join("\n");
-                    proc.acc = "⚠️ Claude Code exited with code " + code + "."
-                        + (err !== "" ? "\n\n```\n" + err + "\n```" : "\n\nIs the `claude` CLI installed and logged in? Try running `claude` in a terminal.");
-                }
-            }
-            finalizeClaudeCode(proc);
-        }
-        if (root.currentClaudeCodeProc === proc)
-            root.currentClaudeCodeProc = null;
+    function onClaudeCodeEnded(proc) {
+        if (currentClaudeCodeProc === proc)
+            currentClaudeCodeProc = null;
         proc.destroy();
     }
 
@@ -2069,7 +1512,7 @@ Item {
         }
 
         if (root.isClaudeCode) {
-            root.sendClaudeCode(withAttachmentList(promptText, attachments), attachments);
+            root.sendClaudeCode(ClaudeCode.withAttachmentList(promptText, attachments), attachments);
             return;
         }
 
@@ -2772,7 +2215,7 @@ Item {
                  verticalPadding: 4
                  visible: root.isClaudeCode
 
-                 active: menuItems.find(m => m.modelData === root.effectiveClaudeCodePermissionMode(root.claudeCodePermissionMode)) ?? menuItems[0] ?? null
+                 active: menuItems.find(m => m.modelData === ClaudeCode.effectivePermissionMode(root.claudeCodePermissionMode, GlobalConfig.ai.claudeCodeSkipPermissions)) ?? menuItems[0] ?? null
                  menu.onItemSelected: item => root.setClaudeCodePermissionMode(item.modelData)
 
                  menuItems: permissionVariants.instances
@@ -3142,7 +2585,7 @@ Item {
                                      width: Math.min(implicitWidth, statusFooter.maxBubbleWidth - Tokens.padding.medium * 2 - 8)
                                      leftPadding: 20 + Tokens.spacing.small
                                      text: root.formatElapsed(root.claudeCodeElapsed)
-                                         + (root.claudeCodeOutTokens > 0 ? " · ↓ " + root.formatTokens(root.claudeCodeOutTokens) + " tokens" : "")
+                                         + (root.claudeCodeOutTokens > 0 ? " · ↓ " + ClaudeCode.formatTokens(root.claudeCodeOutTokens) + " tokens" : "")
                                      color: Colours.palette.m3outline
                                      font.family: Tokens.font.mono.small.family
                                      font.pointSize: Tokens.font.label.small.pointSize
@@ -3460,7 +2903,7 @@ Item {
                                                  required property int index
                                                  readonly property var tool: segmentItem.segment.tools[index] || ({})
                                                  property bool expanded: false
-                                                 readonly property bool isAgent: root.isAgentTool(tool.name)
+                                                 readonly property bool isAgent: ClaudeCode.isAgentTool(tool.name)
                                                  readonly property var steps: tool.steps || []
                                                  // Collapsed running subagent: show just its latest steps.
                                                  readonly property var visibleSteps: expanded ? steps : (!tool.done ? steps.slice(-3) : [])
@@ -3559,7 +3002,7 @@ Item {
                                                          visible: toolCard.isAgent && text !== ""
                                                          width: parent.width
                                                          text: {
-                                                             const stats = root.agentStatsText(toolCard.tool);
+                                                             const stats = ClaudeCode.agentStatsText(toolCard.tool);
                                                              const step = !toolCard.tool.done ? root.shortPaths(toolCard.tool.progress) : "";
                                                              return step !== "" && stats !== "" ? step + " · " + stats : (step || stats);
                                                          }
@@ -4260,5 +3703,24 @@ Item {
                  }
              }
          }
+    }
+
+    Component {
+        id: claudeCodeSessionComponent
+
+        ClaudeCodeSession {
+            id: session
+
+            onTextUpdated: text => root.onClaudeCodeText(session, text)
+            onThoughtUpdated: text => root.onClaudeCodeThought(session, text)
+            onToolsUpdated: tools => root.onClaudeCodeTools(session, tools)
+            onToolStarted: name => root.onClaudeCodeToolStarted(session, name)
+            onToolsDone: root.onClaudeCodeToolsDone(session)
+            onProgressed: text => root.onClaudeCodeProgress(session, text)
+            onOutputTokensUpdated: count => root.onClaudeCodeTokens(session, count)
+            onUsageUpdated: usage => root.onClaudeCodeUsage(session, usage)
+            onCompleted: reply => root.onClaudeCodeCompleted(session, reply)
+            onEnded: root.onClaudeCodeEnded(session)
+        }
     }
 }
