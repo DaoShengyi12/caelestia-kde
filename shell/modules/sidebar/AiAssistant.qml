@@ -226,9 +226,6 @@ Item {
         chatStore.setChatProps(currentChatId, { "claudeCodePermissionMode": mode });
     }
 
-    // A file dialog is open (keeps the sidebar loaded, see Content.aiBusy).
-    readonly property bool dialogOpen: cwdDialog.activeAsync || attachDialog.activeAsync
-
     function shortPath(p) {
         var home = Quickshell.env("HOME") || "";
         if (home !== "" && (p === home || p.indexOf(home + "/") === 0))

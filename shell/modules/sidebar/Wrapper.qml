@@ -16,7 +16,7 @@ Item {
     property bool followsPopout: false
     readonly property Props props: Props {}
     readonly property bool shouldBeActive: visibilities.sidebar && Config.sidebar.enabled && !visibilities.overview
-    property bool aiBusy: false
+    property bool keepLoaded: false
     property real offsetScale: shouldBeActive ? 0 : 1
     // The sidebar sits against the right edge unless the bar is there.
     readonly property bool onRight: Config.bar.position !== "right"
@@ -31,8 +31,8 @@ Item {
     opacity: 1 - offsetScale
 
     Connections {
-        function onAiBusyChanged(): void {
-            root.aiBusy = content.item ? content.item.aiBusy : false;
+        function onKeepLoadedChanged(): void {
+            root.keepLoaded = content.item ? content.item.keepLoaded : false;
         }
 
         target: content.item
@@ -64,7 +64,7 @@ Item {
         anchors.leftMargin: Tokens.padding.large
         anchors.margins: CUtils.clamp(anchors.leftMargin - Config.border.thickness, 0, anchors.leftMargin)
         anchors.bottomMargin: 0
-        active: root.shouldBeActive || root.visible || root.aiBusy
+        active: root.shouldBeActive || root.visible || root.keepLoaded
         sourceComponent: Content {
             implicitWidth: root.implicitWidth - content.anchors.leftMargin - content.anchors.margins
             props: root.props
