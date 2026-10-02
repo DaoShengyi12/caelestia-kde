@@ -19,7 +19,7 @@ Item {
     required property ShellScreen screenData
     // Wallpaper layer, sampled for the frosted cards of large items.
     property Item wallpaper: null
-    readonly property point gridOrigin: Qt.point(gridItem.x, gridItem.y)
+    readonly property point gridOrigin: Qt.point(gridItem.x + pageStrip.x, gridItem.y)
 
     readonly property var screenConfig: GlobalConfig.forScreen(screenData.name).background
     readonly property bool materialYou: screenConfig.materialYouIconsEnabled
@@ -32,6 +32,33 @@ Item {
     readonly property int cols: Math.max(1, Math.floor(gridItem.areaWidth / cellWidth))
     readonly property int rows: Math.max(1, Math.floor(gridItem.areaHeight / cellHeight))
     readonly property bool gridReady: gridItem.areaWidth > 0 && gridItem.areaHeight > 0
+
+    // Pages sit side by side, a screen width apart. Layout code sees them as
+    // one wide grid: column c of page p is column p * cols + c. DesktopLayout
+    // keeps the page itself, so items stay on their page when cols changes.
+    readonly property real pageStride: width
+    readonly property int storedPages: {
+        let last = 0;
+        for (const key in DesktopLayout.positions)
+            last = Math.max(last, DesktopLayout.positions[key].page ?? 0);
+        return last + 1;
+    }
+    // An empty page after the last one, opened by dragging past its edge.
+    property bool extraPage: false
+    readonly property int pageCount: storedPages + (extraPage ? 1 : 0)
+    readonly property int totalCols: pageCount * cols
+    property int currentPage: 0
+    // Pages the view is dragged off currentPage by a touchpad swipe.
+    property real swipeOffset: 0
+    property bool swiping: false
+    readonly property var layout: {
+        const out = {};
+        for (const key in DesktopLayout.positions) {
+            const p = DesktopLayout.positions[key];
+            out[key] = { col: (p.page ?? 0) * cols + p.col, row: p.row };
+        }
+        return out;
+    }
     readonly property bool folderReady: folderModel.status === FolderListModel.Ready
 
     // File name -> FileEntry for everything in ~/Desktop.
@@ -70,7 +97,7 @@ Item {
     // its layer-shell keyboard focus on this so the editor can type.
     property Item renamingDelegate: null
     readonly property bool renameActive: renamingDelegate !== null
-    readonly property var displayPositions: previewPositions ?? DesktopLayout.positions
+    readonly property var displayPositions: previewPositions ?? layout
     // Key -> { w, h } for everything bigger than one cell: large folders and widgets.
     readonly property var spans: {
         const out = {};
@@ -169,8 +196,8 @@ Item {
             return groupPopup.memberPositions();
         const out = {};
         for (const key of topLevelKeys())
-            if (DesktopLayout.positions[key])
-                out[key] = DesktopLayout.positions[key];
+            if (layout[key])
+                out[key] = layout[key];
         return out;
     }
 
@@ -181,7 +208,9 @@ Item {
             return true;
         const c = Math.floor((x - gridItem.x) / cellWidth);
         const r = Math.floor((y - gridItem.y) / cellHeight);
-        return cellOccupant(c, r, []) !== "";
+        if (c < 0 || c >= cols)
+            return false;
+        return cellOccupant(currentPage * cols + c, r, []) !== "";
     }
 
     function cellOccupant(col: int, row: int, exclude: var): string {
@@ -224,8 +253,8 @@ Item {
 
     function arranged(positions: var, newKeys: var): var {
         if (DesktopLayout.sortKey !== "")
-            return Engine.compact(Engine.sortItems(Object.keys(positions).concat(newKeys).map(describe), DesktopLayout.sortKey).map(i => i.key), rows, spans);
-        return Engine.compact(Engine.orderedKeys(positions, rows).concat(newKeys), rows, spans);
+            return Engine.compact(Engine.sortItems(Object.keys(positions).concat(newKeys).map(describe), DesktopLayout.sortKey).map(i => i.key), rows, spans, cols);
+        return Engine.compact(Engine.orderedKeys(positions, rows).concat(newKeys), rows, spans, cols);
     }
 
     function samePositions(a: var, b: var): bool {
@@ -233,9 +262,48 @@ Item {
         if (ka.length !== Object.keys(b).length)
             return false;
         for (const k of ka)
-            if (!b[k] || b[k].col !== a[k].col || b[k].row !== a[k].row)
+            if (!b[k] || b[k].col !== a[k].col || b[k].row !== a[k].row || b[k].page !== a[k].page)
                 return false;
         return true;
+    }
+
+    // Stores positions given in wide-grid columns. Items that did not move
+    // keep what is stored, so ones a shrunken grid pushed off their page
+    // wait for refit() instead of jumping to the next page.
+    function commitPositions(next: var): void {
+        const out = {};
+        for (const key in next) {
+            const v = next[key];
+            const was = layout[key];
+            if (was && was.col === v.col && was.row === v.row && DesktopLayout.positions[key])
+                out[key] = DesktopLayout.positions[key];
+            else
+                out[key] = { page: Math.floor(v.col / cols), col: v.col % cols, row: v.row };
+        }
+        DesktopLayout.setPositions(Engine.normalizePages(out));
+    }
+
+    function pageOfCol(col: int): int {
+        return Math.floor(col / cols);
+    }
+
+    // x of a wide-grid column inside pageStrip.
+    function cellX(col: int): real {
+        return pageOfCol(col) * pageStride + (col % cols) * cellWidth;
+    }
+
+    // Wide-grid column under x (root coordinates) on the current page.
+    function colAt(x: real): int {
+        return currentPage * cols + Math.max(0, Math.min(cols - 1, Math.floor((x - gridItem.x) / cellWidth)));
+    }
+
+    function setPage(page: int): void {
+        currentPage = Math.max(0, Math.min(pageCount - 1, page));
+    }
+
+    function keysOnPage(page: int): var {
+        const positions = contextPositionsTopLevel();
+        return Object.keys(positions).filter(k => pageOfCol(positions[k].col) === page);
     }
 
     function syncEntries(): void {
@@ -283,7 +351,7 @@ Item {
         for (const id in DesktopLayout.widgets)
             desired.push(DesktopLayout.widgetKey(id));
 
-        const old = DesktopLayout.positions;
+        const old = layout;
         const positions = {};
         for (const key of desired) {
             if (old[key]) {
@@ -324,10 +392,10 @@ Item {
             let cell;
             const span = spanOf(key);
             if (wanted) {
-                cell = Engine.nearestFree(occ, wanted.col, wanted.row, cols, rows, span);
+                cell = Engine.nearestFree(occ, wanted.col, wanted.row, totalCols, rows, span, cols);
                 delete pendingPlacements[name];
             } else {
-                cell = Engine.firstFree(occ, cols, rows, span);
+                cell = Engine.firstFree(occ, totalCols, rows, span, cols, currentPage);
             }
             if (DesktopLayout.autoArrange && !wanted) {
                 newKeys.push(key);
@@ -342,7 +410,7 @@ Item {
         if (groupsChanged)
             DesktopLayout.setGroups(groups);
         if (!samePositions(next, old))
-            DesktopLayout.setPositions(next);
+            commitPositions(next);
 
         // Mirror the top-level keys in the models, keeping existing delegates.
         // Large folders and widgets get their own delegate type.
@@ -372,17 +440,25 @@ Item {
     function refit(): void {
         if (!DesktopLayout.loaded || !gridReady)
             return;
-        const current = contextPositionsTopLevel();
-        const next = DesktopLayout.autoArrange ? arranged(current, []) : Engine.fitIntoGrid(current, cols, rows, spans);
-        if (!samePositions(next, current))
-            DesktopLayout.setPositions(Object.assign({}, DesktopLayout.positions, next));
+        if (DesktopLayout.autoArrange) {
+            const current = contextPositionsTopLevel();
+            const next = arranged(current, []);
+            if (!samePositions(next, current))
+                commitPositions(Object.assign({}, layout, next));
+            return;
+        }
+        // Works on the stored pages: what a page cannot hold any more moves on
+        // to the next one.
+        const next = Engine.fitPages(DesktopLayout.positions, cols, rows, spans);
+        if (!samePositions(next, DesktopLayout.positions))
+            DesktopLayout.setPositions(next);
     }
 
     function contextPositionsTopLevel(): var {
         const out = {};
         for (const key of topLevelKeys())
-            if (DesktopLayout.positions[key])
-                out[key] = DesktopLayout.positions[key];
+            if (layout[key])
+                out[key] = layout[key];
         return out;
     }
 
@@ -390,7 +466,7 @@ Item {
         DesktopLayout.setSortKey(key);
         const current = contextPositionsTopLevel();
         const order = Engine.sortItems(Object.keys(current).map(describe), key).map(i => i.key);
-        DesktopLayout.setPositions(Engine.compact(order, rows, spans));
+        commitPositions(Engine.compact(order, rows, spans, cols));
         if (!DesktopLayout.autoArrange)
             DesktopLayout.setSortKey("");
     }
@@ -625,7 +701,7 @@ Item {
             groups[id] = Object.assign({}, groups[id], { members });
         }
 
-        const positions = Object.assign({}, DesktopLayout.positions);
+        const positions = Object.assign({}, layout);
         for (const key of keys)
             delete positions[key];
         for (const n of names)
@@ -634,7 +710,7 @@ Item {
         if (cell)
             positions[gkey] = { col: cell.col, row: cell.row };
         DesktopLayout.setGroups(groups);
-        DesktopLayout.setPositions(positions);
+        commitPositions(positions);
         setSelection([gkey]);
         focusKey = gkey;
         anchorKey = gkey;
@@ -646,7 +722,7 @@ Item {
         if (openGroupId !== "" || !groupable(keys))
             return;
         const first = Engine.orderedKeys(contextPositions(), rows).find(k => keys.indexOf(k) !== -1);
-        makeGroup(keys, DesktopLayout.positions[first], "");
+        makeGroup(keys, layout[first], "");
     }
 
     function ungroup(id: string): void {
@@ -656,14 +732,14 @@ Item {
         const gkey = DesktopLayout.groupKey(id);
         const groups = Object.assign({}, DesktopLayout.groups);
         delete groups[id];
-        const positions = Object.assign({}, DesktopLayout.positions);
+        const positions = Object.assign({}, layout);
         const at = positions[gkey];
         delete positions[gkey];
         const occ = Engine.occupancy(positions, null, spans);
         const keys = [];
         for (const m of g.members) {
             const key = DesktopLayout.fileKey(m);
-            const cell = at ? Engine.nearestFree(occ, at.col, at.row, cols, rows) : Engine.firstFree(occ, cols, rows);
+            const cell = at ? Engine.nearestFree(occ, at.col, at.row, totalCols, rows, null, cols) : Engine.firstFree(occ, totalCols, rows, null, cols, currentPage);
             positions[key] = cell;
             Engine.markRect(occ, cell, { w: 1, h: 1 }, key);
             keys.push(key);
@@ -671,7 +747,7 @@ Item {
         if (openGroupId === id)
             openGroupId = "";
         DesktopLayout.setGroups(groups);
-        DesktopLayout.setPositions(DesktopLayout.autoArrange ? arranged(positions, []) : positions);
+        commitPositions(DesktopLayout.autoArrange ? arranged(positions, []) : positions);
         Qt.callLater(() => {
             syncEntries();
             setSelection(keys);
@@ -685,7 +761,7 @@ Item {
             return;
         const groups = Object.assign({}, DesktopLayout.groups);
         const left = g.members.filter(m => names.indexOf(m) === -1);
-        const positions = Object.assign({}, DesktopLayout.positions);
+        const positions = Object.assign({}, layout);
         const gkey = DesktopLayout.groupKey(id);
         const groupCell = positions[gkey];
         if (left.length >= 2) {
@@ -699,15 +775,15 @@ Item {
                 openGroupId = "";
         }
         const occ = Engine.occupancy(positions, null, spans);
-        const from = cell ?? groupCell ?? { col: 0, row: 0 };
+        const from = cell ?? groupCell ?? { col: currentPage * cols, row: 0 };
         for (const n of names) {
             const key = DesktopLayout.fileKey(n);
-            const c = Engine.nearestFree(occ, from.col, from.row, cols, rows);
+            const c = Engine.nearestFree(occ, from.col, from.row, totalCols, rows, null, cols);
             positions[key] = c;
             Engine.markRect(occ, c, { w: 1, h: 1 }, key);
         }
         DesktopLayout.setGroups(groups);
-        DesktopLayout.setPositions(DesktopLayout.autoArrange ? arranged(positions, []) : positions);
+        commitPositions(DesktopLayout.autoArrange ? arranged(positions, []) : positions);
         Qt.callLater(syncEntries);
     }
 
@@ -749,16 +825,16 @@ Item {
         const current = contextPositionsTopLevel();
         const s = spansWith(key, w, h);
         if (DesktopLayout.autoArrange)
-            return Engine.compact(Engine.orderedKeys(current, rows), rows, s);
-        return Engine.planMove(current, [key], key, current[key], cols, rows, s);
+            return Engine.compact(Engine.orderedKeys(current, rows), rows, s, cols);
+        return Engine.planMove(current, [key], key, current[key], totalCols, rows, s, cols);
     }
 
     function previewResize(key: string, w: int, h: int): void {
-        if (!DesktopLayout.positions[key])
+        if (!layout[key])
             return;
         const next = resizePlan(key, w, h);
         previewSpans = spansWith(key, w, h);
-        previewPositions = Object.assign({}, DesktopLayout.positions, next);
+        previewPositions = Object.assign({}, layout, next);
     }
 
     function endResizePreview(): void {
@@ -768,10 +844,10 @@ Item {
 
     function resizeItem(key: string, w: int, h: int): void {
         endResizePreview();
-        const pos = DesktopLayout.positions[key];
+        const pos = layout[key];
         if (!pos)
             return;
-        const next = Object.assign({}, DesktopLayout.positions, resizePlan(key, w, h));
+        const next = Object.assign({}, layout, resizePlan(key, w, h));
         if (isGroupKey(key)) {
             const id = nameOf(key);
             const groups = Object.assign({}, DesktopLayout.groups);
@@ -787,7 +863,7 @@ Item {
             widgets[id] = Object.assign({}, widgets[id], { size: { w, h } });
             DesktopLayout.setWidgets(widgets);
         }
-        DesktopLayout.setPositions(next);
+        commitPositions(next);
         Qt.callLater(syncEntries);
     }
 
@@ -800,11 +876,11 @@ Item {
         const widgets = Object.assign({}, DesktopLayout.widgets);
         widgets[id] = { type, size: { w: info.size.w, h: info.size.h }, config: Object.assign({}, info.config ?? {}) };
         const occ = Engine.occupancy(contextPositionsTopLevel(), null, spans);
-        const at = cell ? Engine.nearestFree(occ, cell.col, cell.row, cols, rows, info.size) : Engine.firstFree(occ, cols, rows, info.size);
-        const positions = Object.assign({}, DesktopLayout.positions);
+        const at = cell ? Engine.nearestFree(occ, cell.col, cell.row, totalCols, rows, info.size, cols) : Engine.firstFree(occ, totalCols, rows, info.size, cols, currentPage);
+        const positions = Object.assign({}, layout);
         positions[key] = at;
         DesktopLayout.setWidgets(widgets);
-        DesktopLayout.setPositions(DesktopLayout.autoArrange ? Object.assign(positions, arranged(Object.assign(contextPositionsTopLevel(), { [key]: at }), [])) : positions);
+        commitPositions(DesktopLayout.autoArrange ? Object.assign(positions, arranged(Object.assign(contextPositionsTopLevel(), { [key]: at }), [])) : positions);
         Qt.callLater(() => {
             syncEntries();
             setSelection([key]);
@@ -813,7 +889,7 @@ Item {
 
     function removeWidgets(keys: var): void {
         const widgets = Object.assign({}, DesktopLayout.widgets);
-        const positions = Object.assign({}, DesktopLayout.positions);
+        const positions = Object.assign({}, layout);
         let changed = false;
         for (const key of keys) {
             if (!isWidgetKey(key) || !widgets[nameOf(key)])
@@ -825,7 +901,7 @@ Item {
         if (!changed)
             return;
         DesktopLayout.setWidgets(widgets);
-        DesktopLayout.setPositions(positions);
+        commitPositions(positions);
         Qt.callLater(syncEntries);
     }
 
@@ -1073,6 +1149,99 @@ os.replace(tmp, path)
         dragGroup = "";
         dragAnchor = "";
         clearDropPreview();
+        stopEdgeFlip();
+        extraPage = false;
+    }
+
+    // ---- Pages ------------------------------------------------------------
+
+    property int edgeDir: 0
+    property point edgePoint
+    property bool edgeInternal: false
+
+    // Holding a drag at the left or right edge turns the page. Past the last
+    // page an empty one opens, unless the drag would leave the last page empty.
+    function trackDragEdge(x: real, y: real, internal: bool): void {
+        edgePoint = Qt.point(x, y);
+        edgeInternal = internal;
+        // The margins beside the grid, so hovering over the outer columns
+        // still places there.
+        const left = Math.max(Tokens.padding.extraLarge, gridItem.x);
+        const right = Math.min(width - Tokens.padding.extraLarge, gridItem.x + gridItem.width);
+        const dir = x < left ? -1 : x > right ? 1 : 0;
+        if (dir === edgeDir)
+            return;
+        edgeDir = dir;
+        if (dir !== 0)
+            edgeFlipTimer.restart();
+        else
+            edgeFlipTimer.stop();
+    }
+
+    function stopEdgeFlip(): void {
+        edgeDir = 0;
+        edgeFlipTimer.stop();
+    }
+
+    function flipFromEdge(): void {
+        if (edgeDir < 0 && currentPage > 0) {
+            setPage(currentPage - 1);
+        } else if (edgeDir > 0) {
+            if (currentPage < pageCount - 1) {
+                setPage(currentPage + 1);
+            } else if (edgeInternal && !extraPage) {
+                const last = keysOnPage(currentPage);
+                if (dragGroup !== "" || last.some(k => dragKeys.indexOf(k) === -1)) {
+                    extraPage = true;
+                    setPage(currentPage + 1);
+                }
+            }
+        }
+        updateDropPreview(edgePoint.x, edgePoint.y, edgeInternal);
+    }
+
+    property real wheelAngle: 0
+
+    // Mouse wheels turn one page per notch. Touchpads drag the pages along
+    // sideways and settle on the nearest one when the fingers lift.
+    function pageWheel(event: var): void {
+        if (wheelCooldown.running || event.phase === Qt.ScrollMomentum)
+            return;
+        const px = event.pixelDelta;
+        if (px.x === 0 && px.y === 0) {
+            wheelAngle += Math.abs(event.angleDelta.x) > Math.abs(event.angleDelta.y) ? event.angleDelta.x : event.angleDelta.y;
+            if (Math.abs(wheelAngle) >= 120) {
+                setPage(currentPage + (wheelAngle < 0 ? 1 : -1));
+                wheelAngle = 0;
+                wheelCooldown.restart();
+            }
+            return;
+        }
+        // Scrolling up and down on a touchpad does nothing, like on a phone.
+        if (!swiping && Math.abs(px.x) <= Math.abs(px.y))
+            return;
+        swiping = true;
+        let d = -px.x / pageStride;
+        const at = currentPage + swipeOffset;
+        if ((at < 0 && d < 0) || (at > pageCount - 1 && d > 0))
+            d *= 0.3;
+        swipeOffset = Math.max(-1, Math.min(1, swipeOffset + d));
+        if (event.phase === Qt.ScrollEnd)
+            settleSwipe();
+        else
+            swipeEndTimer.restart();
+    }
+
+    function settleSwipe(): void {
+        swipeEndTimer.stop();
+        if (!swiping)
+            return;
+        const step = swipeOffset > 0.25 ? 1 : swipeOffset < -0.25 ? -1 : 0;
+        swiping = false;
+        const page = Math.max(0, Math.min(pageCount - 1, currentPage + step));
+        swipeOffset = 0;
+        currentPage = page;
+        wheelCooldown.restart();
     }
 
     function clearDropPreview(): void {
@@ -1083,7 +1252,7 @@ os.replace(tmp, path)
 
     function cellAt(x: real, y: real): var {
         return {
-            col: Math.max(0, Math.min(cols - 1, Math.floor((x - gridItem.x) / cellWidth))),
+            col: colAt(x),
             row: Math.max(0, Math.min(rows - 1, Math.floor((y - gridItem.y) / cellHeight)))
         };
     }
@@ -1096,8 +1265,9 @@ os.replace(tmp, path)
     function dropPlan(x: real, y: real, internal: bool): var {
         const gx = x - gridItem.x;
         const gy = y - gridItem.y;
+        const pageStart = currentPage * cols;
         const cell = {
-            col: Math.max(0, Math.min(cols - 1, Math.floor(gx / cellWidth))),
+            col: colAt(x),
             row: Math.max(0, Math.min(rows - 1, Math.floor(gy / cellHeight)))
         };
         const moving = internal && dragGroup === "" ? dragKeys : [];
@@ -1105,7 +1275,7 @@ os.replace(tmp, path)
         // Large items land where their top-left corner is closest to, not
         // where the pointer is, so they stay under the dragged image.
         const place = moving.length > 0 && isBigKey(dragAnchor) ? {
-            col: Math.max(0, Math.min(cols - 1, Math.round((gx - dragHotSpot.x) / cellWidth))),
+            col: pageStart + Math.max(0, Math.min(cols - 1, Math.round((gx - dragHotSpot.x) / cellWidth))),
             row: Math.max(0, Math.min(rows - 1, Math.round((gy - dragHotSpot.y) / cellHeight)))
         } : cell;
         const plan = { cell, place, target, mode: "place", dest: "" };
@@ -1128,7 +1298,7 @@ os.replace(tmp, path)
         }
 
         const tile = tiles[target];
-        if (!tile || !tile.overIcon(gx - cell.col * cellWidth, gy - cell.row * cellHeight))
+        if (!tile || !tile.overIcon(gx - (cell.col - pageStart) * cellWidth, gy - cell.row * cellHeight))
             return plan;
         const targetEntry = entryOf(target);
         if (targetEntry?.fileIsDir) {
@@ -1166,13 +1336,13 @@ os.replace(tmp, path)
             anchor = moving.indexOf(dragAnchor) !== -1 ? dragAnchor : moving[0];
             moving.forEach((k, i) => base[k] = { col: plan.cell.col, row: plan.cell.row + i });
         }
-        const next = DesktopLayout.autoArrange ? Engine.planInsert(base, moving, plan.place, rows, spans) : Engine.planMove(base, moving, anchor, plan.place, cols, rows, spans);
+        const next = DesktopLayout.autoArrange ? Engine.planInsert(base, moving, plan.place, rows, spans, cols) : Engine.planMove(base, moving, anchor, plan.place, totalCols, rows, spans, cols);
         dropCells = moving.map(k => Object.assign({}, next[k], spanOf(k)));
         // The dragged items stay faded where they were; only the others move aside.
-        const shown = Object.assign({}, DesktopLayout.positions, next);
+        const shown = Object.assign({}, layout, next);
         for (const k of moving)
-            if (DesktopLayout.positions[k])
-                shown[k] = DesktopLayout.positions[k];
+            if (layout[k])
+                shown[k] = layout[k];
         previewPositions = shown;
     }
 
@@ -1211,15 +1381,15 @@ os.replace(tmp, path)
         if (plan.mode === "merge" || plan.mode === "join") {
             const into = plan.mode === "join" ? nameOf(plan.target) : "";
             const merging = plan.mode === "merge" ? [plan.target].concat(keys) : keys;
-            makeGroup(merging, DesktopLayout.positions[plan.target], into);
+            makeGroup(merging, layout[plan.target], into);
             return;
         }
         if (fromGroup !== "") {
             removeFromGroup(fromGroup, keys.filter(k => !isGroupKey(k)).map(nameOf), plan.cell);
             return;
         }
-        const landed = DesktopLayout.autoArrange ? Engine.planInsert(contextPositionsTopLevel(), keys, plan.place, rows, spans) : Engine.planMove(contextPositionsTopLevel(), keys, dragAnchor || keys[0], plan.place, cols, rows, spans);
-        DesktopLayout.setPositions(Object.assign({}, DesktopLayout.positions, landed));
+        const landed = DesktopLayout.autoArrange ? Engine.planInsert(contextPositionsTopLevel(), keys, plan.place, rows, spans, cols) : Engine.planMove(contextPositionsTopLevel(), keys, dragAnchor || keys[0], plan.place, totalCols, rows, spans, cols);
+        commitPositions(Object.assign({}, layout, landed));
         if (DesktopLayout.sortKey !== "")
             DesktopLayout.setSortKey("");
     }
@@ -1233,6 +1403,8 @@ os.replace(tmp, path)
             return;
         keyboardActive = true;
         focusKey = key;
+        if (openGroupId === "" && layout[key])
+            setPage(pageOfCol(layout[key].col));
         if (extend) {
             setSelection(rangeTo(key));
         } else {
@@ -1281,7 +1453,9 @@ os.replace(tmp, path)
             else
                 clearSelection();
         } else if (ctrl && event.key === Qt.Key_A) {
-            setSelection(order);
+            setSelection(openGroupId !== "" ? order : keysOnPage(currentPage));
+        } else if (openGroupId === "" && (event.key === Qt.Key_PageUp || event.key === Qt.Key_PageDown)) {
+            setPage(currentPage + (event.key === Qt.Key_PageDown ? 1 : -1));
         } else if (ctrl && event.key === Qt.Key_C) {
             copyKeys(selectedKeys(), false);
         } else if (ctrl && event.key === Qt.Key_X) {
@@ -1324,6 +1498,10 @@ os.replace(tmp, path)
     Keys.onPressed: event => handleKey(event)
 
     onColsChanged: refitTimer.restart()
+    onPageCountChanged: {
+        if (currentPage > pageCount - 1)
+            currentPage = pageCount - 1;
+    }
     onRowsChanged: refitTimer.restart()
     onFolderReadyChanged: Qt.callLater(syncEntries)
     onGridReadyChanged: Qt.callLater(syncEntries)
@@ -1370,6 +1548,27 @@ os.replace(tmp, path)
 
         interval: 300
         onTriggered: root.refit()
+    }
+
+    Timer {
+        id: edgeFlipTimer
+
+        interval: 600
+        repeat: true
+        onTriggered: root.flipFromEdge()
+    }
+
+    Timer {
+        id: swipeEndTimer
+
+        interval: 150
+        onTriggered: root.settleSwipe()
+    }
+
+    Timer {
+        id: wheelCooldown
+
+        interval: 250
     }
 
     Timer {
@@ -1483,12 +1682,22 @@ wl-paste --no-newline --type text/uri-list`]
                 if (!active)
                     return;
                 const r = band.rect();
-                const hit = Engine.keysInRect(root.contextPositionsTopLevel(), Qt.rect(r.x - gridItem.x, r.y - gridItem.y, r.width, r.height), root.cellWidth, root.cellHeight, Tokens.padding.small, root.spans);
+                // Kept to the current page, which starts at its first wide-grid column.
+                const x0 = Math.max(0, r.x - gridItem.x);
+                const x1 = Math.min(gridItem.width, r.x + r.width - gridItem.x);
+                const pageX = root.currentPage * root.cols * root.cellWidth;
+                const hit = x1 <= x0 ? [] : Engine.keysInRect(root.contextPositionsTopLevel(), Qt.rect(pageX + x0, r.y - gridItem.y, x1 - x0, r.height), root.cellWidth, root.cellHeight, Tokens.padding.small, root.spans);
                 const next = Object.assign({}, bandArea.base);
                 for (const k of hit)
                     next[k] = true;
                 root.selection = next;
             }
+        }
+
+        WheelHandler {
+            acceptedModifiers: Qt.NoModifier
+            enabled: root.openGroupId === ""
+            onWheel: event => root.pageWheel(event)
         }
 
         WheelHandler {
@@ -1537,9 +1746,18 @@ wl-paste --no-newline --type text/uri-list`]
             drag.accept(root.isInternal(drag) ? Qt.MoveAction : Qt.CopyAction);
             root.updateDropPreview(drag.x, drag.y, root.isInternal(drag));
         }
-        onPositionChanged: drag => root.updateDropPreview(drag.x, drag.y, root.isInternal(drag))
-        onExited: root.clearDropPreview()
-        onDropped: drop => root.commitDrop(drop)
+        onPositionChanged: drag => {
+            root.trackDragEdge(drag.x, drag.y, root.isInternal(drag));
+            root.updateDropPreview(drag.x, drag.y, root.isInternal(drag));
+        }
+        onExited: {
+            root.stopEdgeFlip();
+            root.clearDropPreview();
+        }
+        onDropped: drop => {
+            root.stopEdgeFlip();
+            root.commitDrop(drop);
+        }
     }
 
     Item {
@@ -1554,150 +1772,187 @@ wl-paste --no-newline --type text/uri-list`]
         // Space the cells may use. Only whole cells fit, so the grid is centred in it
         // and the leftover is split between both sides instead of all going right and down.
         readonly property real areaWidth: root.width - marginLeft - marginRight
-        readonly property real areaHeight: root.height - marginTop - marginBottom
+        // The bottom keeps room for the page dots, whether shown or not, so
+        // pages coming and going never changes the rows.
+        readonly property real areaHeight: root.height - marginTop - marginBottom - pageDots.implicitHeight - Tokens.spacing.small
 
         x: marginLeft + Math.floor((areaWidth - width) / 2)
         y: marginTop + Math.floor((areaHeight - height) / 2)
         width: root.cols * root.cellWidth
         height: root.rows * root.cellHeight
 
-        // Where the dragged items would land.
-        Repeater {
-            model: root.dropCells
+        // Holds every page side by side and slides to show the current one.
+        Item {
+            id: pageStrip
 
-            StyledRect {
-                required property var modelData
+            x: -(root.currentPage + root.swipeOffset) * root.pageStride
+            width: root.pageCount * root.pageStride
+            height: parent.height
 
-                x: modelData.col * root.cellWidth + Tokens.padding.small / 2
-                y: modelData.row * root.cellHeight + Tokens.padding.small / 2
-                width: (modelData.w ?? 1) * root.cellWidth - Tokens.padding.small
-                height: (modelData.h ?? 1) * root.cellHeight - Tokens.padding.small
-                radius: Tokens.rounding.medium
-                color: Qt.alpha(Colours.palette.m3primary, 0.12)
-                border.width: 2
-                border.color: Qt.alpha(Colours.palette.m3primary, 0.6)
+            Behavior on x {
+                enabled: !root.swiping
+
+                Anim {
+                    type: Anim.Emphasized
+                }
             }
-        }
 
-        Repeater {
-            model: bigModel
+            // Where the dragged items would land.
+            Repeater {
+                model: root.dropCells
 
-            BigItem {
-                id: big
+                StyledRect {
+                    required property var modelData
 
-                readonly property var pos: root.displayPositions[key] ?? DesktopLayout.positions[key] ?? null
-
-                controller: root
-                visible: pos !== null
-                width: span.w * root.cellWidth
-                height: span.h * root.cellHeight
-                x: (pos?.col ?? 0) * root.cellWidth
-                y: (pos?.row ?? 0) * root.cellHeight
-                z: resizing ? 3 : 0
-                selected: root.selection[key] === true && root.openGroupId === ""
-                focusVisible: root.keyboardActive && root.focusKey === key && root.openGroupId === ""
-                dimmed: root.dragGroup === "" && root.dragKeys.indexOf(key) !== -1
-                mergeTarget: root.mergeKey === key
-
-                Behavior on x {
-                    Anim {}
+                    x: root.cellX(modelData.col) + Tokens.padding.small / 2
+                    y: modelData.row * root.cellHeight + Tokens.padding.small / 2
+                    width: (modelData.w ?? 1) * root.cellWidth - Tokens.padding.small
+                    height: (modelData.h ?? 1) * root.cellHeight - Tokens.padding.small
+                    radius: Tokens.rounding.medium
+                    color: Qt.alpha(Colours.palette.m3primary, 0.12)
+                    border.width: 2
+                    border.color: Qt.alpha(Colours.palette.m3primary, 0.6)
                 }
+            }
 
-                Behavior on y {
-                    Anim {}
-                }
+            Repeater {
+                model: bigModel
 
-                Behavior on width {
-                    Anim {}
-                }
+                BigItem {
+                    id: big
 
-                Behavior on height {
-                    Anim {}
-                }
+                    readonly property var pos: root.displayPositions[key] ?? root.layout[key] ?? null
 
-                Component.onCompleted: {
-                    const next = Object.assign({}, root.tiles);
-                    next[key] = big;
-                    root.tiles = next;
-                }
-                Component.onDestruction: {
-                    if (root.tiles[key] === big) {
+                    controller: root
+                    visible: pos !== null
+                    width: span.w * root.cellWidth
+                    height: span.h * root.cellHeight
+                    x: root.cellX(pos?.col ?? 0)
+                    y: (pos?.row ?? 0) * root.cellHeight
+                    z: resizing ? 3 : 0
+                    selected: root.selection[key] === true && root.openGroupId === ""
+                    focusVisible: root.keyboardActive && root.focusKey === key && root.openGroupId === ""
+                    dimmed: root.dragGroup === "" && root.dragKeys.indexOf(key) !== -1
+                    mergeTarget: root.mergeKey === key
+
+                    Behavior on x {
+                        Anim {}
+                    }
+
+                    Behavior on y {
+                        Anim {}
+                    }
+
+                    Behavior on width {
+                        Anim {}
+                    }
+
+                    Behavior on height {
+                        Anim {}
+                    }
+
+                    Component.onCompleted: {
                         const next = Object.assign({}, root.tiles);
-                        delete next[key];
+                        next[key] = big;
                         root.tiles = next;
                     }
-                    root.finishRename(big);
-                }
+                    Component.onDestruction: {
+                        if (root.tiles[key] === big) {
+                            const next = Object.assign({}, root.tiles);
+                            delete next[key];
+                            root.tiles = next;
+                        }
+                        root.finishRename(big);
+                    }
 
-                onPressed: mouse => root.tilePressed(key, mouse)
-                onClicked: mouse => root.tileClicked(key, mouse)
-                onDoubleClicked: mouse => root.tileDoubleClicked(key, mouse)
-                onContextMenuRequested: (x, y) => root.tileContextMenu(key, x, y)
-                onDragRequested: root.beginDrag(key)
+                    onPressed: mouse => root.tilePressed(key, mouse)
+                    onClicked: mouse => root.tileClicked(key, mouse)
+                    onDoubleClicked: mouse => root.tileDoubleClicked(key, mouse)
+                    onContextMenuRequested: (x, y) => root.tileContextMenu(key, x, y)
+                    onDragRequested: root.beginDrag(key)
+                }
             }
-        }
 
-        Repeater {
-            model: entriesModel
+            Repeater {
+                model: entriesModel
 
-            IconTile {
-                id: tile
+                IconTile {
+                    id: tile
 
-                required property string key
-                readonly property var pos: root.displayPositions[key] ?? DesktopLayout.positions[key] ?? null
-                readonly property bool cut: !isGroup && root.cutUris.indexOf(entry?.url) !== -1
+                    required property string key
+                    readonly property var pos: root.displayPositions[key] ?? root.layout[key] ?? null
+                    readonly property bool cut: !isGroup && root.cutUris.indexOf(entry?.url) !== -1
 
-                isGroup: root.isGroupKey(key)
-                entry: root.entryOf(key)
-                groupName: root.groupOf(key)?.name ?? ""
-                groupMembers: isGroup ? root.groupEntries(root.nameOf(key)) : []
-                visible: pos !== null
-                width: root.cellWidth
-                height: root.cellHeight
-                x: (pos?.col ?? 0) * root.cellWidth
-                y: (pos?.row ?? 0) * root.cellHeight
-                z: selected ? 2 : 1
-                iconSize: root.iconSize
-                materialYou: root.materialYou
-                vibrant: root.vibrant
-                pointingCursor: DesktopLayout.singleClick
-                selected: root.selection[key] === true && root.openGroupId === ""
-                focusVisible: root.keyboardActive && root.focusKey === key && root.openGroupId === ""
-                dimmed: cut || (root.dragGroup === "" && root.dragKeys.indexOf(key) !== -1)
-                mergeTarget: root.mergeKey === key
+                    isGroup: root.isGroupKey(key)
+                    entry: root.entryOf(key)
+                    groupName: root.groupOf(key)?.name ?? ""
+                    groupMembers: isGroup ? root.groupEntries(root.nameOf(key)) : []
+                    visible: pos !== null
+                    width: root.cellWidth
+                    height: root.cellHeight
+                    x: root.cellX(pos?.col ?? 0)
+                    y: (pos?.row ?? 0) * root.cellHeight
+                    z: selected ? 2 : 1
+                    iconSize: root.iconSize
+                    materialYou: root.materialYou
+                    vibrant: root.vibrant
+                    pointingCursor: DesktopLayout.singleClick
+                    selected: root.selection[key] === true && root.openGroupId === ""
+                    focusVisible: root.keyboardActive && root.focusKey === key && root.openGroupId === ""
+                    dimmed: cut || (root.dragGroup === "" && root.dragKeys.indexOf(key) !== -1)
+                    mergeTarget: root.mergeKey === key
 
-                Behavior on x {
-                    Anim {}
-                }
+                    Behavior on x {
+                        Anim {}
+                    }
 
-                Behavior on y {
-                    Anim {}
-                }
+                    Behavior on y {
+                        Anim {}
+                    }
 
-                Component.onCompleted: {
-                    const next = Object.assign({}, root.tiles);
-                    next[key] = tile;
-                    root.tiles = next;
-                }
-                Component.onDestruction: {
-                    if (root.tiles[key] === tile) {
+                    Component.onCompleted: {
                         const next = Object.assign({}, root.tiles);
-                        delete next[key];
+                        next[key] = tile;
                         root.tiles = next;
                     }
-                    root.finishRename(tile);
-                }
+                    Component.onDestruction: {
+                        if (root.tiles[key] === tile) {
+                            const next = Object.assign({}, root.tiles);
+                            delete next[key];
+                            root.tiles = next;
+                        }
+                        root.finishRename(tile);
+                    }
 
-                onPressed: mouse => root.tilePressed(key, mouse)
-                onClicked: mouse => root.tileClicked(key, mouse)
-                onDoubleClicked: mouse => root.tileDoubleClicked(key, mouse)
-                onContextMenuRequested: (x, y) => root.tileContextMenu(key, x, y)
-                onDragRequested: root.beginDrag(key)
-                onRenameCommitted: text => {
-                    root.finishRename(tile);
-                    root.applyRename(key, text);
+                    onPressed: mouse => root.tilePressed(key, mouse)
+                    onClicked: mouse => root.tileClicked(key, mouse)
+                    onDoubleClicked: mouse => root.tileDoubleClicked(key, mouse)
+                    onContextMenuRequested: (x, y) => root.tileContextMenu(key, x, y)
+                    onDragRequested: root.beginDrag(key)
+                    onRenameCommitted: text => {
+                        root.finishRename(tile);
+                        root.applyRename(key, text);
+                    }
+                    onRenameCancelled: root.finishRename(tile)
                 }
-                onRenameCancelled: root.finishRename(tile)
+            }
+        }
+    }
+
+    PageIndicator {
+        id: pageDots
+
+        anchors.horizontalCenter: gridItem.horizontalCenter
+        y: gridItem.y + gridItem.height + Tokens.spacing.small
+        count: root.pageCount
+        current: root.currentPage
+        opacity: root.pageCount > 1 ? 1 : 0
+        visible: opacity > 0
+        onPageRequested: page => root.setPage(page)
+
+        Behavior on opacity {
+            Anim {
+                type: Anim.DefaultEffects
             }
         }
     }

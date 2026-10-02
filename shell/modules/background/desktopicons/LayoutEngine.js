@@ -3,6 +3,10 @@
 // Grid layout helpers for the desktop icons. Positions are plain objects
 // mapping an item key to its top-left { col, row }; spans optionally map a key
 // to its { w, h } in cells (icons are 1x1). Nothing here touches QML state.
+//
+// The desktop has pages side by side. Most helpers see them as one wide grid
+// whose columns run on from page to page; `pageCols`, where taken, is the
+// width of a page, and keeps items from sitting across two of them.
 
 function cellId(col, row) {
     return col + "," + row;
@@ -34,6 +38,14 @@ function occupancy(positions, excludeKeys, spans) {
     return occ;
 }
 
+// Whether a rect at `pos` would cross from one page into the next. Items
+// wider than a page cannot help it.
+function straddles(pos, span, pageCols) {
+    if (!pageCols || span.w > pageCols)
+        return false;
+    return Math.floor(pos.col / pageCols) !== Math.floor((pos.col + span.w - 1) / pageCols);
+}
+
 function rectFree(occ, pos, span) {
     for (let c = 0; c < span.w; c++)
         for (let r = 0; r < span.h; r++)
@@ -51,14 +63,16 @@ function orderedKeys(positions, rows) {
     return Object.keys(positions).sort((a, b) => orderIndex(positions[a], rows) - orderIndex(positions[b], rows));
 }
 
-// First free place in column-major order. Past a full grid, keeps counting
-// into the columns beyond the right edge rather than stacking items.
-function firstFree(occ, cols, rows, span) {
+// First free place in column-major order, starting from page `fromPage`.
+// Past a full grid, keeps counting into the columns beyond the right edge
+// (the following pages) rather than stacking items.
+function firstFree(occ, cols, rows, span, pageCols, fromPage) {
     const s = span ?? { w: 1, h: 1 };
     const h = Math.min(s.h, rows);
-    for (let i = 0; i < 100000; i++) {
+    const start = pageCols ? (fromPage ?? 0) * pageCols * rows : 0;
+    for (let i = start; i < start + 100000; i++) {
         const pos = { col: Math.floor(i / rows), row: i % rows };
-        if (pos.row + h > rows)
+        if (pos.row + h > rows || straddles(pos, s, pageCols))
             continue;
         if (rectFree(occ, pos, { w: s.w, h }))
             return pos;
@@ -66,14 +80,20 @@ function firstFree(occ, cols, rows, span) {
     return { col: cols, row: 0 };
 }
 
-// Free place closest to (col, row), ties broken towards the fill order.
-function nearestFree(occ, col, row, cols, rows, span) {
+// Free place closest to (col, row), ties broken towards the fill order. With
+// pages, any place on the same page as (col, row) beats one on another page.
+function nearestFree(occ, col, row, cols, rows, span, pageCols) {
     const s = span ?? { w: 1, h: 1 };
+    const home = pageCols ? Math.floor(col / pageCols) : 0;
     let best = null;
     let bestDist = Infinity;
     for (let c = 0; c + s.w <= cols; c++) {
         for (let r = 0; r + s.h <= rows; r++) {
-            const d = (c - col) * (c - col) + (r - row) * (r - row);
+            const pos0 = { col: c, row: r };
+            if (straddles(pos0, s, pageCols))
+                continue;
+            const pageGap = pageCols ? Math.abs(Math.floor(c / pageCols) - home) : 0;
+            const d = pageGap * 1e9 + (c - col) * (c - col) + (r - row) * (r - row);
             if (d > bestDist)
                 continue;
             const pos = { col: c, row: r };
@@ -85,7 +105,7 @@ function nearestFree(occ, col, row, cols, rows, span) {
             bestDist = d;
         }
     }
-    return best ?? firstFree(occ, cols, rows, s);
+    return best ?? firstFree(occ, cols, rows, s, pageCols);
 }
 
 function copyPositions(positions) {
@@ -101,14 +121,16 @@ function rectsOverlap(a, sa, b, sb) {
 
 // Moves the keys in `moving` so that `anchor` lands on `target`, keeping their
 // relative placement. The shift is clamped so every moved item stays on the
-// grid. Items overlapping a destination step aside to the free place nearest
-// to where they were. `spans` may give new sizes, which also makes this the
-// resize operation.
-function planMove(positions, moving, anchor, target, cols, rows, spans) {
+// grid, or with pages on the page `target` is on. Items overlapping a
+// destination step aside to the free place nearest to where they were.
+// `spans` may give new sizes, which also makes this the resize operation.
+function planMove(positions, moving, anchor, target, cols, rows, spans, pageCols) {
     const out = copyPositions(positions);
     const from = positions[anchor];
     if (!from)
         return out;
+    const lo = pageCols ? Math.floor(target.col / pageCols) * pageCols : 0;
+    const hi = pageCols ? lo + pageCols : cols;
     let dc = target.col - from.col;
     let dr = target.row - from.row;
     for (const key of moving) {
@@ -116,9 +138,9 @@ function planMove(positions, moving, anchor, target, cols, rows, spans) {
         if (!p)
             continue;
         const s = spanOf(spans, key);
-        dc = Math.max(dc, -p.col);
+        dc = Math.max(dc, lo - p.col);
         dr = Math.max(dr, -p.row);
-        dc = Math.min(dc, Math.max(-p.col, cols - s.w - p.col));
+        dc = Math.min(dc, Math.max(lo - p.col, hi - s.w - p.col));
         dr = Math.min(dr, Math.max(-p.row, rows - s.h - p.row));
     }
 
@@ -147,7 +169,7 @@ function planMove(positions, moving, anchor, target, cols, rows, spans) {
     for (const key of displaced) {
         const p = positions[key];
         const s = spanOf(spans, key);
-        const cell = nearestFree(occ, p.col, p.row, cols, rows, s);
+        const cell = nearestFree(occ, p.col, p.row, cols, rows, s, pageCols);
         out[key] = cell;
         markRect(occ, cell, s, key);
     }
@@ -155,12 +177,12 @@ function planMove(positions, moving, anchor, target, cols, rows, spans) {
 }
 
 // Packs the keys in column-major order, each into the first place it fits.
-function compact(keys, rows, spans) {
+function compact(keys, rows, spans, pageCols) {
     const out = {};
     const occ = {};
     for (const key of keys) {
         const s = spanOf(spans, key);
-        const pos = firstFree(occ, Infinity, rows, s);
+        const pos = firstFree(occ, Infinity, rows, s, pageCols);
         out[key] = pos;
         markRect(occ, pos, s, key);
     }
@@ -169,7 +191,7 @@ function compact(keys, rows, spans) {
 
 // Auto-arrange drop: pulls the moving keys out of the order and inserts them
 // where `target` is, then packs everything again.
-function planInsert(positions, moving, target, rows, spans) {
+function planInsert(positions, moving, target, rows, spans, pageCols) {
     const order = orderedKeys(positions, rows);
     const targetIndex = orderIndex(target, rows);
     const rest = [];
@@ -185,7 +207,7 @@ function planInsert(positions, moving, target, rows, spans) {
         insertAt = rest.length;
     const movers = order.filter(k => moving.indexOf(k) !== -1);
     rest.splice(insertAt, 0, ...movers);
-    return compact(rest, rows, spans);
+    return compact(rest, rows, spans, pageCols);
 }
 
 function overflowCount(positions, cols, rows, spans) {
@@ -229,6 +251,66 @@ function keepAndPlace(positions, cols, rows, spans) {
         out[key] = cell;
         markRect(occ, cell, s, key);
     }
+    return out;
+}
+
+// Fits paged positions ({ page, col, row }) to a grid of the given size, page
+// by page. What a page cannot hold moves on to the free places of the next,
+// and past the last page onto new ones. Nothing moves back to earlier pages
+// when the grid grows.
+function fitPages(stored, cols, rows, spans) {
+    const byPage = [];
+    for (const key in stored) {
+        const p = Math.max(0, stored[key].page | 0);
+        byPage[p] = byPage[p] ?? {};
+        byPage[p][key] = { col: stored[key].col, row: stored[key].row };
+    }
+    const out = {};
+    let carry = [];
+    for (let page = 0; page < byPage.length || carry.length > 0; page++) {
+        const own = byPage[page] ?? {};
+        const fitted = Object.keys(own).length > 0 ? fitIntoGrid(own, cols, rows, spans) : {};
+        const occ = {};
+        const ownLeft = [];
+        for (const key of orderedKeys(fitted, rows)) {
+            const s = spanOf(spans, key);
+            if (inGrid(fitted[key], cols, rows, s) && rectFree(occ, fitted[key], s)) {
+                out[key] = { page, col: fitted[key].col, row: fitted[key].row };
+                markRect(occ, fitted[key], s, key);
+            } else {
+                ownLeft.push(key);
+            }
+        }
+        const carriedLeft = [];
+        for (const key of carry.concat(ownLeft)) {
+            const s = spanOf(spans, key);
+            const pos = firstFree(occ, cols, rows, s);
+            // Something too big for any page still has to go somewhere.
+            if (inGrid(pos, cols, rows, s) || Object.keys(occ).length === 0) {
+                out[key] = { page, col: pos.col, row: pos.row };
+                markRect(occ, pos, s, key);
+            } else {
+                carriedLeft.push(key);
+            }
+        }
+        carry = carriedLeft;
+    }
+    return normalizePages(out);
+}
+
+// Renumbers pages so that empty ones in between disappear.
+function normalizePages(stored) {
+    const used = [];
+    for (const key in stored)
+        used[Math.max(0, stored[key].page | 0)] = true;
+    const map = [];
+    let n = 0;
+    for (let p = 0; p < used.length; p++)
+        if (used[p])
+            map[p] = n++;
+    const out = {};
+    for (const key in stored)
+        out[key] = { page: map[Math.max(0, stored[key].page | 0)], col: stored[key].col, row: stored[key].row };
     return out;
 }
 

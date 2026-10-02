@@ -16,7 +16,8 @@ Singleton {
     readonly property var iconSizes: [48, 64, 80, 96]
 
     property bool loaded: false
-    // Item key ("f/<file name>" or "g/<group id>") -> { col, row }.
+    // Item key ("f/<file name>" or "g/<group id>") -> { page, col, row }.
+    // Pages are whole screens side by side; files without one are on page 0.
     property var positions: ({})
     // Group id -> { name, members: [file name, ...], size: { w, h } }. A size
     // above 1x1 shows the group as a large folder.
@@ -153,11 +154,11 @@ Singleton {
             // Version 1: a bare list of { name, col, row }.
             for (const it of data)
                 if (it && typeof it.name === "string")
-                    nextPositions[fileKey(it.name)] = { col: it.col | 0, row: it.row | 0 };
+                    nextPositions[fileKey(it.name)] = { page: 0, col: it.col | 0, row: it.row | 0 };
         } else if (data && typeof data === "object") {
             for (const it of data.items ?? [])
                 if (it && typeof it.key === "string")
-                    nextPositions[it.key] = { col: it.col | 0, row: it.row | 0 };
+                    nextPositions[it.key] = { page: Math.max(0, it.page | 0), col: it.col | 0, row: it.row | 0 };
             for (const g of data.groups ?? [])
                 if (g && typeof g.id === "string" && Array.isArray(g.members))
                     nextGroups[g.id] = { name: String(g.name ?? ""), members: g.members.filter(m => typeof m === "string"), size: size(g.size) };
@@ -180,7 +181,7 @@ Singleton {
     function serialise(): string {
         const items = [];
         for (const key in positions)
-            items.push({ key, col: positions[key].col, row: positions[key].row });
+            items.push({ key, page: positions[key].page ?? 0, col: positions[key].col, row: positions[key].row });
         const groupList = [];
         for (const id in groups)
             groupList.push({ id, name: groups[id].name, members: groups[id].members, size: groups[id].size ?? { w: 1, h: 1 } });
