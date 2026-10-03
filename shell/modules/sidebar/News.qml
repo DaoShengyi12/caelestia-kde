@@ -21,6 +21,8 @@ Item {
     readonly property color cError: Colours.palette.m3error
 
     Component.onCompleted: fetchNews()
+    // The sidebar stays loaded once opened; refresh when the feed is shown again.
+    onVisibleChanged: if (visible) fetchNews()
 
     // ── Distro-aware news feed ────────────────────────────────────
     // The feed URL is chosen based on the running distribution so Fedora

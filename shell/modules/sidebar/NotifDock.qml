@@ -23,6 +23,8 @@ Item {
     anchors.margins: Tokens.padding.medium
 
     Component.onCompleted: Notifs.list.forEach(n => n.popup = false)
+    // The sidebar stays loaded once opened, so clear popups on every open too.
+    onVisibleChanged: if (visible) Notifs.list.forEach(n => n.popup = false)
 
     Item {
         id: title

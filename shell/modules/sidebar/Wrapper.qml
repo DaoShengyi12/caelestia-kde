@@ -17,6 +17,10 @@ Item {
     readonly property Props props: Props {}
     readonly property bool shouldBeActive: visibilities.sidebar && Config.sidebar.enabled && !visibilities.overview
     property bool keepLoaded: false
+    // Once built, the content stays loaded while the sidebar is closed: building
+    // it blocks the shell for over a second (the assistant lays out its whole
+    // chat). It is first built in the background shortly after startup.
+    property bool loadedOnce: false
     property real offsetScale: shouldBeActive ? 0 : 1
     // The sidebar sits against the right edge unless the bar is there.
     readonly property bool onRight: Config.bar.position !== "right"
@@ -25,6 +29,7 @@ Item {
     readonly property int maxWidth: Math.max(minWidth, Math.round((parent?.width ?? 0) * 0.5))
 
     visible: offsetScale < 1
+    onShouldBeActiveChanged: if (shouldBeActive) loadedOnce = true
     anchors.leftMargin: Config.bar.position === "right" ? (-implicitWidth - 5) * offsetScale : 0
     anchors.rightMargin: Config.bar.position !== "right" ? (-implicitWidth - 5) * offsetScale : 0
     implicitWidth: Visibilities.sidebarWidthFor(defaultWidth)
@@ -55,6 +60,11 @@ Item {
 
         Anim {}
     }
+    Timer {
+        running: true
+        interval: 3000
+        onTriggered: root.loadedOnce = true
+    }
     Loader {
         id: content
 
@@ -64,7 +74,9 @@ Item {
         anchors.leftMargin: Tokens.padding.large
         anchors.margins: CUtils.clamp(anchors.leftMargin - Config.border.thickness, 0, anchors.leftMargin)
         anchors.bottomMargin: 0
-        active: root.shouldBeActive || root.visible || root.keepLoaded
+        active: root.shouldBeActive || root.visible || root.keepLoaded || (root.loadedOnce && Config.sidebar.enabled)
+        // Opening the sidebar mid-build finishes the build at once.
+        asynchronous: !root.shouldBeActive
         sourceComponent: Content {
             implicitWidth: root.implicitWidth - content.anchors.leftMargin - content.anchors.margins
             props: root.props

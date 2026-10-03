@@ -33,12 +33,15 @@ Item {
         }
     }
 
-    // Opening the sidebar is what loads this, so the first open never reaches
-    // onSidebarChanged below; pick the tab here as well.
+    // An open that loads this never reaches onSidebarChanged below, so pick the
+    // tab here as well. When built in the background, start on the tab it will
+    // open on, so that tab is built now rather than on the first open.
     Component.onCompleted: {
         if (root.visibilities.sidebar) {
             root.activeTab = Visibilities.initialSidebarTab || Visibilities.sidebarOpenTab();
             Visibilities.initialSidebarTab = "";
+        } else {
+            root.activeTab = Visibilities.sidebarOpenTab();
         }
         checkAiTab();
     }
