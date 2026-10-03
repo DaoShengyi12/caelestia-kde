@@ -54,6 +54,10 @@ Item {
     property var previewPositions: null
     property var dropCells: []
     property string mergeKey: ""
+    // The drop plan the preview was last built for. Drag moves arrive for
+    // every pointer motion, and rebuilding the preview re-lays out every tile
+    // and recreates the drop cells, so it only happens when the plan changes.
+    property string previewPlanKey: ""
     property bool dragImageReady: false
     property string pendingDragKey: ""
     property string dragImageKey: ""
@@ -765,6 +769,9 @@ Item {
     function previewResize(key: string, w: int, h: int): void {
         if (!DesktopLayout.positions[key])
             return;
+        const span = previewSpans?.[key];
+        if (span && span.w === w && span.h === h)
+            return;
         const next = resizePlan(key, w, h);
         previewSpans = spansWith(key, w, h);
         previewPositions = Object.assign({}, DesktopLayout.positions, next);
@@ -1083,6 +1090,7 @@ Item {
     }
 
     function clearDropPreview(): void {
+        previewPlanKey = "";
         previewPositions = null;
         dropCells = [];
         mergeKey = "";
@@ -1153,6 +1161,10 @@ Item {
 
     function updateDropPreview(x: real, y: real, internal: bool): void {
         const plan = dropPlan(x, y, internal);
+        const planKey = [internal, plan.mode, plan.target, plan.cell.col, plan.cell.row, plan.place.col, plan.place.row].join(",");
+        if (planKey === previewPlanKey)
+            return;
+        previewPlanKey = planKey;
         mergeKey = plan.mode === "place" || plan.mode === "none" ? "" : plan.target;
         if (plan.mode !== "place") {
             previewPositions = null;
