@@ -22,6 +22,12 @@ Item {
         return max;
     }
     property real offsetScale: shouldBeActive ? 0 : 1
+    // Building the content blocks the shell for over 100 ms, so it is built in
+    // the background ahead of time: shortly after startup, and again each time
+    // the launcher has closed. Every open still gets a fresh launcher (empty
+    // search, first item selected), only without waiting for it.
+    property bool prebuild: false
+    property bool rebuilding: false
 
     onShouldBeActiveChanged: {
         if (shouldBeActive) {
@@ -31,6 +37,12 @@ Item {
     }
     clip: Config.bar.position === "bottom"
     visible: offsetScale < 1
+    onVisibleChanged: {
+        if (!visible && prebuild) {
+            rebuilding = true;
+            Qt.callLater(() => rebuilding = false);
+        }
+    }
     anchors.bottomMargin: (Config.bar.position === "bottom" ? 0 : -implicitHeight - 5) * offsetScale
     height: Config.bar.position === "bottom" ? implicitHeight * (1 - offsetScale) : implicitHeight
     implicitHeight: content.implicitHeight
@@ -43,12 +55,19 @@ Item {
 
         Anim {}
     }
+    Timer {
+        running: true
+        interval: 5000
+        onTriggered: root.prebuild = true
+    }
     Loader {
         id: content
 
         anchors.top: parent.top
         anchors.horizontalCenter: parent.horizontalCenter
-        active: root.shouldBeActive || root.visible
+        active: root.shouldBeActive || root.visible || (root.prebuild && !root.rebuilding && Config.launcher.enabled)
+        // Opening the launcher mid-build finishes the build at once.
+        asynchronous: !root.shouldBeActive
         sourceComponent: Component {
             Content {
                 visibilities: root.visibilities

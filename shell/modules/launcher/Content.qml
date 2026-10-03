@@ -331,7 +331,11 @@ Item {
                 }
             }
 
+            // Built ahead of time while closed, this must not take focus from
+            // whatever has it; onLauncherChanged below does it on open.
             Component.onCompleted: {
+                if (!root.visibilities.launcher)
+                    return;
                 if (Visibilities.launcherInitialSearch) {
                     text = Visibilities.launcherInitialSearch;
                     Visibilities.launcherInitialSearch = "";
