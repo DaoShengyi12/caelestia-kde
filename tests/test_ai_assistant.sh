@@ -215,6 +215,59 @@ assert.strictEqual(Sessions.withoutChats(JSON.stringify(saved), ["chat_1"]), "[]
 '
 }
 
+test_the_open_chat_view_follows_its_session() {
+    have_node || { skip_test "node is not installed"; return 0; }
+    check_js "every message edit should reach the session and the same row of the open chat's view" '
+// Stands in for the ListModel: append copies a message into a row, set
+// changes only the given roles.
+function fakeView() {
+    const rows = [];
+    return {
+        rows,
+        append: m => rows.push(Object.assign({}, m)),
+        set: (i, patch) => Object.assign(rows[i], patch),
+        remove: i => rows.splice(i, 1),
+        clear: () => rows.splice(0)
+    };
+}
+const agree = (s, view) => assert.deepStrictEqual(view.rows, s.messages.map(m => Object.assign({}, m)));
+
+const open = { id: "a", messages: [] };
+const other = { id: "b", messages: [] };
+const view = fakeView();
+const ids = ["x", "y", "z"].map(t => Sessions.editMessage(open, view, "append", "", Sessions.newMessage({ text: t, isFinished: false })).msgId);
+agree(open, view);
+
+Sessions.editMessage(open, view, "update", ids[1], { text: "y2", isFinished: true });
+assert.strictEqual(open.messages[1].text, "y2");
+agree(open, view);
+
+assert.strictEqual(Sessions.editMessage(open, view, "remove", ids[0]).msgId, ids[0]);
+assert.deepStrictEqual(open.messages.map(m => m.text), ["y2", "z"]);
+agree(open, view);
+
+assert.strictEqual(Sessions.editMessage(open, view, "update", "missing", { text: "no" }), null);
+agree(open, view);
+
+// A chat that is not open has no view; only its session changes.
+const r = Sessions.editMessage(other, null, "append", "", Sessions.newMessage({ text: "bg", isFinished: false, isNew: true }));
+Sessions.editMessage(other, null, "update", r.msgId, { text: "bg done" });
+assert.strictEqual(other.messages[0].text, "bg done");
+agree(open, view);
+
+// Opening it shows what it has, with nothing left to pop in.
+Sessions.showMessages(other, view);
+assert.strictEqual(other.messages[0].isNew, false);
+agree(other, view);
+'
+}
+
+test_only_the_chat_sessions_module_writes_the_open_chat_view() {
+    local writers
+    writers="$(grep -rlE '\b(messages|view)\.(append|insert|set|setProperty|remove|clear|move)\(' "$SIDEBAR" | sed "s|$SIDEBAR/||" | sort)"
+    assert_eq "ai/chatsessions.js" "$writers" "the open chat's view should be written only by editMessage() and showMessages()"
+}
+
 test_history_rows() {
     have_node || { skip_test "node is not installed"; return 0; }
     check_js "the history list should match, order and preview chats" '

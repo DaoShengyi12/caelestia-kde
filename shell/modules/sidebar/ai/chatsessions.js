@@ -69,6 +69,52 @@ function findMessage(session, msgId) {
     return null;
 }
 
+// The one place a chat's messages change. Each edit is made to the session's
+// array and, when `view` (the ListModel showing the open chat) is given, to
+// the same row of it, so the two always agree: row i of the view is message i
+// of the session. Returns the message, or null if there is none with msgId.
+//   "append": fields is the new message (from newMessage())
+//   "update": fields holds the fields to change
+//   "remove": fields is unused
+function editMessage(session, view, op, msgId, fields) {
+    var msgs = session.messages;
+    if (op === "append") {
+        msgs.push(fields);
+        if (view)
+            view.append(fields);
+        return fields;
+    }
+    var i = msgs.length - 1;
+    // Messages being written to are almost always the last ones.
+    while (i >= 0 && msgs[i].msgId !== msgId)
+        i--;
+    if (i < 0)
+        return null;
+    var m = msgs[i];
+    if (op === "update") {
+        for (var k in fields)
+            m[k] = fields[k];
+        if (view)
+            view.set(i, fields);
+    } else if (op === "remove") {
+        msgs.splice(i, 1);
+        if (view)
+            view.remove(i);
+    }
+    return m;
+}
+
+// Fills the view with a session's messages, as they are when the chat is
+// opened: nothing in it is new any more.
+function showMessages(session, view) {
+    view.clear();
+    var msgs = session ? session.messages : [];
+    for (var i = 0; i < msgs.length; i++) {
+        msgs[i].isNew = false;
+        view.append(msgs[i]);
+    }
+}
+
 // Sessions as saved in the config. Nothing can still be running after a
 // restart, so every stored reply counts as finished, and empty placeholders
 // left by an interrupted reply are dropped.
