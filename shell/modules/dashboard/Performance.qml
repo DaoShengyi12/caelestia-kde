@@ -79,7 +79,7 @@ Item {
                         accent: Colours.palette.m3primary
 
                         ServiceRef {
-                            service: Cpu
+                            service: root.visible ? Cpu : null
                         }
                     }
                 }
@@ -98,7 +98,7 @@ Item {
                         accent: Colours.palette.m3secondary
 
                         ServiceRef {
-                            service: Gpu
+                            service: root.visible ? Gpu : null
                         }
                     }
                 }

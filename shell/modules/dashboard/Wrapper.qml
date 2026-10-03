@@ -30,9 +30,17 @@ Item {
     readonly property real nonAnimHeight: (content.item as Content)?.nonAnimHeight ?? 0
     readonly property bool shouldBeActive: visibilities.dashboard && Config.dashboard.enabled && !visibilities.overview
     property real offsetScale: shouldBeActive ? 0 : 1
+    // Once built, the content stays loaded while the dashboard is closed, since
+    // building it again on every open blocks the shell for a quarter of a second.
+    // It is first built shortly after startup. That build is synchronous: built
+    // asynchronously, the pane and tab sizes never settle. Its tab and calendar
+    // month already live in screenState, and what it shows only animates or
+    // holds services while it is shown.
+    property bool loadedOnce: false
 
     clip: Config.bar.position === "top"
     visible: offsetScale < 1
+    onShouldBeActiveChanged: if (shouldBeActive) loadedOnce = true
     anchors.topMargin: (Config.bar.position === "top" ? 0 : -implicitHeight - 5) * offsetScale
     height: Config.bar.position === "top" ? implicitHeight * (1 - offsetScale) : implicitHeight
     implicitHeight: content.implicitHeight
@@ -42,12 +50,17 @@ Item {
     Behavior on offsetScale {
         Anim {}
     }
+    Timer {
+        running: true
+        interval: 4000
+        onTriggered: root.loadedOnce = true
+    }
     Loader {
         id: content
 
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: parent.bottom
-        active: root.shouldBeActive || root.visible
+        active: root.shouldBeActive || root.visible || (root.loadedOnce && Config.dashboard.enabled)
         sourceComponent: Content {
             visibilities: root.visibilities
             screenState: root.screenState

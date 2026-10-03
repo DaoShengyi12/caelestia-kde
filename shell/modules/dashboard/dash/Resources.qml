@@ -15,15 +15,15 @@ Item {
     implicitWidth: layout.implicitWidth + layout.anchors.margins * 2
 
     ServiceRef {
-        service: Cpu
+        service: root.visible ? Cpu : null
     }
 
     ServiceRef {
-        service: Memory
+        service: root.visible ? Memory : null
     }
 
     ServiceRef {
-        service: Storage
+        service: root.visible ? Storage : null
     }
 
     ColumnLayout {
@@ -62,6 +62,8 @@ Item {
         strokeWidth: Tokens.sizes.dashboard.resourceProgressThickness
 
         Behavior on clampedVal {
+            enabled: res.visible
+
             Anim {}
         }
 

@@ -156,14 +156,26 @@ Item {
 
                         sourceComponent: modelData.component
 
-                        Component.onCompleted: active = Qt.binding(() => {
-                            if (active) return true;
+                        // Whether any of this pane is inside the view.
+                        readonly property bool onScreen: {
                             if (index === view.currentIndex)
                                 return true;
                             const vx = Math.floor(view.visibleArea.xPosition * view.contentWidth);
                             const vex = Math.floor(vx + view.visibleArea.widthRatio * view.contentWidth);
                             return (vx >= x && vx <= x + implicitWidth) || (vex >= x && vex <= x + implicitWidth);
-                        })
+                        }
+
+                        Component.onCompleted: active = Qt.binding(() => active || onScreen)
+
+                        // Panes scrolled out of view are hidden (the loader itself
+                        // stays visible so the row keeps its layout), which stops
+                        // their gauges and graphs from animating off screen.
+                        Binding {
+                            target: paneLoader.item
+                            property: "visible"
+                            value: paneLoader.onScreen
+                            when: paneLoader.item !== null
+                        }
                     }
                 }
             }

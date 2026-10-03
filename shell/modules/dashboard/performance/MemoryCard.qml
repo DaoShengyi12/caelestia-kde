@@ -18,7 +18,7 @@ StyledRect {
     implicitHeight: layout.implicitHeight + Tokens.padding.large * 2
 
     ServiceRef {
-        service: Memory
+        service: root.visible ? Memory : null
     }
 
     ColumnLayout {
@@ -55,6 +55,8 @@ StyledRect {
             value: Memory.percentage
 
             Behavior on clampedVal {
+                enabled: root.visible
+
                 Anim {}
             }
 

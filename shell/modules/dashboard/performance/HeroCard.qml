@@ -37,6 +37,8 @@ StyledRect {
         value: root.usage
 
         Behavior on clampedVal {
+            enabled: root.visible
+
             Anim {}
         }
 

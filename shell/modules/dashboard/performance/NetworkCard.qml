@@ -16,7 +16,7 @@ StyledRect {
     implicitHeight: Tokens.sizes.dashboard.perfNetworkCardHeight
 
     ServiceRef {
-        service: NetworkUsage
+        service: root.visible ? NetworkUsage : null
     }
 
     ColumnLayout {
@@ -67,7 +67,10 @@ StyledRect {
                 Connections {
                     function onValuesChanged(): void {
                         sparkline.targetMax = Math.max(NetworkUsage.downloadBuffer.maximum, NetworkUsage.uploadBuffer.maximum, 1024);
-                        slideAnim.restart();
+                        // The slide lasts the whole update interval, so a hidden
+                        // card would otherwise keep its window redrawing.
+                        if (sparkline.visible)
+                            slideAnim.restart();
                     }
 
                     target: NetworkUsage.downloadBuffer
@@ -85,6 +88,8 @@ StyledRect {
                 }
 
                 Behavior on smoothMax {
+                    enabled: sparkline.visible
+
                     Anim {}
                 }
             }

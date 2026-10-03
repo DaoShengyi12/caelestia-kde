@@ -20,7 +20,7 @@ StyledRect {
     implicitHeight: layout.implicitHeight + Tokens.padding.large * 2
 
     ServiceRef {
-        service: Storage
+        service: root.visible ? Storage : null
     }
 
     ColumnLayout {
@@ -46,6 +46,8 @@ StyledRect {
                 sweepAngle: 270
 
                 Behavior on clampedVal {
+                    enabled: root.visible
+
                     Anim {}
                 }
 
