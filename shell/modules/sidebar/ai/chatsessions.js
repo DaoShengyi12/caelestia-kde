@@ -222,17 +222,76 @@ function plainPreview(text) {
     return (text || "").replace(/```[\s\S]*?(```|$)/g, " [code] ").replace(/[#*`>_~|]/g, "").replace(/\s+/g, " ").trim();
 }
 
-// Rows of the history list: chats with messages whose title or text contains
-// `query`, pinned first, then most recent. The preview is where the query hit,
-// or else the last message (previewIsUser says whether the user wrote it).
-function historyRows(sessions, query) {
+var dayMs = 86400000;
+
+// The group of the history list a chat is shown in: "pinned", or by its last
+// activity "today", "yesterday", "week" (the last 7 days), "month" (the last
+// 30 days) or "older". `now` is a Date.
+function historySection(pinned, ts, now) {
+    if (pinned)
+        return "pinned";
+    var today = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+    if (ts >= today)
+        return "today";
+    if (ts >= today - dayMs)
+        return "yesterday";
+    if (ts >= today - 6 * dayMs)
+        return "week";
+    if (ts >= today - 29 * dayMs)
+        return "month";
+    return "older";
+}
+
+// How a history row says when its chat was last active, as { kind, minutes }.
+// kind is "" (not known), "now", "minutes" (that many minutes ago), "time"
+// (today: the time of day), "weekday" (in the last 6 days: weekday and time),
+// "date" (this year: day and month) or "fullDate". `now` is a Date.
+function chatAge(ts, now) {
+    if (!ts)
+        return { "kind": "", "minutes": 0 };
+    var diff = now.getTime() - ts;
+    var d = new Date(ts);
+    var kind;
+    if (diff < 60000)
+        kind = "now";
+    else if (diff < 3600000)
+        kind = "minutes";
+    else if (d.toDateString() === now.toDateString())
+        kind = "time";
+    else if (diff < 6 * dayMs)
+        kind = "weekday";
+    else if (d.getFullYear() === now.getFullYear())
+        kind = "date";
+    else
+        kind = "fullDate";
+    return { "kind": kind, "minutes": Math.floor(diff / 60000) };
+}
+
+// The history list for `query`: { rows, total, pinned, unpinnedIds }.
+//
+// rows are the chats with messages whose title or text contains the query,
+// pinned first, then most recent. A row's preview is where the query hit, or
+// else the last message (previewIsUser says whether the user wrote it), and
+// its section is from historySection().
+//
+// total, pinned and unpinnedIds count every chat the list can show, whatever
+// the query: the chats there are, how many are pinned, and the ones "clear"
+// removes.
+function historyRows(sessions, query, now) {
     var q = (query || "").trim().toLowerCase();
     var rows = [];
+    var pinned = 0;
+    var unpinnedIds = [];
     for (var i = 0; i < sessions.length; i++) {
         var s = sessions[i];
         var msgs = s.messages || [];
         if (msgs.length === 0)
             continue;
+        if (s.pinned === true)
+            pinned++;
+        else
+            unpinnedIds.push(String(s.id));
+
         var title = s.title || "New Chat";
         var preview = "";
         var previewIsUser = false;
@@ -264,20 +323,27 @@ function historyRows(sessions, query) {
         }
 
         var isClaudeCode = s.provider === "claude-code" || !!s.claudeCodeSessionId;
+        var ts = chatTimestamp(s);
         rows.push({
             "chatId": String(s.id),
             "title": title,
             "preview": preview,
             "previewIsUser": previewIsUser,
             "pinned": s.pinned === true,
-            "ts": chatTimestamp(s),
+            "ts": ts,
+            "section": historySection(s.pinned === true, ts, now),
             "msgCount": msgs.length,
             "isClaudeCode": isClaudeCode,
             "cwd": isClaudeCode ? (s.claudeCodeCwd || "") : ""
         });
     }
     rows.sort((a, b) => (b.pinned - a.pinned) || (b.ts - a.ts));
-    return rows;
+    return {
+        "rows": rows,
+        "total": pinned + unpinnedIds.length,
+        "pinned": pinned,
+        "unpinnedIds": unpinnedIds
+    };
 }
 
 function asMarkdown(session) {

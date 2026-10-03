@@ -278,7 +278,9 @@ const sessions = [
     { id: "chat_3000", title: "Code", provider: "claude-code", claudeCodeCwd: "/tmp/x", updatedAt: 9000, messages: [msg(true, "a\n```js\nx()\n```")] },
     { id: "chat_4000", title: "New Chat", messages: [] }
 ];
-const all = Sessions.historyRows(sessions, "");
+const now = new Date(2026, 9, 4, 12, 0);
+const list = Sessions.historyRows(sessions, "", now);
+const all = list.rows;
 assert.deepStrictEqual(all.map(r => r.chatId), ["chat_2000", "chat_3000", "chat_1000"], "pinned first, then newest; empty chats are left out");
 assert.strictEqual(all[2].ts, 1000, "without updatedAt the id gives the time");
 assert.strictEqual(all[2].preview, "bold reply");
@@ -286,14 +288,53 @@ assert.strictEqual(all[2].previewIsUser, false);
 assert.strictEqual(all[1].preview, "a [code]");
 assert.strictEqual(all[1].cwd, "/tmp/x");
 assert.strictEqual(all[2].cwd, "", "only Claude Code chats show a directory");
+assert.deepStrictEqual(all.map(r => r.section), ["pinned", "older", "older"]);
+assert.deepStrictEqual([list.total, list.pinned, list.unpinnedIds], [3, 1, ["chat_1000", "chat_3000"]]);
 
-const hit = Sessions.historyRows(sessions, " NEEDLE ");
-assert.deepStrictEqual(hit.map(r => r.chatId), ["chat_1000"]);
-assert.strictEqual(hit[0].preview, "find the needle here");
-assert.deepStrictEqual(Sessions.historyRows(sessions, "pinned").map(r => r.chatId), ["chat_2000"], "titles match too");
+const hit = Sessions.historyRows(sessions, " NEEDLE ", now);
+assert.deepStrictEqual(hit.rows.map(r => r.chatId), ["chat_1000"]);
+assert.strictEqual(hit.rows[0].preview, "find the needle here");
+assert.deepStrictEqual([hit.total, hit.pinned, hit.unpinnedIds], [list.total, list.pinned, list.unpinnedIds], "the counts do not depend on the query");
+assert.deepStrictEqual(Sessions.historyRows(sessions, "pinned", now).rows.map(r => r.chatId), ["chat_2000"], "titles match too");
 
 assert.strictEqual(Sessions.asMarkdown(sessions[1]), "# Pinned one\n\n**You:**\n\nhi");
 '
+}
+
+test_history_sections_and_ages() {
+    have_node || { skip_test "node is not installed"; return 0; }
+    check_js "history rows should be grouped and dated by their last activity" '
+const now = new Date(2026, 9, 4, 12, 0);
+const at = (d, h, m) => new Date(2026, 9, d, h, m || 0).getTime();
+const section = ts => Sessions.historySection(false, ts, now);
+assert.strictEqual(Sessions.historySection(true, at(4, 11), now), "pinned");
+assert.strictEqual(section(at(4, 0)), "today");
+assert.strictEqual(section(at(3, 23, 59)), "yesterday");
+assert.strictEqual(section(at(3, 0)), "yesterday");
+assert.strictEqual(section(at(2, 23)), "week");
+assert.strictEqual(section(new Date(2026, 8, 28).getTime()), "week", "the week starts 6 days before today");
+assert.strictEqual(section(new Date(2026, 8, 27, 23).getTime()), "month");
+assert.strictEqual(section(new Date(2026, 8, 5).getTime()), "month");
+assert.strictEqual(section(new Date(2026, 8, 4, 23).getTime()), "older");
+
+const age = ts => Sessions.chatAge(ts, now);
+assert.strictEqual(age(0).kind, "");
+assert.strictEqual(age(at(4, 11, 59) + 30000).kind, "now");
+assert.deepStrictEqual(age(at(4, 11, 15)), { kind: "minutes", minutes: 45 });
+assert.strictEqual(age(at(4, 1)).kind, "time");
+assert.strictEqual(age(at(3, 23)).kind, "weekday", "yesterday is not today, even within the hour mark");
+assert.strictEqual(age(at(1, 12)).kind, "weekday");
+assert.strictEqual(age(new Date(2026, 8, 28, 12).getTime()).kind, "date");
+assert.strictEqual(age(new Date(2025, 11, 31).getTime()).kind, "fullDate");
+'
+}
+
+test_the_history_list_is_its_own_component() {
+    local assistant
+    assistant="$(cat "$SIDEBAR/AiAssistant.qml")"
+    assert_contains "$assistant" $'HistoryPane {\n                 id: historyPane' "the assistant should show the history through HistoryPane"
+    assert_not_contains "$assistant" "historyRows" "building the history list should be left to HistoryPane"
+    assert_not_contains "$assistant" "takeChats" "removing chats from the history should be left to HistoryPane"
 }
 
 test_attachment_paths() {
