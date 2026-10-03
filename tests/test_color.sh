@@ -141,6 +141,8 @@ setup_sandbox() {
     export KDE_CALLS="$KDE_CALLS"
     export PATH="$STUB_DIR:$PATH"
     export CAELESTIA_NO_DEFER=1
+    # The sandbox does not cover /dev/pts: without this the stub palette lands in real terminals.
+    export CAELESTIA_NO_TERMS=1
 }
 
 run_color() {
@@ -154,6 +156,7 @@ run_color() {
         XDG_PICTURES_DIR="$XDG_PICTURES_DIR" \
         CAELESTIA_DATA_DIR="$CAELESTIA_DATA_DIR" \
         CAELESTIA_NO_DEFER="${CAELESTIA_NO_DEFER:-}" \
+        CAELESTIA_NO_TERMS="${CAELESTIA_NO_TERMS:-}" \
         MATUGEN_CALLS="$CALLS" \
         KDE_CALLS="$KDE_CALLS" \
         FFMPEG_PATTERN="${FFMPEG_PATTERN:-gray}" \

@@ -1040,9 +1040,11 @@ commit() {
 }
 
 # Only a shell on a pty wants the escapes; anything else echoed them.
+# CAELESTIA_NO_TERMS keeps the file but leaves every pty alone (the tests set it).
 apply_terms() {
     local file="$1" sequence pty name comm
     [[ -s "$file" ]] || return 0
+    [[ -z "${CAELESTIA_NO_TERMS:-}" ]] || return 0
     sequence="$(<"$file")"
 
     for pty in /dev/pts/[0-9]*; do
