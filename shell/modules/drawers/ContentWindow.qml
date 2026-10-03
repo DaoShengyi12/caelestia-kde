@@ -262,9 +262,15 @@ StyledWindow {
         id: overviewWallpaperLayer
 
         property bool active: visibilities.overview || warming
+        property bool keepAlive: false
         property bool warming: false
         property real _maxBorder: Math.max(1, Math.min(root.width, root.height) * 0.15)
         property real bgScale: 1.0 + (dynamicBorderThickness / _maxBorder) * 0.1
+
+        onActiveChanged: {
+            if (active)
+                keepAlive = true;
+        }
 
         anchors.fill: parent
         visible: active || opacity > 0
