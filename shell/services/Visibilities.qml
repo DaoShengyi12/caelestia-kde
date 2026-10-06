@@ -9,11 +9,16 @@ import qs.services
 Singleton {
     property var screens: new Map()
     property var bars: new Map()
+    property var docks: new Map()
     property string launcherInitialSearch: ""
     property string initialSidebarTab: ""
     property string lastSidebarTab: "notifications"
     property int openDialogs: 0
     readonly property bool sidebarPinned: GlobalConfig.sidebar.pinned
+    // Live width while the pinned sidebar's edge is dragged; otherwise follows
+    // sidebar.width, where 0 means the default width.
+    property int sidebarWidth
+    property bool sidebarResizing: false
     property string preOverviewActiveWindowAddress: ""
     property string dragAddress: ""
     property string dragOriginScreen: ""
@@ -25,9 +30,21 @@ Singleton {
 
     signal cycleOverview(bool backwards)
 
+    function sidebarWidthFor(defaultWidth: real): real {
+        return sidebarPinned && sidebarWidth > 0 ? sidebarWidth : defaultWidth;
+    }
+
+    function setSidebarWidth(width: int): void {
+        // Also set the live width: the binding is off mid-drag, and a
+        // double-click's second press starts one.
+        sidebarWidth = Math.max(0, width);
+        GlobalConfig.sidebar.width = sidebarWidth;
+    }
+
     function sidebarOpenTab(): string {
         return GlobalConfig.sidebar.defaultTab === "last" ? lastSidebarTab : GlobalConfig.sidebar.defaultTab;
     }
+
     function load(screen: ShellScreen, visibilities: DrawerVisibilities): void {
         screens.set(Kwin.monitorFor(screen), visibilities);
         screens = new Map(screens);
@@ -50,14 +67,24 @@ Singleton {
                 Kwin.clearHighlight();
         });
     }
+
     function registerBar(screen: ShellScreen, barWrapper: var): void {
         bars.set(screen.name, barWrapper);
         bars = new Map(bars);
+    }
+    function registerDock(screen: ShellScreen, dock: var): void {
+        docks.set(screen.name, dock);
+        docks = new Map(docks);
+    }
+    function unregisterDock(screen: ShellScreen): void {
+        docks.delete(screen.name);
+        docks = new Map(docks);
     }
     function getForActive(): DrawerVisibilities {
         const monitor = Kwin.monitors[Kwin.cursorOutputName()] || Kwin.focusedMonitor;
         return screens.get(monitor) || screens.values().next().value;
     }
+
     function setDrag(address: string, x: real, y: real, w: real, h: real, originScreen: string): void {
         dragAddress = address;
         dragX = x;
@@ -66,13 +93,21 @@ Singleton {
         dragHeight = h;
         dragOriginScreen = originScreen;
     }
+
     function clearDrag(): void {
         dragAddress = "";
         dragOriginScreen = "";
     }
+
     function setOverview(visible: bool): void {
         for (const visibilities of screens.values())
             visibilities.overview = visible;
+    }
+
+    Binding on sidebarWidth {
+        value: GlobalConfig.sidebar.width
+        when: !sidebarResizing
+        restoreMode: Binding.RestoreNone
     }
 
     Timer {

@@ -13,7 +13,7 @@ import qs.services
 Item {
     id: root
 
-    required property var controller
+    property var controller: null
     property bool open: false
     property point at
 
@@ -98,7 +98,7 @@ Item {
                             // Shown as chosen only while it keeps applying, under auto-arrange.
                             internalChecked: DesktopLayout.autoArrange && DesktopLayout.sortKey === modelData.key
                             text: modelData.label
-                            onClicked: root.controller.sortBy(modelData.key)
+                            onClicked: root.controller?.sortBy(modelData.key)
                         }
                     }
                 }
@@ -126,7 +126,7 @@ Item {
 
                     StyledSwitch {
                         checked: DesktopLayout.autoArrange
-                        onToggled: root.controller.setAutoArrange(checked)
+                        onToggled: root.controller?.setAutoArrange(checked)
                     }
                 }
 

@@ -23,7 +23,7 @@ ColumnLayout {
     }
 
     spacing: Tokens.spacing.small * scaleOffset
-    width: Math.max(Tokens.sizes.bar.kbLayoutWidth * scaleOffset, _isSidebarOpen ? (Tokens.sizes.sidebar.width * scaleOffset) - Tokens.padding.extraLargeIncreased * scaleOffset : 0)
+    width: Math.max(Tokens.sizes.bar.kbLayoutWidth * scaleOffset, _isSidebarOpen ? (Visibilities.sidebarWidthFor(Tokens.sizes.sidebar.width) * scaleOffset) - Tokens.padding.extraLargeIncreased * scaleOffset : 0)
 
     Component.onCompleted: kb.start()
 
@@ -98,7 +98,7 @@ ColumnLayout {
             width: list.width
             height: Math.max(36, rowText.implicitHeight + Tokens.padding.small)
             ToolTip.visible: isDisabled && layer.containsMouse
-            ToolTip.text: "XKB supports only 4 layouts at a time"
+            ToolTip.text: qsTr("XKB supports only 4 layouts at a time")
 
             StateLayer {
                 id: layer

@@ -56,6 +56,7 @@ QtObject {
                 { label: qsTr("Taskbar"), pagePath: "panels/TaskbarPanel.qml", keywords: ["per-monitor", "position", "screen"], subPageIdx: 2 },
                 { label: qsTr("Dashboard"), pagePath: "panels/DashboardPanel.qml", subPageIdx: 1 },
                 { label: qsTr("Launcher"), pagePath: "panels/LauncherPanel.qml", subPageIdx: 3 },
+                { label: qsTr("App browser layout"), keywords: ["launcher", "layout", "simple", "compact", "categories", "favourites"], pagePath: "panels/LauncherPanel.qml", subPageIdx: 3 },
                 { label: qsTr("Sidebar"), pagePath: "panels/SidebarPanel.qml", subPageIdx: 4 },
                 { label: qsTr("Quick Toggles Panel"), pagePath: "panels/UtilitiesPanel.qml", subPageIdx: 5 },
                 { label: qsTr("Overview"), pagePath: "panels/OverviewPanel.qml", keywords: ["overview", "animations", "blur"], subPageIdx: 16 },
@@ -195,6 +196,7 @@ QtObject {
             category: "shell",
             settings: [
                 { label: qsTr("Background Services"), keywords: ["daemons", "systemd", "tuning"] },
+                { label: qsTr("Visualiser Input"), keywords: ["visualiser", "microphone", "cava", "audio"] },
                 { label: qsTr("Rich Presence"), keywords: ["discord", "steamgriddb", "activity"], pagePath: "services/ArpcPage.qml", subPageIdx: 1 }
             ]
         },
@@ -239,11 +241,10 @@ QtObject {
             category: "system",
             settings: [
                 { label: qsTr("Device Info"), keywords: ["hardware", "specs", "cpu", "ram"] },
-                { label: qsTr("OS Version"), keywords: ["caelestia", "quickshell", "release"] }
+                { label: qsTr("OS Version"), keywords: ["caelestia", "quickshell", "release"] },
+                { label: qsTr("Uninstall Caelestia"), keywords: ["remove", "delete", "uninstall", "purge"] }
             ]
         },
-        // Last, to stay aligned with PageCompRegistry.pageComps — this list is
-        // indexed by position, so entries cannot be reordered independently.
         {
             label: qsTr("AI Assistant"),
             key: "ai",

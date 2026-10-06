@@ -56,7 +56,7 @@ ColumnLayout {
         id: list
 
         model: FolderListModel {
-            folder: "file://" + Paths.recsdir
+            folder: "file://" + GlobalConfig.paths.recordingsDir
             nameFilters: ["recording_*.mp4", "recording_*.gif"]
             sortField: FolderListModel.Time
             sortReversed: false
@@ -119,7 +119,7 @@ ColumnLayout {
                     root.visibilities.utilities = false;
                     if (!Visibilities.sidebarPinned)
                         root.visibilities.sidebar = false;
-                    Quickshell.execDetached([...GlobalConfig.general.apps.explorer, Paths.recsdir]);
+                    Quickshell.execDetached([...GlobalConfig.general.apps.explorer, GlobalConfig.paths.recordingsDir]);
                 }
             }
 

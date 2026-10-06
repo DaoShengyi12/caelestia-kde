@@ -16,6 +16,7 @@ import qs.services
 import qs.modules.background
 import qs.modules.bar
 import qs.modules.overview as Overview
+import qs.modules.background.desktopicons
 
 StyledWindow {
     id: root
@@ -37,14 +38,14 @@ StyledWindow {
     // active workspace changes — hasFullscreenOn() filters by workspace, but
     // a plain function call only re-runs when its direct property deps change.
     readonly property bool actualFullscreen: (Kwin.activeWsId, Kwin.hasFullscreenOn(screen?.name ?? ""))
-    readonly property bool hasOpenOverlay: focusGrabState.active || panels.popouts.isDetached || desktopContextMenu.expanded || visibilities.overview || visibilities.launcher || visibilities.dashboard || visibilities.sidebar || visibilities.session || visibilities.utilities
+    readonly property bool hasOpenOverlay: focusGrabState.active || panels.popouts.isDetached || desktopContextMenu.expanded || desktopIconContextMenu.expanded || dropMenu.expanded || viewOptions.open || visibilities.overview || visibilities.launcher || visibilities.dashboard || visibilities.sidebar || visibilities.session || visibilities.utilities
     readonly property bool hasFullscreen: actualFullscreen && !hasOpenOverlay
 
     // The sidebar is the only thing open and it is pinned (or one of the shell's
     // file dialogs is up): take input only over the panels, not the whole screen,
     // so clicks outside reach other windows instead of closing the sidebar.
     readonly property bool sidebarPassthrough: visibilities.sidebar && (Visibilities.sidebarPinned || Visibilities.openDialogs > 0)
-        && !(panels.popouts.isDetached || desktopContextMenu.expanded || visibilities.overview || visibilities.launcher || visibilities.dashboard || visibilities.session || visibilities.utilities
+        && !(panels.popouts.isDetached || desktopContextMenu.expanded || desktopIconContextMenu.expanded || dropMenu.expanded || viewOptions.open || visibilities.overview || visibilities.launcher || visibilities.dashboard || visibilities.session || visibilities.utilities
             || (panels.popouts.currentName.startsWith("traymenu") && (panels.popouts.current as StackView)?.depth > 1))
     property real fsTransitionProg: hasFullscreen ? 1 : 0
     readonly property real sdfBorderOffset: 2 * fsTransitionProg
@@ -410,10 +411,10 @@ StyledWindow {
         PanelBg {
             id: sidebarBg
 
-            property bool connectedToPopout: (bar.position === "top" || bar.position === "bottom") && panels.popouts.sidebarOpen && panels.popouts.implicitWidth <= Tokens.sizes.sidebar.width + 1 && !panels.popouts.isDockPopout
+            property bool connectedToPopout: (bar.position === "top" || bar.position === "bottom") && panels.popouts.sidebarOpen && panels.popouts.implicitWidth <= Visibilities.sidebarWidthFor(Tokens.sizes.sidebar.width) + 1 && !panels.popouts.isDockPopout
 
             panel: panels.sidebar
-            deformAmount: 0.03
+            deformAmount: Visibilities.sidebarResizing ? 0 : 0.03
             implicitHeight: panel.height * (1 / rawDeformMatrix.m22) + 2
             exclude: {
                 let arr = [];
@@ -454,7 +455,8 @@ StyledWindow {
             id: contextMenuBg
 
             panel: desktopContextMenu.backgroundItem
-            visible: desktopContextMenu.expanded
+            // Stay up while the closing animation runs, not just while expanded.
+            visible: desktopContextMenu.visible && panel.width > 0
             x: panel.x
             y: panel.y
         }
@@ -462,7 +464,7 @@ StyledWindow {
             id: popoutBg
 
             property real extraShift: panels.popouts.isDetached ? 0 : 0.2
-            property bool connectedToSidebar: (bar.position === "top" || bar.position === "bottom") && panels.popouts.sidebarOpen && panels.popouts.implicitWidth <= Tokens.sizes.sidebar.width + 1 && !panels.popouts.isDockPopout
+            property bool connectedToSidebar: (bar.position === "top" || bar.position === "bottom") && panels.popouts.sidebarOpen && panels.popouts.implicitWidth <= Visibilities.sidebarWidthFor(Tokens.sizes.sidebar.width) + 1 && !panels.popouts.isDockPopout
 
             panel: panels.popoutsWrapper
             deformAmount: connectedToSidebar ? 0.03 : (panels.popouts.isDetached ? 0.05 : panels.popouts.hasCurrent ? 0.15 : 0.1)
@@ -674,23 +676,37 @@ StyledWindow {
                 if (root.screen.name === screenName) {
                     desktopContextMenuAnchor.x = x;
                     desktopContextMenuAnchor.y = y;
-                    if (desktopContextMenu.expanded) {
-                        desktopContextMenu.expanded = false;
-                        desktopMenuReopen.restart();
-                    } else {
+                    // Already open: jump to the new spot and unfold again
+                    // instead of closing and waiting before reopening.
+                    if (desktopContextMenu.expanded)
+                        desktopContextMenu.reopen();
+                    else
                         desktopContextMenu.expanded = true;
-                    }
                 }
             }
 
             target: ContextMenuStore
         }
-        Timer {
-            id: desktopMenuReopen
+        Connections {
+            function onOpenIconContextMenu(screenName: string, x: real, y: real, keys: var, inGroup: string): void {
+                if (root.screen.name === screenName) {
+                    desktopIconContextMenu.openAt(x, y, keys, inGroup);
+                }
+            }
 
-            interval: 300
-            repeat: false
-            onTriggered: desktopContextMenu.expanded = true
+            function onOpenDropMenu(screenName: string, x: real, y: real, urls: var, target: string, cell: var): void {
+                if (root.screen.name === screenName) {
+                    dropMenu.openAt(x, y, urls, target, cell);
+                }
+            }
+
+            function onViewOptionsRequested(screenName: string, x: real, y: real): void {
+                if (root.screen.name === screenName) {
+                    viewOptions.openAt(x, y);
+                }
+            }
+
+            target: DesktopLayout
         }
         Item {
             id: desktopContextMenuAnchor
@@ -701,6 +717,24 @@ StyledWindow {
             attachTo: desktopContextMenuAnchor
             screenName: root.screen.name
             z: 9999
+        }
+        DesktopIconContextMenu {
+            id: desktopIconContextMenu
+
+            controller: DesktopLayout.controllerFor(root.screen.name)
+            z: 9999
+        }
+        DropMenu {
+            id: dropMenu
+
+            controller: DesktopLayout.controllerFor(root.screen.name)
+            z: 9999
+        }
+        ViewOptions {
+            id: viewOptions
+
+            controller: DesktopLayout.controllerFor(root.screen.name)
+            z: 10000
         }
     }
 
@@ -857,7 +891,7 @@ StyledWindow {
         BlurMask {
             target: panels.popoutsWrapper
             contentItem: root.contentItem
-            blurOffsetTop: root.blurOffsetTop
+            blurOffsetTop: root.blurOffsetTop - (popoutBg.connectedToSidebar ? Tokens.spacing.extraLarge + 10 + Tokens.rounding.extraLarge : 0)
             blurOffsetBottom: root.blurOffsetBottom
             blurOffsetLeft: root.blurOffsetLeft
             blurOffsetRight: root.blurOffsetRight
@@ -879,7 +913,7 @@ StyledWindow {
             deformMatrix: utilsBg.deformMatrix
         }
         BlurMask {
-            target: desktopContextMenu.expanded ? desktopContextMenu.backgroundItem : null
+            target: desktopContextMenu.visible ? desktopContextMenu.backgroundItem : null
             contentItem: root.contentItem
             blurOffsetTop: root.blurOffsetTop
             blurOffsetBottom: root.blurOffsetBottom
@@ -907,6 +941,7 @@ StyledWindow {
         property real deformAmount: 0.15
 
         group: panel.visible ? blobGroup : null
+        visible: panel.visible
         x: panel.x + panels.leftMargin
         y: panel.y + panels.topMargin
         implicitWidth: panel.width

@@ -29,10 +29,191 @@ PageBase {
     property real perfSaveStartedAt: 0
 
     readonly property real zonePadding: Tokens.padding.medium
-
     readonly property real emptyZoneHeight: Math.max(root.height - 120, 72)
 
+    property Component panelDelegate: Component {
+        Item {
+            id: delegateWrapper
+
+            required property int index
+            required property string compId
+            required property bool isPlaceholder
+            required property var raw
+
+            property string sourceList: delegateWrapper.ListView.view.model === activeModel ? "active" : "library"
+            property bool isDraggingThis: activeDragArea.drag.active
+
+            z: isDraggingThis ? 100 : 1
+            width: ListView.view.width
+            height: (root.isGlobalDragging && root.globalDragSourceList === sourceList && root.globalDragSourceIndex === index && root.globalDragHoveredList !== sourceList) ? 0 : 50
+            visible: height > 0
+
+            Behavior on height {
+                Anim {
+                    type: Anim.FastSpatial
+                }
+            }
+
+            DropArea {
+                anchors.fill: parent
+                keys: ["component"]
+                onEntered: drag => {
+                    let sourceItem = drag.source;
+                    if (!sourceItem) return;
+
+                    let from = -1;
+                    let to = delegateWrapper.index;
+                    let targetModel = root.getModel(sourceList);
+
+                    if (sourceItem.sourceList === sourceList) {
+                        from = root.globalDragSourceIndex;
+                    } else {
+                        for (let i = 0; i < targetModel.count; i++) {
+                            if (targetModel.get(i).isPlaceholder) { from = i; break; }
+                        }
+                    }
+
+                    if (from !== -1 && to !== -1 && from !== to) {
+                        targetModel.move(from, to, 1);
+                        if (sourceItem.sourceList === sourceList) {
+                            root.globalDragSourceIndex = to;
+                        }
+                    }
+                }
+            }
+
+            StyledRect {
+                id: activeDelegate
+
+                width: delegateWrapper.width
+                height: 50
+                color: isDraggingThis ? Colours.layer(Colours.palette.m3surfaceContainerHighest, 2) : (sourceList !== "library" ? Colours.palette.m3surfaceContainerHigh : Colours.palette.m3surfaceContainer)
+                radius: Tokens.rounding.medium
+                border.color: isDraggingThis ? Colours.palette.m3outline : (sourceList === "library" ? Colours.palette.m3outlineVariant : "transparent")
+                border.width: isDraggingThis ? 2 : (sourceList === "library" ? 1 : 0)
+                opacity: isPlaceholder ? 0.2 : 1.0
+
+                Drag.active: activeDragArea.drag.active
+                Drag.source: delegateWrapper
+                Drag.hotSpot.x: width / 2
+                Drag.hotSpot.y: height / 2
+                Drag.keys: ["component"]
+
+                states: State {
+                    when: activeDragArea.drag.active
+
+                    ParentChange { target: activeDelegate; parent: root.flickable.contentItem }
+                    PropertyChanges { target: activeDelegate; scale: 1.05 }
+                }
+
+                MouseArea {
+                    id: activeDragArea
+
+                    anchors.fill: parent
+                    hoverEnabled: true
+                    drag.target: isPlaceholder ? null : activeDelegate
+                    drag.axis: Drag.XAndYAxis
+
+                    onPressed: {
+                        if (isPlaceholder) return;
+                        root.isGlobalDragging = true;
+                        root.globalDragSourceList = sourceList;
+                        root.globalDragSourceIndex = index;
+                        root.globalDragHoveredList = sourceList;
+                    }
+
+                    onReleased: {
+                        if (isPlaceholder) return;
+
+                        let finalHovered = root.globalDragHoveredList;
+                        root.isGlobalDragging = false;
+
+                        let targetModel = root.getModel(finalHovered);
+                        let sourceModel = root.getModel(sourceList);
+
+                        if (finalHovered !== sourceList && finalHovered !== "" && targetModel) {
+                            let pIndex = -1;
+                            for (let i = 0; i < targetModel.count; i++) {
+                                if (targetModel.get(i).isPlaceholder) { pIndex = i; break; }
+                            }
+
+                            if (pIndex !== -1) {
+                                targetModel.remove(pIndex);
+                                targetModel.insert(pIndex, { compId: compId, isPlaceholder: false, raw: raw });
+                                sourceModel.remove(root.globalDragSourceIndex);
+                            }
+                        }
+
+                        for (let i = activeModel.count - 1; i >= 0; i--) {
+                            if (activeModel.get(i).isPlaceholder) activeModel.remove(i);
+                        }
+                        for (let i = libraryModel.count - 1; i >= 0; i--) {
+                            if (libraryModel.get(i).isPlaceholder) libraryModel.remove(i);
+                        }
+
+                        activeDelegate.x = 0;
+                        activeDelegate.y = 0;
+                        save();
+                    }
+                }
+
+                StateLayer {
+                    anchors.fill: parent
+                    radius: Tokens.rounding.medium
+                    acceptedButtons: Qt.NoButton
+                    color: Colours.palette.m3onSurface
+                    opacity: activeDragArea.containsMouse && !isPlaceholder && !isDraggingThis ? 0.08 : 0
+
+                    Behavior on opacity {
+                        Anim {
+                            type: Anim.FastEffects
+                        }
+                    }
+                }
+
+                RowLayout {
+                    anchors.fill: parent
+                    anchors.margins: Tokens.padding.medium
+                    spacing: Tokens.spacing.small
+                    visible: !isPlaceholder
+
+                    MaterialIcon {
+                        text: root.componentMeta[compId]?.icon || "application-x-executable"
+                        color: sourceList !== "library" ? Colours.palette.m3onSurface : Colours.palette.m3onSurfaceVariant
+                    }
+
+                    Text {
+                        Layout.fillWidth: true
+                        text: root.componentMeta[compId]?.name || "Unknown Component"
+                        font: Tokens.font.body.small
+                        color: sourceList !== "library" ? Colours.palette.m3onSurface : Colours.palette.m3onSurfaceVariant
+                        elide: Text.ElideRight
+                    }
+
+                    TextButton {
+                        visible: raw.type === "custom"
+                        text: qsTr("Delete")
+                        type: TextButton.Filled
+                        z: 100
+                        onClicked: {
+                            if (sourceList === "active") activeModel.remove(index);
+                            else libraryModel.remove(index);
+                            root.save();
+                        }
+                    }
+
+                    MaterialIcon {
+                        text: "drag_indicator"
+                        color: Colours.palette.m3onSurfaceVariant
+                    }
+                }
+            }
+        }
+    }
+
     property var componentMeta: ({
+        "paste": { icon: "content_paste", name: qsTr("Paste") },
+        "arrange_icons": { icon: "sort", name: qsTr("Arrange Icons") },
         "toggle_desktop_icons": { icon: "desktop_windows", name: qsTr("Desktop Icons") },
         "wallpaper_style": { icon: "wallpaper", name: qsTr("Wallpaper & style") },
         "next_wallpaper": { icon: "skip_next", name: qsTr("Next Wallpaper") },
@@ -68,6 +249,12 @@ PageBase {
 
     function applyEntries(entries) {
         let json = (!entries || entries.length === 0) ? ContextMenuStore.cloneEntries(ContextMenuStore.defaultEntries()) : ContextMenuStore.cloneEntries(entries);
+        const defaults = ContextMenuStore.defaultEntries();
+        const existingIds = json.map(e => e.id);
+        for (let d = 0; d < defaults.length; d++) {
+            if (!existingIds.includes(defaults[d].id))
+                json.push(defaults[d]);
+        }
 
         activeModel.clear();
         libraryModel.clear();
@@ -83,7 +270,6 @@ PageBase {
                 libraryModel.append({ "compId": entry.id, "isPlaceholder": false, "raw": entry });
             }
         }
-
     }
 
     function flushSave() {
@@ -131,9 +317,7 @@ PageBase {
         spacing: Tokens.spacing.large
 
         Connections {
-            target: ContextMenuStore
-
-            function onEntriesChanged() {
+            function onEntriesChanged(): void {
                 root.applyEntries(ContextMenuStore.entries);
                 if (root.perfLoadStartedAt > 0) {
                     const loadMs = Date.now() - root.perfLoadStartedAt;
@@ -141,6 +325,8 @@ PageBase {
                     root.perfLoadStartedAt = 0;
                 }
             }
+
+            target: ContextMenuStore
         }
 
         Timer {
@@ -336,178 +522,5 @@ PageBase {
             }
         }
     }
-
-    property Component panelDelegate: Component {
-        Item {
-            id: delegateWrapper
-
-            required property int index
-            required property string compId
-            required property bool isPlaceholder
-            required property var raw
-
-            property string sourceList: delegateWrapper.ListView.view.model === activeModel ? "active" : "library"
-
-            width: ListView.view.width
-            height: (root.isGlobalDragging && root.globalDragSourceList === sourceList && root.globalDragSourceIndex === index && root.globalDragHoveredList !== sourceList) ? 0 : 50
-            visible: height > 0
-            
-            Behavior on height { Anim { type: Anim.FastSpatial } }
-            
-            property bool isDraggingThis: activeDragArea.drag.active
-
-            z: isDraggingThis ? 100 : 1
-
-            DropArea {
-                anchors.fill: parent
-                keys: ["component"]
-                onEntered: drag => {
-                    let sourceItem = drag.source;
-                    if (!sourceItem) return;
-                    
-                    let from = -1;
-                    let to = delegateWrapper.index;
-                    let targetModel = root.getModel(sourceList);
-                    
-                    if (sourceItem.sourceList === sourceList) {
-                        from = root.globalDragSourceIndex;
-                    } else {
-                        for (let i = 0; i < targetModel.count; i++) {
-                            if (targetModel.get(i).isPlaceholder) { from = i; break; }
-                        }
-                    }
-                    
-                    if (from !== -1 && to !== -1 && from !== to) {
-                        targetModel.move(from, to, 1);
-                        if (sourceItem.sourceList === sourceList) {
-                            root.globalDragSourceIndex = to;
-                        }
-                    }
-                }
-            }
-
-            StyledRect {
-                id: activeDelegate
-
-                width: delegateWrapper.width
-                height: 50
-                color: isDraggingThis ? Colours.layer(Colours.palette.m3surfaceContainerHighest, 2) : (sourceList !== "library" ? Colours.palette.m3surfaceContainerHigh : Colours.palette.m3surfaceContainer)
-                radius: Tokens.rounding.medium
-                border.color: isDraggingThis ? Colours.palette.m3outline : (sourceList === "library" ? Colours.palette.m3outlineVariant : "transparent")
-                border.width: isDraggingThis ? 2 : (sourceList === "library" ? 1 : 0)
-                opacity: isPlaceholder ? 0.2 : 1.0
-
-                MouseArea {
-                    id: activeDragArea
-
-                    anchors.fill: parent
-                    hoverEnabled: true
-                    drag.target: isPlaceholder ? null : activeDelegate
-                    drag.axis: Drag.XAndYAxis
-                    
-                    onPressed: {
-                        if (isPlaceholder) return;
-                        root.isGlobalDragging = true;
-                        root.globalDragSourceList = sourceList;
-                        root.globalDragSourceIndex = index;
-                        root.globalDragHoveredList = sourceList;
-                    }
-                    
-                    onReleased: {
-                        if (isPlaceholder) return;
-                        
-                        let finalHovered = root.globalDragHoveredList;
-                        root.isGlobalDragging = false;
-                        
-                        let targetModel = root.getModel(finalHovered);
-                        let sourceModel = root.getModel(sourceList);
-                        
-                        if (finalHovered !== sourceList && finalHovered !== "" && targetModel) {
-                            let pIndex = -1;
-                            for (let i = 0; i < targetModel.count; i++) {
-                                if (targetModel.get(i).isPlaceholder) { pIndex = i; break; }
-                            }
-                            
-                            if (pIndex !== -1) {
-                                targetModel.remove(pIndex);
-                                targetModel.insert(pIndex, { compId: compId, isPlaceholder: false, raw: raw });
-                                sourceModel.remove(root.globalDragSourceIndex);
-                            }
-                        }
-                        
-                        for (let i = activeModel.count - 1; i >= 0; i--) {
-                            if (activeModel.get(i).isPlaceholder) activeModel.remove(i);
-                        }
-                        for (let i = libraryModel.count - 1; i >= 0; i--) {
-                            if (libraryModel.get(i).isPlaceholder) libraryModel.remove(i);
-                        }
-                        
-                        activeDelegate.x = 0;
-                        activeDelegate.y = 0;
-                        save();
-                    }
-                }
-
-                StateLayer {
-                    anchors.fill: parent
-                    radius: Tokens.rounding.medium
-                    acceptedButtons: Qt.NoButton
-                    color: Colours.palette.m3onSurface
-                    opacity: activeDragArea.containsMouse && !isPlaceholder && !isDraggingThis ? 0.08 : 0
-
-                    Behavior on opacity { Anim { type: Anim.FastEffects } }
-                }
-
-                RowLayout {
-                    anchors.fill: parent
-                    anchors.margins: Tokens.padding.medium
-                    spacing: Tokens.spacing.small
-                    visible: !isPlaceholder
-                    
-                    MaterialIcon {
-                        text: root.componentMeta[compId]?.icon || "application-x-executable"
-                        color: sourceList !== "library" ? Colours.palette.m3onSurface : Colours.palette.m3onSurfaceVariant
-                    }
-                    
-                    Text {
-                        Layout.fillWidth: true
-                        text: root.componentMeta[compId]?.name || "Unknown Component"
-                        font: Tokens.font.body.small
-                        color: sourceList !== "library" ? Colours.palette.m3onSurface : Colours.palette.m3onSurfaceVariant
-                        elide: Text.ElideRight
-                    }
-                    
-                    TextButton {
-                        visible: raw.type === "custom"
-                        text: qsTr("Delete")
-                        type: TextButton.Filled
-                        z: 100
-                        onClicked: {
-                            if (sourceList === "active") activeModel.remove(index);
-                            else libraryModel.remove(index);
-                            root.save();
-                        }
-                    }
-
-                    MaterialIcon {
-                        text: "drag_indicator"
-                        color: Colours.palette.m3onSurfaceVariant
-                    }
-                }
-
-                Drag.active: activeDragArea.drag.active
-                Drag.source: delegateWrapper
-                Drag.hotSpot.x: width / 2
-                Drag.hotSpot.y: height / 2
-                Drag.keys: ["component"]
-
-                states: State {
-                    when: activeDragArea.drag.active
-
-                    ParentChange { target: activeDelegate; parent: root.flickable.contentItem }
-                    PropertyChanges { target: activeDelegate; scale: 1.05 }
-                }
-            }
-        }
-    }
 }
+

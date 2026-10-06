@@ -10,7 +10,7 @@ LazyLoader {
     id: loader
 
     property list<string> cwd: ["Home"]
-    property string filterLabel: "All files"
+    property string filterLabel: qsTr("All files")
     property list<string> filters: ["*"]
     property bool selectFolder: false
     property string title: selectFolder ? qsTr("Select a folder") : qsTr("Select a file")
