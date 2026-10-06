@@ -129,7 +129,7 @@ Item {
 
     function groupEntries(id: string): var {
         const g = DesktopLayout.groups[id];
-        return g ? g.members.map(m => files[m]).filter(e => !e) : [];
+        return g ? g.members.map(m => files[m]).filter(e => !!e) : [];
     }
 
     function groupContaining(name: string): string {

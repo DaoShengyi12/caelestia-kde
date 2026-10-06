@@ -33,6 +33,10 @@ Controls.Menu {
             DesktopLayout.pasteRequested(root.screenName, root.attachTo.x, root.attachTo.y);
             return;
         }
+        if (entry.action === "AddWidget") {
+            DesktopLayout.addWidgetRequested(root.screenName, root.attachTo.x, root.attachTo.y);
+            return;
+        }
         if (entry.action === "ArrangeIcons") {
             DesktopLayout.viewOptionsRequested(root.screenName, root.attachTo.x, root.attachTo.y);
             return;
@@ -99,6 +103,10 @@ Controls.Menu {
                 item.text = entry.label;
                 item.icon = entry.icon || "content_paste";
                 item.visible = Qt.binding(() => root.iconsShown && DesktopLayout.clipboardHasFiles);
+            } else if (entry.action === "AddWidget") {
+                item.text = entry.label;
+                item.icon = entry.icon || "widgets";
+                item.visible = Qt.binding(() => root.iconsShown);
             } else if (entry.action === "ArrangeIcons") {
                 item.text = entry.label;
                 item.icon = entry.icon || "sort";
@@ -118,7 +126,7 @@ Controls.Menu {
         }
 
         root.entryByKey = nextEntryByKey;
-        root.dynamicModel = [pasteItem, addWidgetItem, arrangeItem, ...newArr];
+        root.dynamicModel = newArr;
         const buildMs = Date.now() - buildStartedAt;
         console.log("[perf][DesktopContextMenu] build model source=" + sourceName + " items=" + newArr.length + " ms=" + buildMs);
     }
@@ -181,33 +189,6 @@ Controls.Menu {
         }
 
         target: ContextMenuStore
-    }
-
-    Controls.MenuItem {
-        id: pasteItem
-
-        text: qsTr("Paste")
-        icon: "content_paste"
-        visible: root.iconsShown && DesktopLayout.clipboardHasFiles
-        onClicked: DesktopLayout.pasteRequested(root.screenName, root.attachTo.x, root.attachTo.y)
-    }
-
-    Controls.MenuItem {
-        id: addWidgetItem
-
-        text: qsTr("Add Widget...")
-        icon: "widgets"
-        visible: root.iconsShown
-        onClicked: DesktopLayout.addWidgetRequested(root.screenName, root.attachTo.x, root.attachTo.y)
-    }
-
-    Controls.MenuItem {
-        id: arrangeItem
-
-        text: qsTr("Arrange Icons...")
-        icon: "sort"
-        visible: root.iconsShown
-        onClicked: DesktopLayout.viewOptionsRequested(root.screenName, root.attachTo.x, root.attachTo.y)
     }
 
     Component {
