@@ -178,13 +178,13 @@ PageBase {
                     visible: !isPlaceholder
 
                     MaterialIcon {
-                        text: root.componentMeta[compId]?.icon || "application-x-executable"
+                        text: root.componentMeta[compId]?.icon || raw?.icon || "widgets"
                         color: sourceList !== "library" ? Colours.palette.m3onSurface : Colours.palette.m3onSurfaceVariant
                     }
 
                     Text {
                         Layout.fillWidth: true
-                        text: root.componentMeta[compId]?.name || "Unknown Component"
+                        text: root.componentMeta[compId]?.name || raw?.label || "Unknown Component"
                         font: Tokens.font.body.small
                         color: sourceList !== "library" ? Colours.palette.m3onSurface : Colours.palette.m3onSurfaceVariant
                         elide: Text.ElideRight
@@ -213,6 +213,7 @@ PageBase {
 
     property var componentMeta: ({
         "paste": { icon: "content_paste", name: qsTr("Paste") },
+        "add_widget": { icon: "widgets", name: qsTr("Add Widget") },
         "arrange_icons": { icon: "sort", name: qsTr("Arrange Icons") },
         "toggle_desktop_icons": { icon: "desktop_windows", name: qsTr("Desktop Icons") },
         "wallpaper_style": { icon: "wallpaper", name: qsTr("Wallpaper & style") },
@@ -262,7 +263,7 @@ PageBase {
         for (let i = 0; i < json.length; i++) {
             let entry = json[i];
             if (entry.type === "custom") {
-                root.componentMeta[entry.id] = { icon: entry.icon || "application-x-executable", name: entry.label };
+                root.componentMeta[entry.id] = { icon: entry.icon || "widgets", name: entry.label };
             }
             if (entry.enabled) {
                 activeModel.append({ "compId": entry.id, "isPlaceholder": false, "raw": entry });
