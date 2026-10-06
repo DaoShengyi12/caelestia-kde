@@ -706,6 +706,13 @@ StyledWindow {
                 }
             }
 
+            function onAddWidgetRequested(screenName: string, x: real, y: real): void {
+                if (root.screen.name === screenName) {
+                    const ctrl = DesktopLayout.controllerFor(screenName);
+                    widgetGallery.openAt(x, y, ctrl ? ctrl.cellAt(x, y) : null);
+                }
+            }
+
             target: DesktopLayout
         }
         Item {
@@ -732,6 +739,12 @@ StyledWindow {
         }
         ViewOptions {
             id: viewOptions
+
+            controller: DesktopLayout.controllerFor(root.screen.name)
+            z: 10000
+        }
+        WidgetGallery {
+            id: widgetGallery
 
             controller: DesktopLayout.controllerFor(root.screen.name)
             z: 10000

@@ -11,7 +11,7 @@ import qs.services
 Item {
     id: root
 
-    required property var controller
+    property var controller: null
     property bool open: false
     property point at
     property var cell: null
@@ -85,7 +85,7 @@ Item {
                     columnSpacing: Tokens.spacing.small
 
                     Repeater {
-                        model: root.controller.widgetCatalog.types
+                        model: root.controller?.widgetCatalog?.types ?? []
 
                         StyledRect {
                             id: card

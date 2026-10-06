@@ -1314,11 +1314,6 @@ Item {
             Qt.callLater(root.syncEntries);
         }
 
-        function onAddWidgetRequested(screenName: string, x: real, y: real): void {
-            if (screenName === root.screenData.name)
-                widgetGallery.openAt(x, y, root.cellAt(x, y));
-        }
-
         function onAutoArrangeChanged(): void {
             if (DesktopLayout.autoArrange)
                 root.refit();
@@ -1673,13 +1668,6 @@ wl-paste --no-newline --type text/uri-list`]
                 }
             }
         }
-    }
-
-    WidgetGallery {
-        id: widgetGallery
-
-        controller: root
-        z: 200
     }
 
     GroupPopup {
