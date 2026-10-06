@@ -10,7 +10,7 @@ import qs.utils
 Controls.Menu {
     id: root
 
-    required property var controller
+    property var controller: null
 
     // What the menu acts on: the selected keys, and the open group they sit in.
     property var keys: []
@@ -18,10 +18,10 @@ Controls.Menu {
 
     readonly property bool single: keys.length === 1
     readonly property string firstKey: keys[0] ?? ""
-    readonly property bool firstIsGroup: firstKey !== "" && controller.isGroupKey(firstKey)
-    readonly property var firstEntry: single && !firstIsGroup ? controller.entryOf(firstKey) : null
+    readonly property bool firstIsGroup: firstKey !== "" && (controller?.isGroupKey(firstKey) ?? false)
+    readonly property var firstEntry: single && !firstIsGroup ? (controller?.entryOf(firstKey) ?? null) : null
     readonly property DesktopEntry appEntry: firstEntry?.desktopEntry ?? null
-    readonly property bool hasGroups: keys.some(k => controller.isGroupKey(k))
+    readonly property bool hasGroups: keys.some(k => controller?.isGroupKey(k) ?? false)
     readonly property bool isPinnedToDock: appEntry ? Strings.testRegexList(GlobalConfig.bar.dock.pinnedApps, appEntry.id) : false
 
     function openAt(x: real, y: real, selected: var, inGroup: string): void {
@@ -31,8 +31,8 @@ Controls.Menu {
         anchor.y = y;
         const bgW = backgroundItem && backgroundItem.implicitWidth > 0 ? backgroundItem.implicitWidth : 260;
         const bgH = backgroundItem && backgroundItem.implicitHeight > 0 ? backgroundItem.implicitHeight : maxHeight;
-        marginX = x + bgW > controller.width ? -bgW : 0;
-        marginY = y + bgH > controller.height ? -bgH : 0;
+        marginX = x + bgW > root.width ? -bgW : 0;
+        marginY = y + bgH > root.height ? -bgH : 0;
         expanded = true;
     }
 
@@ -127,7 +127,5 @@ Controls.Menu {
 
     Item {
         id: anchor
-
-        parent: root.controller
     }
 }

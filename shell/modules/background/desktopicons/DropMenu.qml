@@ -7,7 +7,7 @@ import qs.components.controls as Controls
 Controls.Menu {
     id: root
 
-    required property var controller
+    property var controller: null
 
     property var urls: []
     property string dest: ""
@@ -23,13 +23,13 @@ Controls.Menu {
         anchor.y = y;
         const bgW = backgroundItem && backgroundItem.implicitWidth > 0 ? backgroundItem.implicitWidth : 220;
         const bgH = backgroundItem && backgroundItem.implicitHeight > 0 ? backgroundItem.implicitHeight : 220;
-        marginX = x + bgW > controller.width ? -bgW : 0;
-        marginY = y + bgH > controller.height ? -bgH : 0;
+        marginX = x + bgW > root.width ? -bgW : 0;
+        marginY = y + bgH > root.height ? -bgH : 0;
         expanded = true;
     }
 
     function run(action: string): void {
-        controller.transfer(urls, dest, action, cell);
+        controller?.transfer(urls, dest, action, cell);
         urls = [];
     }
 
@@ -67,7 +67,6 @@ Controls.Menu {
 
     Item {
         id: anchor
-
-        parent: root.controller
     }
 }
+

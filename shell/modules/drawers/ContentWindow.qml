@@ -16,6 +16,7 @@ import qs.services
 import qs.modules.background
 import qs.modules.bar
 import qs.modules.overview as Overview
+import qs.modules.background.desktopicons
 
 StyledWindow {
     id: root
@@ -37,14 +38,14 @@ StyledWindow {
     // active workspace changes — hasFullscreenOn() filters by workspace, but
     // a plain function call only re-runs when its direct property deps change.
     readonly property bool actualFullscreen: (Kwin.activeWsId, Kwin.hasFullscreenOn(screen?.name ?? ""))
-    readonly property bool hasOpenOverlay: focusGrabState.active || panels.popouts.isDetached || desktopContextMenu.expanded || visibilities.overview || visibilities.launcher || visibilities.dashboard || visibilities.sidebar || visibilities.session || visibilities.utilities
+    readonly property bool hasOpenOverlay: focusGrabState.active || panels.popouts.isDetached || desktopContextMenu.expanded || desktopIconContextMenu.expanded || dropMenu.expanded || viewOptions.open || visibilities.overview || visibilities.launcher || visibilities.dashboard || visibilities.sidebar || visibilities.session || visibilities.utilities
     readonly property bool hasFullscreen: actualFullscreen && !hasOpenOverlay
 
     // The sidebar is the only thing open and it is pinned (or one of the shell's
     // file dialogs is up): take input only over the panels, not the whole screen,
     // so clicks outside reach other windows instead of closing the sidebar.
     readonly property bool sidebarPassthrough: visibilities.sidebar && (Visibilities.sidebarPinned || Visibilities.openDialogs > 0)
-        && !(panels.popouts.isDetached || desktopContextMenu.expanded || visibilities.overview || visibilities.launcher || visibilities.dashboard || visibilities.session || visibilities.utilities
+        && !(panels.popouts.isDetached || desktopContextMenu.expanded || desktopIconContextMenu.expanded || dropMenu.expanded || viewOptions.open || visibilities.overview || visibilities.launcher || visibilities.dashboard || visibilities.session || visibilities.utilities
             || (panels.popouts.currentName.startsWith("traymenu") && (panels.popouts.current as StackView)?.depth > 1))
     property real fsTransitionProg: hasFullscreen ? 1 : 0
     readonly property real sdfBorderOffset: 2 * fsTransitionProg
@@ -686,6 +687,27 @@ StyledWindow {
 
             target: ContextMenuStore
         }
+        Connections {
+            function onOpenIconContextMenu(screenName: string, x: real, y: real, keys: var, inGroup: string): void {
+                if (root.screen.name === screenName) {
+                    desktopIconContextMenu.openAt(x, y, keys, inGroup);
+                }
+            }
+
+            function onOpenDropMenu(screenName: string, x: real, y: real, urls: var, target: string, cell: var): void {
+                if (root.screen.name === screenName) {
+                    dropMenu.openAt(x, y, urls, target, cell);
+                }
+            }
+
+            function onViewOptionsRequested(screenName: string, x: real, y: real): void {
+                if (root.screen.name === screenName) {
+                    viewOptions.openAt(x, y);
+                }
+            }
+
+            target: DesktopLayout
+        }
         Item {
             id: desktopContextMenuAnchor
         }
@@ -695,6 +717,24 @@ StyledWindow {
             attachTo: desktopContextMenuAnchor
             screenName: root.screen.name
             z: 9999
+        }
+        DesktopIconContextMenu {
+            id: desktopIconContextMenu
+
+            controller: DesktopLayout.controllerFor(root.screen.name)
+            z: 9999
+        }
+        DropMenu {
+            id: dropMenu
+
+            controller: DesktopLayout.controllerFor(root.screen.name)
+            z: 9999
+        }
+        ViewOptions {
+            id: viewOptions
+
+            controller: DesktopLayout.controllerFor(root.screen.name)
+            z: 10000
         }
     }
 

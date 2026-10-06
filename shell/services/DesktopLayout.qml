@@ -28,10 +28,30 @@ Singleton {
     property bool singleClick: false
     // Whether the clipboard holds files, checked when the desktop menu opens.
     property bool clipboardHasFiles: false
+    // Screen name -> DesktopIcons controller instance
+    property var controllers: ({})
 
     signal pasteRequested(string screenName, real x, real y)
     signal viewOptionsRequested(string screenName, real x, real y)
     signal arrangeRequested(string screenName, string sortKey)
+    signal openIconContextMenu(string screenName, real x, real y, var keys, string inGroup)
+    signal openDropMenu(string screenName, real x, real y, var urls, string target, var cell)
+
+    function registerController(screenName: string, controller: var): void {
+        const next = Object.assign({}, controllers);
+        next[screenName] = controller;
+        controllers = next;
+    }
+
+    function unregisterController(screenName: string): void {
+        const next = Object.assign({}, controllers);
+        delete next[screenName];
+        controllers = next;
+    }
+
+    function controllerFor(screenName: string): var {
+        return controllers[screenName] ?? null;
+    }
 
     function fileKey(name: string): string {
         return "f/" + name;

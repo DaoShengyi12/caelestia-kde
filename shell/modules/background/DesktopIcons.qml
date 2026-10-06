@@ -470,8 +470,8 @@ Item {
     }
 
     function tileContextMenu(key: string, x: real, y: real): void {
-        const p = mapFromItem(tiles[key], x, y);
-        iconMenu.openAt(p.x, p.y, selectedKeys(), openGroupId);
+        const p = mapFromItem(tiles[key] ?? this, x, y);
+        DesktopLayout.openIconContextMenu(screenData.name, p.x, p.y, selectedKeys(), openGroupId);
     }
 
     function openKeys(keys: var): void {
@@ -928,7 +928,7 @@ Item {
                 entryOf(plan.target).launchWith(urls.map(u => u.startsWith("file://") ? decodeURIComponent(u.substring(7)) : u));
             } else {
                 const dest = plan.mode === "folder" ? entryOf(plan.target).path : desktopDir;
-                dropMenu.openAt(drop.x, drop.y, urls, dest, plan.mode === "folder" ? null : plan.cell);
+                DesktopLayout.openDropMenu(screenData.name, drop.x, drop.y, urls, dest, plan.mode === "folder" ? null : plan.cell);
             }
             return;
         }
@@ -1056,6 +1056,9 @@ Item {
     onFolderReadyChanged: Qt.callLater(syncEntries)
     onGridReadyChanged: Qt.callLater(syncEntries)
 
+    Component.onCompleted: DesktopLayout.registerController(screenData.name, root)
+    Component.onDestruction: DesktopLayout.unregisterController(screenData.name)
+
     Connections {
         function onLoadedChanged(): void {
             Qt.callLater(root.syncEntries);
@@ -1076,11 +1079,6 @@ Item {
             const gx = x - gridItem.x;
             const gy = y - gridItem.y;
             root.paste({ col: Math.max(0, Math.floor(gx / root.cellWidth)), row: Math.max(0, Math.floor(gy / root.cellHeight)) });
-        }
-
-        function onViewOptionsRequested(screenName: string, x: real, y: real): void {
-            if (screenName === root.screenData.name)
-                viewOptions.openAt(x, y);
         }
 
         target: DesktopLayout
@@ -1386,23 +1384,5 @@ wl-paste --no-newline --type text/uri-list`]
         controller: root
         x: -width * 4
     }
-
-    DesktopIconContextMenu {
-        id: iconMenu
-
-        controller: root
-    }
-
-    DropMenu {
-        id: dropMenu
-
-        controller: root
-    }
-
-    ViewOptions {
-        id: viewOptions
-
-        controller: root
-        z: 200
-    }
 }
+

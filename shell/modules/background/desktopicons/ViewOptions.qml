@@ -13,7 +13,7 @@ import qs.services
 Item {
     id: root
 
-    required property var controller
+    property var controller: null
     property bool open: false
     property point at
 
