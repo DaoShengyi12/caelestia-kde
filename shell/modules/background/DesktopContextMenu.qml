@@ -29,6 +29,14 @@ Controls.Menu {
 
         // In-shell state changes run right away; anything that opens a window
         // or spawns a process waits for the menu to finish closing.
+        if (entry.action === "Paste") {
+            DesktopLayout.pasteRequested(root.screenName, root.attachTo.x, root.attachTo.y);
+            return;
+        }
+        if (entry.action === "ArrangeIcons") {
+            DesktopLayout.viewOptionsRequested(root.screenName, root.attachTo.x, root.attachTo.y);
+            return;
+        }
         if (entry.action === "ToggleDesktopIcons") {
             ContextMenuStore.toggleIcons(root.screenName);
             return;
@@ -86,9 +94,19 @@ Controls.Menu {
             if (entry.action === "ToggleDesktopIcons") {
                 item.text = Qt.binding(() => root.iconsEnabled ? qsTr("Hide Desktop Icons") : qsTr("Show Desktop Icons"));
                 item.icon = Qt.binding(() => root.iconsEnabled ? "visibility_off" : "visibility");
+                item.visible = true;
+            } else if (entry.action === "Paste") {
+                item.text = entry.label;
+                item.icon = entry.icon || "content_paste";
+                item.visible = Qt.binding(() => root.iconsShown && DesktopLayout.clipboardHasFiles);
+            } else if (entry.action === "ArrangeIcons") {
+                item.text = entry.label;
+                item.icon = entry.icon || "sort";
+                item.visible = Qt.binding(() => root.iconsShown);
             } else {
                 item.text = entry.label;
                 item.icon = entry.icon || "application-x-executable";
+                item.visible = true;
             }
             newArr.push(item);
         }
@@ -100,7 +118,7 @@ Controls.Menu {
         }
 
         root.entryByKey = nextEntryByKey;
-        root.dynamicModel = [pasteItem, arrangeItem, ...newArr];
+        root.dynamicModel = newArr;
         const buildMs = Date.now() - buildStartedAt;
         console.log("[perf][DesktopContextMenu] build model source=" + sourceName + " items=" + newArr.length + " ms=" + buildMs);
     }
@@ -163,24 +181,6 @@ Controls.Menu {
         }
 
         target: ContextMenuStore
-    }
-
-    Controls.MenuItem {
-        id: pasteItem
-
-        text: qsTr("Paste")
-        icon: "content_paste"
-        visible: root.iconsShown && DesktopLayout.clipboardHasFiles
-        onClicked: DesktopLayout.pasteRequested(root.screenName, root.attachTo.x, root.attachTo.y)
-    }
-
-    Controls.MenuItem {
-        id: arrangeItem
-
-        text: qsTr("Arrange Icons...")
-        icon: "sort"
-        visible: root.iconsShown
-        onClicked: DesktopLayout.viewOptionsRequested(root.screenName, root.attachTo.x, root.attachTo.y)
     }
 
     Component {

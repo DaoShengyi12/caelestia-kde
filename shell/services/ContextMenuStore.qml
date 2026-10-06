@@ -24,6 +24,8 @@ Singleton {
 
     function defaultEntries() {
         return [
+            { id: "paste", label: qsTr("Paste"), icon: "content_paste", action: "Paste", enabled: true, type: "default" },
+            { id: "arrange_icons", label: qsTr("Arrange Icons"), icon: "sort", action: "ArrangeIcons", enabled: true, type: "default" },
             { id: "toggle_desktop_icons", label: qsTr("Desktop Icons"), icon: "desktop_windows", action: "ToggleDesktopIcons", enabled: true, type: "default" },
             { id: "next_wallpaper", label: qsTr("Next Wallpaper"), icon: "skip_next", action: "Wallpapers.next()", enabled: true, type: "default" },
             { id: "wallpaper_style", label: qsTr("Wallpaper & style"), icon: "wallpaper", action: "WindowFactory.create()", enabled: true, type: "default" },
@@ -102,6 +104,29 @@ Singleton {
 
                 if (!parsed || parsed.length === 0) {
                     parsed = root.defaultEntries();
+                } else {
+                    const defaults = root.defaultEntries();
+                    const defaultMap = {};
+                    for (let i = 0; i < defaults.length; i++) {
+                        defaultMap[defaults[i].id] = defaults[i];
+                    }
+
+                    for (let i = 0; i < parsed.length; i++) {
+                        const entry = parsed[i];
+                        if (entry.type === "default" && defaultMap[entry.id]) {
+                            const def = defaultMap[entry.id];
+                            entry.label = def.label;
+                            entry.icon = def.icon;
+                            if (def.action) entry.action = def.action;
+                            if (def.command) entry.command = def.command;
+                        }
+                    }
+
+                    const existingIds = parsed.map(e => e.id);
+                    for (let i = 0; i < defaults.length; i++) {
+                        if (!existingIds.includes(defaults[i].id))
+                            parsed.push(defaults[i]);
+                    }
                 }
 
                 root.entries = root.cloneEntries(parsed);
