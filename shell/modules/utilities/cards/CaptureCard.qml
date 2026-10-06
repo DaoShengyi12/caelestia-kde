@@ -2,6 +2,7 @@ pragma ComponentBehavior: Bound
 
 import QtQuick
 import QtQuick.Layouts
+import Quickshell
 import Caelestia.Components
 import Caelestia.Config
 import qs.components
@@ -14,7 +15,8 @@ StyledRect {
 
     required property var props
     required property DrawerVisibilities visibilities
-    readonly property real nonAnimHeight: btnLayout.implicitHeight + listOrControls.implicitHeight + layout.spacing + layout.anchors.margins * 2
+    readonly property bool shotMode: root.props.captureMode === "shot"
+    readonly property real nonAnimHeight: btnLayout.implicitHeight + modeRow.implicitHeight + listOrControls.implicitHeight + layout.spacing * 2 + layout.anchors.margins * 2
 
     Layout.fillWidth: true
     implicitHeight: layout.implicitHeight + layout.anchors.margins * 2
@@ -46,7 +48,7 @@ StyledRect {
 
                     anchors.centerIn: parent
                     anchors.verticalCenterOffset: Centering.pixelAlign(parent.height, height)
-                    text: "screen_record"
+                    text: root.shotMode && !Recorder.running ? "screenshot_region" : "screen_record"
                     color: Recorder.running ? Colours.palette.m3onSecondary : Colours.palette.m3onSecondaryContainer
                     fontStyle: Tokens.font.icon.large
                 }
@@ -58,14 +60,14 @@ StyledRect {
 
                 StyledText {
                     Layout.fillWidth: true
-                    text: qsTr("Screen Recorder")
+                    text: qsTr("Screen Capture")
                     font: Tokens.font.body.medium
                     elide: Text.ElideRight
                 }
 
                 StyledText {
                     Layout.fillWidth: true
-                    text: Recorder.paused ? qsTr("Paused") : Recorder.running ? qsTr("Running...") : qsTr("Ready")
+                    text: root.shotMode ? qsTr("Capture, OCR and image search") : Recorder.paused ? qsTr("Paused") : Recorder.running ? qsTr("Running...") : qsTr("Ready")
                     color: Colours.palette.m3onSurfaceVariant
                     font: Tokens.font.body.small
                     elide: Text.ElideRight
@@ -74,6 +76,7 @@ StyledRect {
             }
 
             SplitButton {
+                visible: !root.shotMode
                 disabled: Recorder.running
 
                 active: menuItems.find(m => root.props.recordingMode === m.icon + m.text) ?? menuItems[0]
@@ -113,7 +116,7 @@ StyledRect {
                         activeText: qsTr("Start")
                         onClicked: {
                             root.visibilities.utilities = false;
-                            Recorder.start(["-s","-i"]);
+                            Recorder.start(["-s", "-i"]);
                         }
                     },
                     MenuItem {
@@ -137,6 +140,127 @@ StyledRect {
                     }
                 ]
             }
+
+            SplitButton {
+                visible: root.shotMode
+                disabled: Recorder.running
+
+                active: captureShotItem
+
+                menuItems: [
+                    MenuItem {
+                        id: captureShotItem
+
+                        icon: "screenshot_region"
+                        text: qsTr("Capture region")
+                        activeText: qsTr("Capture")
+                        onClicked: {
+                            root.visibilities.utilities = false;
+                            if (!Visibilities.sidebarPinned)
+                                root.visibilities.sidebar = false;
+                            Quickshell.execDetached(["qs", "-c", "caelestia", "ipc", "call", "region", "screenshot"]);
+                        }
+                    },
+                    MenuItem {
+                        icon: "fullscreen"
+                        text: qsTr("Capture fullscreen")
+                        activeText: qsTr("Fullscreen")
+                        onClicked: {
+                            root.visibilities.utilities = false;
+                            if (!Visibilities.sidebarPinned)
+                                root.visibilities.sidebar = false;
+                            const pad = n => String(n).padStart(2, "0");
+                            const now = new Date();
+                            const file = `${GlobalConfig.paths.screenshotsDir}/screenshot-${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}_${pad(now.getHours())}.${pad(now.getMinutes())}.${pad(now.getSeconds())}.png`;
+                            Quickshell.execDetached(["spectacle", "-b", "-f", "-o", file]);
+                        }
+                    },
+                    MenuItem {
+                        icon: "select_window"
+                        text: qsTr("Capture active window")
+                        activeText: qsTr("Window")
+                        onClicked: {
+                            root.visibilities.utilities = false;
+                            if (!Visibilities.sidebarPinned)
+                                root.visibilities.sidebar = false;
+                            const pad2 = n => String(n).padStart(2, "0");
+                            const now2 = new Date();
+                            const file2 = `${GlobalConfig.paths.screenshotsDir}/screenshot-${now2.getFullYear()}-${pad2(now2.getMonth() + 1)}-${pad2(now2.getDate())}_${pad2(now2.getHours())}.${pad2(now2.getMinutes())}.${pad2(now2.getSeconds())}.png`;
+                            Quickshell.execDetached(["spectacle", "-b", "-a", "-o", file2]);
+                        }
+                    },
+                    MenuItem {
+                        icon: "text_fields"
+                        text: qsTr("Recognize text")
+                        activeText: qsTr("Recognize")
+                        onClicked: {
+                            root.visibilities.utilities = false;
+                            if (!Visibilities.sidebarPinned)
+                                root.visibilities.sidebar = false;
+                            Quickshell.execDetached(["qs", "-c", "caelestia", "ipc", "call", "region", "ocr"]);
+                        }
+                    },
+                    MenuItem {
+                        icon: "image_search"
+                        text: qsTr("Search image")
+                        activeText: qsTr("Search")
+                        onClicked: {
+                            root.visibilities.utilities = false;
+                            if (!Visibilities.sidebarPinned)
+                                root.visibilities.sidebar = false;
+                            Quickshell.execDetached(["qs", "-c", "caelestia", "ipc", "call", "region", "search"]);
+                        }
+                    },
+                    MenuItem {
+                        icon: "screenshot_monitor"
+                        text: qsTr("Use Spectacle")
+                        activeText: qsTr("Spectacle")
+                        onClicked: {
+                            root.visibilities.utilities = false;
+                            if (!Visibilities.sidebarPinned)
+                                root.visibilities.sidebar = false;
+                            Quickshell.execDetached(["spectacle"]);
+                        }
+                    }
+                ]
+            }
+        }
+
+        ButtonRow {
+            id: modeRow
+
+            Layout.fillWidth: true
+            spacing: Tokens.spacing.small
+
+            // Scroll over the switcher to flip Record/Capture, like the Quick Toggles card
+            WheelHandler {
+                acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
+                onWheel: event => {
+                    const d = event.angleDelta.y !== 0 ? event.angleDelta.y : event.angleDelta.x;
+                    if (d < 0)
+                        root.props.captureMode = "shot";
+                    else if (d > 0)
+                        root.props.captureMode = "record";
+                }
+            }
+
+            // No isToggle: the checked binding alone drives the colour, so clicking the
+            // already selected mode can't leave it looking deselected
+            TextButton {
+                Layout.fillWidth: true
+                text: qsTr("Record")
+                type: TextButton.Tonal
+                checked: !root.shotMode
+                onClicked: root.props.captureMode = "record"
+            }
+
+            TextButton {
+                Layout.fillWidth: true
+                text: qsTr("Capture")
+                type: TextButton.Tonal
+                checked: root.shotMode
+                onClicked: root.props.captureMode = "shot"
+            }
         }
 
         Loader {
@@ -147,7 +271,7 @@ StyledRect {
             asynchronous: true
             Layout.fillWidth: true
             Layout.preferredHeight: implicitHeight
-            sourceComponent: running ? recordingControls : recordingList
+            sourceComponent: running ? recordingControls : root.shotMode ? screenshotList : recordingList
             clip: Layout.preferredHeight < implicitHeight
 
             Behavior on Layout.preferredHeight {
@@ -199,6 +323,15 @@ StyledRect {
         id: recordingList
 
         RecordingList {
+            props: root.props
+            visibilities: root.visibilities
+        }
+    }
+
+    Component {
+        id: screenshotList
+
+        ScreenshotList {
             props: root.props
             visibilities: root.visibilities
         }

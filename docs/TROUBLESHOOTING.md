@@ -681,12 +681,20 @@ told apart from that release, so it is installed as the release its `version.env
 
 Settings > About > Uninstall Caelestia opens the uninstaller in a terminal, where it
 asks for confirmation of its own. The button finds the script by looking where a
-checkout is expected, in the order `src/bin/caelestia` uses:
+checkout is expected, in this order:
 
 1. `$CAELESTIA_DIR/uninstall.sh`
 2. `~/caelestia-kde/uninstall.sh`
-3. `~/.config/caelestia-update/repo/uninstall.sh`
-4. `~/.cache/caelestia-update-repo/uninstall.sh`
+3. `$(cat ~/.config/quickshell/caelestia/.checkout)/uninstall.sh`
+4. `~/.config/caelestia-update/repo/uninstall.sh`
+5. `~/.cache/caelestia-update-repo/uninstall.sh`
+
+The third is the checkout the running shell was installed from, recorded by the
+installer. It is what makes a clone that is not named `~/caelestia-kde` - a manual
+`git clone` anywhere else - still uninstallable from here; reinstall or update once
+for an install that predates that recording. It is tried after `~/caelestia-kde`
+because that is where an install's backups live, and the uninstaller restores from
+its own checkout's `backups/`.
 
 A packaged install has no script, so the row names the command that removes it instead
 (`sudo pacman -Rns caelestia-kde`, or the `dnf`/`apt-get` equivalent).

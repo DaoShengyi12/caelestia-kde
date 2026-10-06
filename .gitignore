@@ -15,7 +15,8 @@ run.sh
 /CLAUDE.md
 /docs/agents/
 /docs/adr/
-# Generated for Crowdin before upload; never committed.
+.scratch/
+
 /shell/translations/caelestia_en.ts
 /shell/translations/caelestia_en.qm
 

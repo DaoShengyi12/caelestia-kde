@@ -193,13 +193,13 @@ PageBase {
             }
             onClicked: uninstallDialog.open()
         }
-    }
 
-    UninstallDialog {
-        id: uninstallDialog
+        UninstallDialog {
+            id: uninstallDialog
 
-        state: Uninstaller.state
-        manualCommand: Uninstaller.manualCommand
-        onConfirmed: Uninstaller.launch()
+            state: Uninstaller.state
+            manualCommand: Uninstaller.manualCommand
+            onConfirmed: Uninstaller.launch()
+        }
     }
 }

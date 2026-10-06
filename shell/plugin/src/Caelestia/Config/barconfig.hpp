@@ -68,7 +68,6 @@ class BarWorkspaces : public settings::ObjectNode {
 class BarGreeter : public settings::ObjectNode {
     CONFIG_NODE(BarGreeter, settings::ObjectNode)
 
-    CONFIG_PROPERTY(bool, compact, false)
     CONFIG_PROPERTY(bool, inverted, false)
     CONFIG_PROPERTY(bool, showOnHover, true)
 

@@ -8,12 +8,15 @@ import qs.utils
 Singleton {
     id: root
 
-    readonly property var candidatePaths: [
-        Quickshell.env("CAELESTIA_DIR") ? Quickshell.env("CAELESTIA_DIR") + "/uninstall.sh" : "",
-        Quickshell.env("HOME") + "/caelestia-kde/uninstall.sh",
-        Quickshell.env("HOME") + "/.config/caelestia-update/repo/uninstall.sh",
-        Quickshell.env("HOME") + "/.cache/caelestia-update-repo/uninstall.sh"
-    ].filter(p => p !== "")
+    readonly property string home: Quickshell.env("HOME") || ""
+    readonly property string envCheckout: Quickshell.env("CAELESTIA_DIR") || ""
+
+    readonly property string shellConfigDir: {
+        const config = Quickshell.env("CAELESTIA_SHELL_CONFIG");
+        if (config)
+            return config.slice(0, config.lastIndexOf("/"));
+        return root.home + "/.config/quickshell/caelestia";
+    }
 
     readonly property var packageManagers: [
         { tool: "pacman", command: "sudo pacman -Rns caelestia-kde" },
@@ -47,16 +50,28 @@ Singleton {
     Process {
         id: probe
 
+        running: true
         command: ["sh", "-c", `
-candidates="$1"
-shift
-for candidate in "$@"; do
-    if [ "$candidates" -gt 0 ] && [ -f "$candidate" ]; then
-        printf 'SCRIPT %s\n' "$candidate"
+home="$1"
+caelestia_dir="$2"
+config_dir="$3"
+shift 3
+
+report_uninstaller() {
+    if [ -n "$1" ] && [ -f "$1/uninstall.sh" ]; then
+        printf 'SCRIPT %s\n' "$1/uninstall.sh"
         exit 0
     fi
-    candidates=$((candidates - 1))
-done
+}
+
+recorded="$(cat "$config_dir/.checkout" 2>/dev/null || true)"
+
+report_uninstaller "$caelestia_dir"
+report_uninstaller "$home/caelestia-kde"
+report_uninstaller "$recorded"
+report_uninstaller "$home/.config/caelestia-update/repo"
+report_uninstaller "$home/.cache/caelestia-update-repo"
+
 for manager in "$@"; do
     case "$manager" in
         pacman)
@@ -70,7 +85,7 @@ for manager in "$@"; do
             ;;
     esac
 done
-echo UNKNOWN`, "--", String(root.candidatePaths.length), ...root.candidatePaths, ...root.packageManagers.map(m => m.tool)]
+echo UNKNOWN`, "--", root.home, root.envCheckout, root.shellConfigDir, ...root.packageManagers.map(m => m.tool)]
         stdout: StdioCollector {
             onStreamFinished: {
                 const lines = text.split("\n");

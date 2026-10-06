@@ -44,6 +44,8 @@ record_installed_revision() {
         return 1
     }
 
+    printf '%s\n' "$bundle" > "$config/.checkout" 2>/dev/null || true
+
     if [[ -f "$bundle/.github/version.env" ]]; then
         cp -- "$bundle/.github/version.env" "$config/.current_version" 2>/dev/null || true
     else

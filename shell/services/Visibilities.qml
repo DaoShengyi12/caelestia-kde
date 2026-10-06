@@ -9,6 +9,7 @@ import qs.services
 Singleton {
     property var screens: new Map()
     property var bars: new Map()
+    property var docks: new Map()
     property string launcherInitialSearch: ""
     property string initialSidebarTab: ""
     property string lastSidebarTab: "notifications"
@@ -71,7 +72,14 @@ Singleton {
         bars.set(screen.name, barWrapper);
         bars = new Map(bars);
     }
-
+    function registerDock(screen: ShellScreen, dock: var): void {
+        docks.set(screen.name, dock);
+        docks = new Map(docks);
+    }
+    function unregisterDock(screen: ShellScreen): void {
+        docks.delete(screen.name);
+        docks = new Map(docks);
+    }
     function getForActive(): DrawerVisibilities {
         const monitor = Kwin.monitors[Kwin.cursorOutputName()] || Kwin.focusedMonitor;
         return screens.get(monitor) || screens.values().next().value;

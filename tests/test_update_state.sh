@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# suite: isolated
 
 set -uo pipefail
 
@@ -35,6 +36,8 @@ test_record_installed_revision_writes_commit_branch_and_version() {
     assert_status 0 "$status" "recording the installed revision should succeed"
     assert_eq "$expected" "$(cat "$tmp/config/.current_commit")" ".current_commit should name the checked-out commit"
     assert_contains "$(cat "$tmp/config/.current_version")" "VERSION=v9.9.9" ".current_version should hold the checkout's VERSION"
+    assert_eq "$tmp/repo" "$(cat "$tmp/config/.checkout")" \
+        ".checkout should name the checkout the install came from, so the uninstaller is findable"
     assert_eq "$(git -C "$tmp/repo" rev-parse --abbrev-ref HEAD)" "$(cat "$tmp/config/.update_branch")" \
         ".update_branch should name the checked-out branch"
 }
@@ -54,6 +57,7 @@ test_record_installed_revision_does_nothing_when_the_build_was_skipped() {
     assert_eq "previous-revision" "$(cat "$tmp/config/.current_commit")" \
         "the recorded revision must keep describing the shell that is actually running"
     assert_file_missing "$tmp/config/.current_version"
+    assert_file_missing "$tmp/config/.checkout"
 }
 
 test_record_installed_revision_reports_failure_outside_a_checkout() {
@@ -66,6 +70,7 @@ test_record_installed_revision_reports_failure_outside_a_checkout() {
 
     assert_status 1 "$status" "a directory that is not a checkout has no revision to record"
     assert_file_missing "$tmp/config/.current_commit"
+    assert_file_missing "$tmp/config/.checkout"
 }
 
 test_record_installed_revision_falls_back_to_the_commit_for_the_version() {
@@ -97,6 +102,7 @@ test_record_installed_revision_does_not_advance_when_the_channel_cannot_be_writt
     assert_status 1 "$status" "an unwritable channel state must fail recording"
     assert_eq "previous-revision" "$(cat "$tmp/config/.current_commit")" \
         "the installed revision must not advance after a partial state write"
+    assert_file_missing "$tmp/config/.checkout"
 }
 
 test_update_state_set_branch_accepts_only_channels() {

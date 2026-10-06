@@ -306,6 +306,22 @@ Item {
                     }
 
                     console.log("addPluginToAvailable: adding", meta.id, "to available list. mediaurl:", meta.mediaurl);
+                    // Updating an already listed plugin replaces the stale entry instead of
+                    // duplicating it, so the row reflects the fresh version right away.
+                    let replacedKey = meta.id || meta.name;
+                    for (let j = 0; j < pluginLoader.discovered.length; j++) {
+                        if ((pluginLoader.discovered[j].id || pluginLoader.discovered[j].name) === replacedKey) {
+                            pluginLoader.discovered.splice(j, 1);
+                            break;
+                        }
+                    }
+                    for (let i = 0; i < CaelestiaApi.plugins.available.count; i++) {
+                        let existing = CaelestiaApi.plugins.available.get(i);
+                        if ((existing.id || existing.name) === replacedKey) {
+                            CaelestiaApi.plugins.available.remove(i);
+                            break;
+                        }
+                    }
                     pluginLoader.discovered.push(meta);
                     CaelestiaApi.plugins.available.append(meta);
                     pluginsReloaded();
