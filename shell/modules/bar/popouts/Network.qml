@@ -42,7 +42,9 @@ ColumnLayout {
     property real fontScale: 1.0
 
     spacing: Tokens.spacing.medium * scaleOffset
-    width: Math.max(400 * scaleOffset, _isSidebarOpen ? (Tokens.sizes.sidebar.width * scaleOffset) - Tokens.padding.extraLargeIncreased : 0)
+    // With the sidebar open, match its width so the popout joins it (like the
+    // narrower popouts do) instead of sticking out past it.
+    width: _isSidebarOpen ? Math.max(300 * scaleOffset, (Visibilities.sidebarWidthFor(Tokens.sizes.sidebar.width) * scaleOffset) - Tokens.padding.extraLargeIncreased) : 400 * scaleOffset
 
     RowLayout {
         Layout.topMargin: Tokens.padding.small * root.scaleOffset
@@ -263,9 +265,6 @@ ColumnLayout {
         }
     }
 
-    // VPN section. Deliberately not gated on root.view: a saved VPN profile is
-    // reachable whether the machine is on Wi-Fi or docked on Ethernet, and a
-    // wired connection is exactly when the VPN profiles matter.
     PopoutSection {
         Layout.fillWidth: true
         Layout.topMargin: Tokens.padding.small * root.scaleOffset
@@ -282,19 +281,67 @@ ColumnLayout {
             font.pointSize: Tokens.font.body.small.pointSize * root.fontScale
         }
 
-        Repeater {
-            model: ScriptModel {
-                values: [...Nmcli.vpnConnections].slice(0, 8)
+        ListView {
+            id: vpnList
+
+            model: Nmcli.vpnConnections
+
+            Layout.fillWidth: true
+            Layout.leftMargin: Tokens.padding.extraSmall * root.scaleOffset
+            Layout.rightMargin: Tokens.padding.extraSmall * root.scaleOffset
+
+            clip: true
+            interactive: Nmcli.vpnConnections.length > 1
+            boundsBehavior: Flickable.StopAtBounds
+            spacing: Tokens.spacing.extraSmall * root.scaleOffset
+            implicitHeight: Math.min(contentHeight, Tokens.sizes.bar.networkVpnListMaxHeight * root.scaleOffset)
+
+            StyledScrollBar.vertical: StyledScrollBar {
+                flickable: vpnList
             }
 
-            StyledRect {
+            add: Transition {
+                NumberAnimation {
+                    properties: "opacity"
+                    from: 0
+                    to: 1
+                    duration: 140
+                }
+                NumberAnimation {
+                    properties: "y"
+                    duration: 180
+                    easing.type: Easing.OutCubic
+                }
+            }
+            remove: Transition {
+                NumberAnimation {
+                    properties: "opacity"
+                    to: 0
+                    duration: 100
+                }
+            }
+            move: Transition {
+                NumberAnimation {
+                    properties: "y"
+                    duration: 180
+                    easing.type: Easing.OutCubic
+                }
+            }
+            displaced: Transition {
+                NumberAnimation {
+                    properties: "y"
+                    duration: 180
+                    easing.type: Easing.OutCubic
+                }
+            }
+
+            delegate: StyledRect {
                 id: vpnItem
 
                 required property var modelData
                 readonly property bool loading: Nmcli.vpnPendingConnection === modelData?.name
 
-                Layout.fillWidth: true
-                Layout.preferredWidth: 0
+                width: ListView.view.width
                 implicitHeight: vpnRow.implicitHeight + Tokens.padding.small * 2 * root.scaleOffset
                 radius: Tokens.rounding.small * root.scaleOffset
                 color: vpnItem.modelData?.connected ? Colours.tPalette.m3surfaceContainerHigh : "transparent"

@@ -444,7 +444,8 @@ Singleton {
     function monitorNames(): list<string> {
         const names = [];
         for (const key in root.monitors)
-            names.push(root.monitors[key].name);
+            if (key !== "values")
+                names.push(root.monitors[key].name);
         return names;
     }
 

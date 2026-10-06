@@ -337,7 +337,7 @@ void NmQt::connectToNetwork(const QString& ssid, const QString& password, const 
                                          .dynamicCast<NetworkManager::WirelessSecuritySetting>();
         if (securitySetting) {
             securitySetting->setPsk(password);
-            existingConn->update();
+            existingConn->update(existingConn->settings()->toMap());
             activateProfile(existingConn, wifiDev, callback);
             return;
         }
@@ -1283,6 +1283,16 @@ void NmQt::refreshNetworks() {
     }
 }
 
+void NmQt::onEthernetDeviceStateChanged() {
+    QMetaObject::invokeMethod(
+        this,
+        [this] {
+            refreshEthernetDevices();
+            emit isConnectedChanged();
+        },
+        Qt::QueuedConnection);
+}
+
 void NmQt::refreshDevices() {
     refreshEthernetDevices();
     refreshNetworks();
@@ -1301,6 +1311,9 @@ void NmQt::refreshEthernetDevices() {
 
         if (!isPhysicalInterface(dev->interfaceName()))
             continue;
+
+        connect(dev.data(), &NetworkManager::Device::stateChanged, this, &NmQt::onEthernetDeviceStateChanged,
+            Qt::UniqueConnection);
 
         QVariantMap info;
         info[QStringLiteral("interface")] = dev->interfaceName();

@@ -27,11 +27,7 @@ ColumnLayout {
 
     readonly property bool checking: UpdateChecker.checkingUpdates
 
-    readonly property bool updateRunning: UpdateChecker.updateRunning
-
     readonly property string statusText: {
-        if (root.updateRunning)
-            return UpdateChecker.updateStatus !== "" ? UpdateChecker.updateStatus : qsTr("Updating…");
         if (root.checking)
             return qsTr("Checking for updates…");
         if (root.hasUpdate)
@@ -41,7 +37,7 @@ ColumnLayout {
         return qsTr("System is up to date");
     }
 
-    readonly property string statusIcon: root.updateRunning ? "progress_activity" : root.checking ? "sync" : root.hasUpdate ? "update" : "check_circle"
+    readonly property string statusIcon: root.checking ? "sync" : root.hasUpdate ? "update" : "check_circle"
 
     property double nowMs: Date.now()
 
@@ -63,8 +59,9 @@ ColumnLayout {
         root.popouts.hasCurrent = false;
     }
 
-    width: 300 * scaleOffset
-    implicitWidth: 300 * scaleOffset
+    // Joins the sidebar like the other panel-sized popouts while it is open.
+    width: Math.max(300 * scaleOffset, _isSidebarOpen ? (Visibilities.sidebarWidthFor(Tokens.sizes.sidebar.width) * scaleOffset) - Tokens.padding.extraLargeIncreased : 0)
+    implicitWidth: width
     spacing: Tokens.spacing.small * scaleOffset
 
     // Status card: state icon + summary + last/next check timings.
@@ -90,7 +87,7 @@ ColumnLayout {
 
                 MaterialIcon {
                     text: root.statusIcon
-                    color: (root.hasUpdate || root.updateRunning) ? Colours.palette.m3primary : Colours.palette.m3onSurfaceVariant
+                    color: root.hasUpdate ? Colours.palette.m3primary : Colours.palette.m3onSurfaceVariant
                     fontStyle.pointSize: Tokens.font.icon.medium.pointSize * root.fontScale
                 }
 
@@ -177,7 +174,7 @@ ColumnLayout {
                     anchors.rightMargin: -Tokens.padding.medium * root.scaleOffset
 
                     radius: parent.radius
-                    enabled: !root.checking && !root.updateRunning
+                    enabled: !root.checking
                     onClicked: UpdateChecker.checkUpdates()
                 }
 

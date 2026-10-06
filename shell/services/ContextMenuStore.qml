@@ -80,6 +80,8 @@ Singleton {
         writeProc.running = true;
     }
 
+    Component.onCompleted: ensureLoaded(true)
+
     Process {
         id: readProc
 
@@ -163,6 +165,4 @@ Singleton {
             root.ensureLoaded(true);
         }
     }
-
-    Component.onCompleted: ensureLoaded(true)
 }
