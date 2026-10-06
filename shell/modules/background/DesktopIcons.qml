@@ -66,42 +66,9 @@ Item {
     property Item renamingDelegate: null
     readonly property bool renameActive: renamingDelegate !== null
     readonly property var displayPositions: previewPositions ?? DesktopLayout.positions
-
     property string ctrlAdded: ""
     property var fileOpQueue: []
     property string typeAhead: ""
-
-    // Rewrites one key in the [Desktop Entry] group, leaving the rest of the file as is.
-    readonly property string setDesktopKeyScript: `import os, sys
-path, key, value = sys.argv[1:4]
-value = value.replace('\\\\', '\\\\\\\\').replace('\\n', '\\\\n').replace('\\t', '\\\\t').replace('\\r', '\\\\r')
-with open(path, encoding='utf-8') as f:
-    lines = f.read().split('\\n')
-group = None
-header = None
-found = False
-for i, line in enumerate(lines):
-    stripped = line.strip()
-    if stripped.startswith('['):
-        group = stripped
-        if group == '[Desktop Entry]' and header is None:
-            header = i
-        continue
-    if group == '[Desktop Entry]' and stripped.split('=', 1)[0].strip() == key:
-        lines[i] = key + '=' + value
-        found = True
-        break
-if not found:
-    if header is None:
-        sys.exit('no [Desktop Entry] group in ' + path)
-    lines.insert(header + 1, key + '=' + value)
-mode = os.stat(path).st_mode & 0o7777
-tmp = os.path.join(os.path.dirname(path), '.' + os.path.basename(path) + '.tmp')
-with open(tmp, 'w', encoding='utf-8') as f:
-    f.write('\\n'.join(lines))
-os.chmod(tmp, mode)
-os.replace(tmp, path)
-`
 
     // ---- Lookups ----------------------------------------------------------
 
@@ -751,8 +718,12 @@ os.replace(tmp, path)
         if (!e || trimmed.length === 0)
             return;
         if (e.isDesktopFile) {
-            if (trimmed !== e.displayName)
-                runFileOp(["python3", "-c", setDesktopKeyScript, e.path, e.desktopNameKey, trimmed], qsTr("Rename failed"), () => e.reloadDesktopFile());
+            if (trimmed !== e.displayName) {
+                if (CUtils.setDesktopEntryKey(e.path, e.desktopNameKey, trimmed))
+                    e.reloadDesktopFile();
+                else
+                    Toaster.toast(qsTr("Rename failed"), qsTr("Could not save desktop entry"), "error", Toast.Error);
+            }
             return;
         }
         // Stay inside the desktop folder: no separators, no relative walks.
