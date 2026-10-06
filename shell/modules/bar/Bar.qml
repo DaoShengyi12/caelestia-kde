@@ -12,6 +12,7 @@ import Caelestia.Config
 import Caelestia.Services
 import qs.components
 import qs.services
+import qs.utils
 
 Item {
     id: root
@@ -92,7 +93,7 @@ Item {
     }
 
     function checkPopout(pos: real): void {
-        if (popouts.hasCurrent && (popouts.currentName === "clockcontext" || popouts.currentName === "dockcontext" || popouts.currentName === "greetercontext" || popouts.currentName === "statusiconscontext" || popouts.currentName === "workspacescontext" || popouts.currentName === "traycontext" || popouts.currentName === "githubcontext" || popouts.currentName === "dockbgcontext"))
+        if (popouts.hasCurrent && (popouts.currentName === "clockcontext" || popouts.currentName === "dockcontext" || popouts.currentName === "greetercontext" || popouts.currentName === "statusiconscontext" || popouts.currentName === "workspacescontext" || popouts.currentName === "traycontext" || popouts.currentName === "githubcontext" || popouts.currentName === "osiconcontext" || popouts.currentName === "dockbgcontext"))
             return;
 
         const ch = getLoaderAt(isHorizontal ? pos : width / 2, isHorizontal ? height / 2 : pos) as WrappedLoader;
@@ -287,6 +288,8 @@ Item {
         }
     }
 
+    Component.onCompleted: Logger.mark("bar-ready")
+
     clip: true
 
     GridLayout {
@@ -383,7 +386,9 @@ Item {
             DelegateChoice {
                 roleValue: "logo"
                 delegate: WrappedLoader {
-                    sourceComponent: OsIcon {}
+                    sourceComponent: OsIcon {
+                        bar: root
+                    }
                 }
             }
             DelegateChoice {

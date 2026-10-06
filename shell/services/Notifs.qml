@@ -206,12 +206,21 @@ Singleton {
         printErrors: false
         path: `${Paths.state}/notifs.json`
         onLoaded: {
-            const data = JSON.parse(text());
+            let data;
+            try {
+                data = JSON.parse(text());
+            } catch (err) {
+                Logger.log("[Notifs] saved notifications are corrupt, starting fresh:", err);
+                data = [];
+            }
+            if (!Array.isArray(data)) {
+                Logger.log("[Notifs] saved notifications are not a list, starting fresh");
+                data = [];
+            }
             data.sort((a, b) => b.time - a.time);
             const cap = root.notifCap;
-            
             root.list = data.slice(0, cap).map(n => notifComp.createObject(root, n));
-            
+
             root.openCount = root.list.filter(n => !n.closed).length;
             root.popupCount = root.list.filter(n => n.popup).length;
             root.lastSavedState = root.serializeState();

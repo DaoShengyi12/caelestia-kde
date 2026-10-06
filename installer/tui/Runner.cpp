@@ -3,6 +3,7 @@
 #include "Globals.hpp"
 #include "Input.hpp"
 #include "Sudo.hpp"
+#include "StepPolicy.hpp"
 #include "Term.hpp"
 #include "UI.hpp"
 #include <cerrno>
@@ -29,13 +30,6 @@ extern volatile sig_atomic_t g_sigterm_received;
 
 namespace {
 static size_t g_spin_frame = 0;
-
-std::string env_val(const char *name) {
-  const char *v = getenv(name);
-  return v ? std::string(v) : std::string();
-}
-
-bool env_is_true(const char *name) { return env_val(name) == "true"; }
 
 bool log_tail_since(const std::string &log_path, long start_offset,
                     std::string &out) {
@@ -75,13 +69,6 @@ pid_t spawn_step(const string &script_path, int log_fd) {
   }
   return child;
 }
-bool answer_is_true(const char *name) {
-  auto it = g_answers.find(name);
-  if (it != g_answers.end())
-    return it->second == "true";
-  return env_is_true(name);
-}
-
 bool read_log_tail(const std::string &log_path, size_t max_lines,
                    std::vector<std::string> &out) {
   out.clear();
@@ -129,7 +116,6 @@ const vector<Phase> phases = {
 };
 
 vector<Step> steps = {
-    {"Refresh mirrors", "scripts/00-refresh-mirrors.sh", "PENDING", "prepare"},
     {"Update system", "scripts/00a-system-update.sh", "PENDING", "prepare"},
     {"Ensure prerequisites", "scripts/01-ensure-prereqs.sh", "PENDING",
      "prepare"},
@@ -161,23 +147,7 @@ vector<Step> steps = {
 };
 
 bool step_is_skipped(const Step &step) {
-  if (step.name == "Update system") {
-    return answer_is_true("SKIP_SYSTEM_UPDATE");
-  }
-  if (step.name == "Install SDDM theme") {
-    return !answer_is_true("INSTALL_SDDM");
-  }
-  if (step.name == "Install optional components") {
-    static const char *opt[] = {"INSTALL_VSCODE",    "INSTALL_ZED",
-                                "INSTALL_SPICETIFY", "INSTALL_DISCORD",
-                                "INSTALL_TODOIST",   "INSTALL_FIREFOX_THEME"};
-    for (const char *name : opt) {
-      if (answer_is_true(name))
-        return false;
-    }
-    return true;
-  }
-  return false;
+  return StepPolicy::is_skipped(step.name, g_answers);
 }
 
 string show_error_dialog(const string &step_name, const string &script_path,

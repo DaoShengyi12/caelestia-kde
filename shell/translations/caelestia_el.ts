@@ -4,7 +4,7 @@
   <context>
     <name>AboutPage</name>
     <message>
-      <location filename="../modules/nexus/pages/AboutPage.qml" line="+21"/>
+      <location filename="../modules/nexus/pages/AboutPage.qml" line="+20"/>
       <source>About</source>
       <translation>Σχετικά</translation>
     </message>
@@ -69,12 +69,12 @@
       <translation>Πρόσθετα</translation>
     </message>
     <message>
-      <location line="+10"/>
+      <location line="+7"/>
       <source>Enabled plugins</source>
       <translation>Ενεργοποιημένες πρόσθετες λειτουργίες</translation>
     </message>
     <message>
-      <location line="+12"/>
+      <location line="+10"/>
       <source>Advanced</source>
       <translation>Προχωρημένα</translation>
     </message>
@@ -88,11 +88,231 @@
       <source>Enable verbose debug logging for troubleshooting. Run &apos;caelestia shell -l&apos; to view.</source>
       <translation>Ενεργοποίηση αναλυτικής καταγραφής σφαλμάτων για την αντιμετώπιση προβλημάτων. Εκτελέστε το κέλυφος &apos;caelestia -l&apos; για να δείτε.</translation>
     </message>
+    <message>
+      <location line="+6"/>
+      <source>Uninstall</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+7"/>
+      <source>Uninstall Caelestia</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+3"/>
+      <source>Checking for the uninstaller…</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+2"/>
+      <source>Remove the shell, its configs and its services</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+2"/>
+      <source>This install belongs to a package. Remove it with: %1</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>No uninstaller was found. Remove the install with your package manager.</source>
+      <translation type="unfinished"/>
+    </message>
   </context>
   <context>
     <name>Actions</name>
     <message>
-      <location filename="../modules/launcher/services/Actions.qml" line="+34"/>
+      <location filename="../modules/launcher/services/Actions.qml" line="+15"/>
+      <source>Calculator</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Scheme</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Wallpaper</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Variant</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Random</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Light</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Dark</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Shutdown</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Reboot</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Logout</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Lock</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Sleep</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Settings</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>What&apos;s New</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Emoji</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Clipboard</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Windows</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Keybinds</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Animations</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Do simple math equations (powered by Qalc)</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Change the current color scheme</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Change the current wallpaper</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Change the current scheme variant</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Switch to a random wallpaper</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Change the scheme to light mode</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Change the scheme to dark mode</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Shutdown the system</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Reboot the system</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Log out of the current session</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Lock the current session</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Suspend then hibernate</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Configure the shell</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Read the Caelestia release notes</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Pick an emoji to copy</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>View clipboard history</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Switch to another window</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>View all keybinds</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Switch your animation style</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+23"/>
       <source>Unnamed</source>
       <translation>Ανώνυμο</translation>
     </message>
@@ -454,13 +674,53 @@
   <context>
     <name>AiAssistant</name>
     <message>
-      <location filename="../modules/sidebar/AiAssistant.qml" line="+701"/>
-      <location line="+1280"/>
+      <location filename="../modules/sidebar/AiAssistant.qml" line="+212"/>
+      <source>Bypass</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Accept edits</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Auto</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Plan</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Default</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+490"/>
+      <location line="+1090"/>
       <source>Rate limited - retrying in %1s…</source>
       <translation>Περιορισμένη τιμή - προσπάθεια σε %1s…</translation>
     </message>
     <message>
-      <location line="+282"/>
+      <location line="-684"/>
+      <source>(stopped)</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+892"/>
+      <source>Chat</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+36"/>
+      <source>History</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+38"/>
       <source>Provider</source>
       <translation>Πάροχος</translation>
     </message>
@@ -480,29 +740,40 @@
       <translation>Λογαριασμός</translation>
     </message>
     <message>
-      <location line="+352"/>
-      <source>Thought Process</source>
-      <translation>Διαδικασία Σκέψης</translation>
+      <location line="+30"/>
+      <source>Permissions</source>
+      <translation type="unfinished"/>
     </message>
     <message>
-      <location line="+184"/>
+      <location line="+59"/>
+      <source>Claude Code working directory</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+458"/>
       <source>Suggestions</source>
       <translation>Προτάσεις</translation>
     </message>
     <message>
-      <location line="+123"/>
+      <location line="+138"/>
+      <source>Attach a file</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+74"/>
       <source>Ask assistant...</source>
       <translation>Ερώτηση βοηθού...</translation>
     </message>
     <message>
-      <location line="+241"/>
-      <source>Clear All</source>
-      <translation>Εκκαθάριση Όλων</translation>
-    </message>
-    <message>
-      <location line="+34"/>
+      <location line="+193"/>
+      <location line="+105"/>
       <source>New Chat</source>
       <translation>Νέα Συνομιλία</translation>
+    </message>
+    <message>
+      <location line="-34"/>
+      <source>Clear All</source>
+      <translation>Εκκαθάριση Όλων</translation>
     </message>
   </context>
   <context>
@@ -791,7 +1062,7 @@
   <context>
     <name>AllApps</name>
     <message>
-      <location filename="../modules/nexus/pages/apps/AllApps.qml" line="+16"/>
+      <location filename="../modules/nexus/pages/apps/AllApps.qml" line="+17"/>
       <source>All apps</source>
       <translation>Όλες οι εφαρμογές</translation>
     </message>
@@ -843,11 +1114,11 @@
     </message>
   </context>
   <context>
-    <name>AppBrowser</name>
+    <name>AppBrowserGrid</name>
     <message>
-      <location filename="../modules/launcher/AppBrowser.qml" line="+236"/>
+      <location filename="../modules/launcher/AppBrowserGrid.qml" line="+235"/>
       <source>No apps in this category</source>
-      <translation>Δεν υπάρχουν εφαρμογές σε αυτήν την κατηγορία</translation>
+      <translation type="unfinished"/>
     </message>
   </context>
   <context>
@@ -977,7 +1248,7 @@
   <context>
     <name>AppTile</name>
     <message>
-      <location filename="../modules/launcher/items/AppTile.qml" line="+143"/>
+      <location filename="../modules/launcher/items/AppTile.qml" line="+146"/>
       <source>Matched by a regex in favouriteApps - edit the config file to change</source>
       <translation>Ταίριαξε από ένα regex στα favouriteApps - επεξεργαστείτε το αρχείο ρυθμίσεων για να αλλάξετε</translation>
     </message>
@@ -1033,7 +1304,17 @@
       <translation>Επανεκκίνηση Κελύφους</translation>
     </message>
     <message>
-      <location line="+20"/>
+      <location line="+14"/>
+      <source>Sure?</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+0"/>
+      <source>Reset settings</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+38"/>
       <source>Font</source>
       <translation type="unfinished"/>
     </message>
@@ -1043,7 +1324,7 @@
       <translation type="unfinished"/>
     </message>
     <message>
-      <location line="+18"/>
+      <location line="+19"/>
       <source>Bezel mode (Pitch black)</source>
       <translation>Λειτουργία Bezel (Pitch μαύρο)</translation>
     </message>
@@ -1053,7 +1334,7 @@
       <translation>Φτιάξε το κέλυφος μαύρη για να αναμείξεις με τις στεφάνες οθόνης</translation>
     </message>
     <message>
-      <location line="+6"/>
+      <location line="+7"/>
       <source>Islands</source>
       <translation>Νησιά</translation>
     </message>
@@ -1063,7 +1344,7 @@
       <translation>Όλα εμφανίζονται ως το δικό του κυμαινόμενο widget (Πολύ Πειραματικό)</translation>
     </message>
     <message>
-      <location line="+7"/>
+      <location line="+8"/>
       <source>Border thickness</source>
       <translation>Πάχος περιγράμματος</translation>
     </message>
@@ -1073,7 +1354,7 @@
       <translation>Πάχος του περιγράμματος κελύφους σε εικονοστοιχεία. Ρυθμίστε σε 0 για μια χωρίς όρια εμφάνιση</translation>
     </message>
     <message>
-      <location line="+9"/>
+      <location line="+10"/>
       <source>Corner radius scale</source>
       <translation>Κλίμακα ακτίνας γωνίας</translation>
     </message>
@@ -1083,7 +1364,7 @@
       <translation>Πολλαπλασιάζει το κέλυφος&apos;s στρογγυλοποίηση γωνιών</translation>
     </message>
     <message>
-      <location line="+9"/>
+      <location line="+10"/>
       <source>Transparency</source>
       <translation>Διαφάνεια</translation>
     </message>
@@ -1093,12 +1374,12 @@
       <translation>Ενεργοποίηση διαφάνειας σε όλο το κέλυφος</translation>
     </message>
     <message>
-      <location line="+12"/>
+      <location line="+14"/>
       <source>Base opacity</source>
       <translation>Βασική αδιαφάνεια</translation>
     </message>
     <message>
-      <location line="+8"/>
+      <location line="+9"/>
       <source>Layers opacity</source>
       <translation>Αδιαφάνεια επιπέδων</translation>
     </message>
@@ -1108,7 +1389,7 @@
       <translation>Απαιτεί επανεκκίνηση κελύφους</translation>
     </message>
     <message>
-      <location line="+8"/>
+      <location line="+9"/>
       <source>Ambient color mode</source>
       <translation type="unfinished"/>
     </message>
@@ -1123,12 +1404,12 @@
       <translation type="unfinished"/>
     </message>
     <message>
-      <location line="+8"/>
+      <location line="+10"/>
       <source>Ambient glow opacity</source>
       <translation type="unfinished"/>
     </message>
     <message>
-      <location line="+22"/>
+      <location line="+23"/>
       <source>Background Blur</source>
       <translation>Θόλωμα Φόντου</translation>
     </message>
@@ -1143,7 +1424,7 @@
       <translation>Ενεργοποιήστε ένα εφέ παγωμένου γυαλιού θολώνοντας το φόντο</translation>
     </message>
     <message>
-      <location line="+22"/>
+      <location line="+23"/>
       <source>High Quality Blur Masks</source>
       <translation>Υψηλής Ποιότητας Μάσκες Θαμπώματος</translation>
     </message>
@@ -1153,7 +1434,7 @@
       <translation>Απενεργοποιήστε αυτό για να χρησιμοποιήσετε υψηλής απόδοσης Wayland/KWin θόλωμα</translation>
     </message>
     <message>
-      <location line="+16"/>
+      <location line="+21"/>
       <source>Blur Corner Quality</source>
       <translation>Ποιότητα Γωνίας Θαμπώματος</translation>
     </message>
@@ -1168,22 +1449,22 @@
       <translation>Κλιμάκωση</translation>
     </message>
     <message>
-      <location line="+10"/>
+      <location line="+11"/>
       <source>Font scale</source>
       <translation>Μέγεθος γραμματοσειράς</translation>
     </message>
     <message>
-      <location line="+10"/>
+      <location line="+11"/>
       <source>Spacing scale</source>
       <translation>Κλίμακα διαστήματος</translation>
     </message>
     <message>
-      <location line="+10"/>
+      <location line="+11"/>
       <source>Padding scale</source>
       <translation type="unfinished"/>
     </message>
     <message>
-      <location line="+11"/>
+      <location line="+12"/>
       <source>Animation speed scale</source>
       <translation>Κλίμακα ταχύτητας κίνησης</translation>
     </message>
@@ -1193,17 +1474,17 @@
       <translation>Γωνίες &amp; εφέ</translation>
     </message>
     <message>
-      <location line="+10"/>
+      <location line="+11"/>
       <source>Border rounding</source>
       <translation>Στρογγυλοποίηση περιγράμματος</translation>
     </message>
     <message>
-      <location line="+10"/>
+      <location line="+11"/>
       <source>Border smoothing</source>
       <translation>Εξομάλυνση των συνόρων</translation>
     </message>
     <message>
-      <location line="+11"/>
+      <location line="+12"/>
       <source>Blur deform</source>
       <translation>Θόλωμα παραμόρφωσης</translation>
     </message>
@@ -1389,7 +1670,12 @@
       <translation>Επιλέξτε ένα ανοιχτό παιχνίδι Steam για να το αποτρέψετε να εκπέμπει</translation>
     </message>
     <message>
-      <location line="+93"/>
+      <location line="+60"/>
+      <source>Steam App ID: %1</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+33"/>
       <source>Manual custom presence</source>
       <translation>Χειροκίνητη προσαρμοσμένη παρουσία</translation>
     </message>
@@ -1404,7 +1690,32 @@
       <translation>Εξαναγκασμός μετάδοσης αυτής της προσαρμοσμένης παρουσίας και αγνόηση όλων των άλλων εφαρμογών</translation>
     </message>
     <message>
-      <location line="+95"/>
+      <location line="+22"/>
+      <source>App/game name</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+14"/>
+      <source>Details</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+14"/>
+      <source>State</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+14"/>
+      <source>Large image key/URL</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+14"/>
+      <source>Small image key/URL</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+17"/>
       <source>Save presence</source>
       <translation>Αποθήκευση παρουσίας</translation>
     </message>
@@ -1412,7 +1723,7 @@
   <context>
     <name>Audio</name>
     <message>
-      <location filename="../modules/bar/popouts/Audio.qml" line="+81"/>
+      <location filename="../modules/bar/popouts/Audio.qml" line="+83"/>
       <source>Audio</source>
       <translation>Ήχος</translation>
     </message>
@@ -1631,6 +1942,14 @@
       <location line="+31"/>
       <source>Open settings</source>
       <translation>Άνοιγμα ρυθμίσεων</translation>
+    </message>
+  </context>
+  <context>
+    <name>AuthHandler</name>
+    <message>
+      <location filename="../../src/kde/shells/caelestia.desktop/contents/lockscreen/components/AuthHandler.qml" line="+26"/>
+      <source>%1 min left</source>
+      <translation type="unfinished"/>
     </message>
   </context>
   <context>
@@ -1877,7 +2196,22 @@
   <context>
     <name>BarDock</name>
     <message>
-      <location filename="../modules/nexus/pages/panels/taskbar/BarDock.qml" line="+11"/>
+      <location filename="../modules/nexus/pages/panels/taskbar/BarDock.qml" line="+16"/>
+      <source>Group all windows</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+5"/>
+      <source>Pinned icon holds first window</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+5"/>
+      <source>No grouping</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+4"/>
       <source>Dock</source>
       <translation>Βάση</translation>
     </message>
@@ -1887,7 +2221,7 @@
       <translation>Ενεργοποίηση στοιχείου</translation>
     </message>
     <message>
-      <location line="+33"/>
+      <location line="+31"/>
       <source>Icon size</source>
       <translation>Μέγεθος εικονιδίου</translation>
     </message>
@@ -1897,7 +2231,7 @@
       <translation>Μέγεθος εικονιδίων εφαρμογών στην μπάρα εφαρμογών</translation>
     </message>
     <message>
-      <location line="+12"/>
+      <location line="+10"/>
       <source>Recolor icons</source>
       <translation>Recolor εικονίδια</translation>
     </message>
@@ -1927,7 +2261,17 @@
       <translation type="unfinished"/>
     </message>
     <message>
-      <location line="+8"/>
+      <location line="+7"/>
+      <source>Window grouping</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>How windows of one app share a dock icon: grouped, pinned icon holds the first window only, or every window on its own icon</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+9"/>
       <source>Preview window on desktop</source>
       <translation>Προεπισκόπηση παραθύρου στην επιφάνεια εργασίας</translation>
     </message>
@@ -2013,7 +2357,17 @@
       <translation type="unfinished"/>
     </message>
     <message>
-      <location line="+23"/>
+      <location line="+8"/>
+      <source>PM</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+0"/>
+      <source>AM</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+15"/>
       <source>Greeter</source>
       <translation>Ελληνικός</translation>
     </message>
@@ -2033,12 +2387,7 @@
       <translation>Ενεργοποίηση στοιχείου</translation>
     </message>
     <message>
-      <location line="+31"/>
-      <source>Compact</source>
-      <translation>Συμπαγής</translation>
-    </message>
-    <message>
-      <location line="+9"/>
+      <location line="+30"/>
       <source>Inverted</source>
       <translation>Ανεστραμμένη</translation>
     </message>
@@ -2120,7 +2469,12 @@
       <translation>Χαιρετισμός Κειμένου Πρωιού</translation>
     </message>
     <message>
-      <location line="+12"/>
+      <location line="+1"/>
+      <source>Good Morning</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+11"/>
       <source>Afternoon Media</source>
       <translation>Απόγευμα Πολυμέσα</translation>
     </message>
@@ -2140,7 +2494,12 @@
       <translation>Απόγευμα Χαιρετισμού Κείμενο</translation>
     </message>
     <message>
-      <location line="+12"/>
+      <location line="+1"/>
+      <source>Good Afternoon</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+11"/>
       <source>Evening Media</source>
       <translation>Βραδινά Μέσα</translation>
     </message>
@@ -2160,7 +2519,12 @@
       <translation>Απόγευμα Χαιρετισμού Κείμενο</translation>
     </message>
     <message>
-      <location line="+12"/>
+      <location line="+1"/>
+      <source>Good Evening</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+11"/>
       <source>Night Media</source>
       <translation>Νυχτερινά Μέσα</translation>
     </message>
@@ -2180,7 +2544,12 @@
       <translation>Ευχετήριον Κείμενο Νύχτας</translation>
     </message>
     <message>
-      <location line="+11"/>
+      <location line="+1"/>
+      <source>Good Night</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+10"/>
       <source>Slideshow Timing &amp; Order</source>
       <translation>Χρόνος &amp; Σειρά Σλάιντ</translation>
     </message>
@@ -2215,7 +2584,13 @@
       <translation>Προαιρετικό προσαρμοσμένο κείμενο στη γραμμή, υποστηρίζει {user}</translation>
     </message>
     <message>
-      <location line="+12"/>
+      <location line="+1"/>
+      <location line="+13"/>
+      <source>Blank for defaults</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="-2"/>
       <source>Slideshow Greeting Icon</source>
       <translation>Χαιρετισμός Εικονιδίου Slideshow</translation>
     </message>
@@ -2283,7 +2658,7 @@
       <translation>Προσαρμογή κλίμακας προεπισκόπησης και γραμματοσειράς για κάθε αναδυόμενο τύπο</translation>
     </message>
     <message>
-      <location line="+22"/>
+      <location line="+32"/>
       <source>RESET ALL</source>
       <translation>ΕΠΑΝΑΦΟΡΑ ΟΛΩΝ</translation>
     </message>
@@ -2293,77 +2668,77 @@
       <translation>Επαναφορά όλων στο 0</translation>
     </message>
     <message>
-      <location line="+14"/>
+      <location line="+46"/>
       <source>Scale</source>
       <translation>Κλίμακα</translation>
     </message>
     <message>
-      <location line="+7"/>
+      <location line="+15"/>
       <source>Font</source>
       <translation type="unfinished"/>
     </message>
     <message>
-      <location line="+10"/>
+      <location line="+22"/>
       <source>Greeter</source>
       <translation>Ελληνικός</translation>
     </message>
     <message>
-      <location line="+13"/>
+      <location line="+14"/>
       <source>Audio</source>
       <translation>Ήχος</translation>
     </message>
     <message>
-      <location line="+13"/>
+      <location line="+14"/>
       <source>Battery</source>
       <translation>Μπαταρία</translation>
     </message>
     <message>
-      <location line="+13"/>
+      <location line="+14"/>
       <source>Bluetooth</source>
       <translation type="unfinished"/>
     </message>
     <message>
-      <location line="+13"/>
+      <location line="+14"/>
       <source>Clock</source>
       <translation>Ρολόι</translation>
     </message>
     <message>
-      <location line="+13"/>
+      <location line="+14"/>
       <source>Dock</source>
       <translation>Βάση</translation>
     </message>
     <message>
-      <location line="+13"/>
+      <location line="+14"/>
       <source>GitHub</source>
       <translation type="unfinished"/>
     </message>
     <message>
-      <location line="+13"/>
+      <location line="+14"/>
       <source>Lock status</source>
       <translation>Κλείδωμα κατάστασης</translation>
     </message>
     <message>
-      <location line="+13"/>
+      <location line="+14"/>
       <source>Network</source>
       <translation>Δίκτυο</translation>
     </message>
     <message>
-      <location line="+13"/>
+      <location line="+14"/>
       <source>Notifications</source>
       <translation>Ειδοποιήσεις</translation>
     </message>
     <message>
-      <location line="+13"/>
+      <location line="+14"/>
       <source>Peripheral battery</source>
       <translation>Περιφερειακή μπαταρία</translation>
     </message>
     <message>
-      <location line="+13"/>
+      <location line="+14"/>
       <source>Tray menu</source>
       <translation>Μενού συστήματος ειδοποιήσεων</translation>
     </message>
     <message>
-      <location line="+13"/>
+      <location line="+14"/>
       <source>Wireless password</source>
       <translation>Ασύρματος κωδικός πρόσβασης</translation>
     </message>
@@ -2540,7 +2915,7 @@
   <context>
     <name>BarWorkspaces</name>
     <message>
-      <location filename="../modules/nexus/pages/panels/taskbar/BarWorkspaces.qml" line="+16"/>
+      <location filename="../modules/nexus/pages/panels/taskbar/BarWorkspaces.qml" line="+18"/>
       <source>Shape</source>
       <translation>Σχήμα</translation>
     </message>
@@ -2555,7 +2930,7 @@
       <translation>Χώροι Εργασίας</translation>
     </message>
     <message>
-      <location line="+30"/>
+      <location line="+29"/>
       <source>Shown</source>
       <translation>Εμφανίζεται</translation>
     </message>
@@ -2565,7 +2940,7 @@
       <translation>Αριθμός εμφανιζόμενων χώρων εργασίας</translation>
     </message>
     <message>
-      <location line="+22"/>
+      <location line="+21"/>
       <source>Active indicator</source>
       <translation>Ενεργός δείκτης</translation>
     </message>
@@ -2620,7 +2995,7 @@
       <translation>Μέγιστο μέγεθος εικονιδίων παραθύρων</translation>
     </message>
     <message>
-      <location line="+12"/>
+      <location line="+10"/>
       <source>Per monitor</source>
       <translation type="unfinished"/>
     </message>
@@ -3022,6 +3397,137 @@
     </message>
   </context>
   <context>
+    <name>CaptureCard</name>
+    <message>
+      <location filename="../modules/utilities/cards/CaptureCard.qml" line="+63"/>
+      <source>Screen Capture</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+7"/>
+      <source>Capture, OCR and image search</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+0"/>
+      <source>Paused</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+0"/>
+      <source>Running...</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+0"/>
+      <source>Ready</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+18"/>
+      <location line="+163"/>
+      <source>Record</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="-162"/>
+      <location line="+9"/>
+      <location line="+9"/>
+      <location line="+9"/>
+      <location line="+10"/>
+      <source>Start</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="-29"/>
+      <source>Record with Sound</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+9"/>
+      <source>Record with Microphone</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+9"/>
+      <source>Both Sound &amp; Microphone</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+10"/>
+      <source>Record GIF</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+9"/>
+      <location line="+82"/>
+      <source>Use Spectacle</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="-81"/>
+      <location line="+82"/>
+      <source>Spectacle</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="-62"/>
+      <source>Capture region</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+1"/>
+      <location line="+103"/>
+      <source>Capture</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="-93"/>
+      <source>Capture fullscreen</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Fullscreen</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+13"/>
+      <source>Capture active window</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Window</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+13"/>
+      <source>Recognize text</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Recognize</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+10"/>
+      <source>Search image</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Search</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+183"/>
+      <source>Recording %1</source>
+      <translation type="unfinished"/>
+    </message>
+  </context>
+  <context>
     <name>Categories</name>
     <message>
       <location filename="../modules/launcher/services/Categories.qml" line="+12"/>
@@ -3105,6 +3611,14 @@
     </message>
   </context>
   <context>
+    <name>ChatMessage</name>
+    <message>
+      <location filename="../modules/sidebar/ai/ChatMessage.qml" line="+156"/>
+      <source>Thought Process</source>
+      <translation type="unfinished"/>
+    </message>
+  </context>
+  <context>
     <name>ClipItem</name>
     <message>
       <location filename="../modules/launcher/items/ClipItem.qml" line="+31"/>
@@ -3133,14 +3647,6 @@
       <location line="+1"/>
       <source>Number of entries available in the launcher</source>
       <translation>Αριθμός καταχωρήσεων που είναι διαθέσιμες στον εκκινητή</translation>
-    </message>
-  </context>
-  <context>
-    <name>ClockContext</name>
-    <message>
-      <location filename="../modules/bar/popouts/ClockContext.qml" line="+79"/>
-      <source>Clock settings</source>
-      <translation type="unfinished"/>
     </message>
   </context>
   <context>
@@ -3179,6 +3685,46 @@
   <context>
     <name>Content</name>
     <message>
+      <location filename="../modules/bar/popouts/Content.qml" line="+59"/>
+      <source>Greeter settings</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+63"/>
+      <source>Clock settings</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+9"/>
+      <source>Launcher settings</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+9"/>
+      <source>Status icons settings</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+89"/>
+      <source>Workspaces settings</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+9"/>
+      <source>Tray settings</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+9"/>
+      <source>GitHub settings</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+9"/>
+      <source>Dock settings</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
       <location filename="../modules/dashboard/Content.qml" line="+25"/>
       <source>Dashboard</source>
       <translation>Ταμπλό</translation>
@@ -3197,6 +3743,11 @@
       <location line="+6"/>
       <source>Weather</source>
       <translation>Καιρός</translation>
+    </message>
+    <message>
+      <location line="+6"/>
+      <source>Notes</source>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+6"/>
@@ -3259,7 +3810,7 @@
       <translation>Εκκαθάριση</translation>
     </message>
     <message>
-      <location filename="../modules/sidebar/Content.qml" line="+110"/>
+      <location filename="../modules/sidebar/Content.qml" line="+113"/>
       <source>Notifications</source>
       <translation>Ειδοποιήσεις</translation>
     </message>
@@ -3292,7 +3843,7 @@
       <translation>Βίντεο</translation>
     </message>
     <message>
-      <location line="+236"/>
+      <location line="+239"/>
       <source>cliphist not found</source>
       <translation>cliphist δεν βρέθηκε</translation>
     </message>
@@ -3611,6 +4162,11 @@
     </message>
     <message>
       <location line="+7"/>
+      <source>Notes</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+7"/>
       <source>Terminal</source>
       <translation>Τερματικό</translation>
     </message>
@@ -3776,12 +4332,12 @@
     </message>
     <message>
       <location line="-79"/>
-      <location line="+123"/>
+      <location line="+139"/>
       <source>Desktop media shapes</source>
       <translation>Σχήματα πολυμέσων επιφάνειας εργασίας</translation>
     </message>
     <message>
-      <location line="-110"/>
+      <location line="-126"/>
       <source>Auto-hide media shapes</source>
       <translation>Αυτόματη απόκρυψη σχημάτων πολυμέσων</translation>
     </message>
@@ -3792,12 +4348,12 @@
     </message>
     <message>
       <location line="+8"/>
-      <location line="+138"/>
+      <location line="+154"/>
       <source>Desktop lyrics</source>
       <translation>Στίχοι επιφάνειας εργασίας</translation>
     </message>
     <message>
-      <location line="-125"/>
+      <location line="-141"/>
       <source>Auto-hide lyrics</source>
       <translation>Αυτόματη απόκρυψη στίχων</translation>
     </message>
@@ -3838,31 +4394,43 @@
     </message>
     <message>
       <location line="+18"/>
-      <location line="+44"/>
+      <location line="+60"/>
       <location line="+37"/>
       <source>Scale</source>
       <translation>Κλίμακα</translation>
     </message>
     <message>
-      <location line="-71"/>
-      <location line="+45"/>
+      <location line="-87"/>
+      <location line="+61"/>
       <location line="+36"/>
       <source>Position</source>
       <translation>Θέση</translation>
     </message>
     <message>
-      <location line="-64"/>
-      <location line="+95"/>
+      <location line="-81"/>
+      <location line="+111"/>
+      <source>Horizontal offset</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="-103"/>
+      <location line="+111"/>
+      <source>Vertical offset</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="-102"/>
+      <location line="+111"/>
       <source>Invert colors</source>
       <translation>Αντιστροφή χρωμάτων</translation>
     </message>
     <message>
-      <location line="-15"/>
+      <location line="-31"/>
       <source>Alignment</source>
       <translation>Ευθυγράμμιση</translation>
     </message>
     <message>
-      <location line="+22"/>
+      <location line="+38"/>
       <source>Visualiser</source>
       <translation>Οπτικοποιητής</translation>
     </message>
@@ -3877,9 +4445,19 @@
       <translation>Στρογγυλοποίηση</translation>
     </message>
     <message>
-      <location line="+11"/>
+      <location line="+10"/>
       <source>Spacing</source>
       <translation>Απόσταση</translation>
+    </message>
+    <message>
+      <location line="+11"/>
+      <source>Size</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Column width multiplier, lower values leave more room in the middle</source>
+      <translation type="unfinished"/>
     </message>
   </context>
   <context>
@@ -3931,7 +4509,7 @@
   <context>
     <name>DesktopLyrics</name>
     <message>
-      <location filename="../modules/background/DesktopLyrics.qml" line="+285"/>
+      <location filename="../modules/background/DesktopLyrics.qml" line="+291"/>
       <source>Loading lyrics...</source>
       <translation>Φόρτωση στίχων...</translation>
     </message>
@@ -4123,8 +4701,76 @@
     <name>DinoGame</name>
     <message>
       <location filename="../modules/sidebar/DinoGame.qml" line="+251"/>
+      <location filename="../../src/kde/shells/caelestia.desktop/contents/lockscreen/components/DinoGame.qml" line="+162"/>
       <source>All up to date!</source>
       <translation>Όλα ενημερωμένα!</translation>
+    </message>
+    <message>
+      <location line="+85"/>
+      <source>G A M E   O V E R
+Click to restart</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+10"/>
+      <source>Y O U   W I N !
+Now go touch grass</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location filename="../../src/kde/shells/caelestia.desktop/contents/lockscreen/components/DinoGame.qml" line="+8"/>
+      <source>Click or press Space to play</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+86"/>
+      <source>G A M E   O V E R</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+6"/>
+      <source>Click to restart</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+15"/>
+      <source>Y O U   W I N !</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+6"/>
+      <source>Now go touch grass</source>
+      <translation type="unfinished"/>
+    </message>
+  </context>
+  <context>
+    <name>DiscordRPC</name>
+    <message>
+      <location filename="../services/DiscordRPC.qml" line="+218"/>
+      <location line="+74"/>
+      <location line="+51"/>
+      <source>Playing via Steam</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="-85"/>
+      <source>Light Mode</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+0"/>
+      <source>Dark Mode</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+12"/>
+      <source>Website</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>GitHub</source>
+      <translation type="unfinished"/>
     </message>
   </context>
   <context>
@@ -4336,7 +4982,12 @@
   <context>
     <name>FileDialog</name>
     <message>
-      <location filename="../components/filedialog/FileDialog.qml" line="+16"/>
+      <location filename="../components/filedialog/FileDialog.qml" line="+13"/>
+      <source>All files</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+3"/>
       <source>Select a folder</source>
       <translation>Επιλογή φακέλου</translation>
     </message>
@@ -4555,11 +5206,46 @@
     </message>
   </context>
   <context>
-    <name>GreeterContext</name>
+    <name>Greeter</name>
     <message>
-      <location filename="../modules/bar/popouts/GreeterContext.qml" line="+79"/>
-      <source>Greeter settings</source>
-      <translation>Ρυθμίσεις ελληνικών</translation>
+      <location filename="../modules/bar/components/Greeter.qml" line="+26"/>
+      <source>User</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+18"/>
+      <location line="+8"/>
+      <source>Good Night</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="-6"/>
+      <source>Good Morning</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+2"/>
+      <source>Good Afternoon</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+2"/>
+      <source>Good Evening</source>
+      <translation type="unfinished"/>
+    </message>
+  </context>
+  <context>
+    <name>GreetingPill</name>
+    <message>
+      <location filename="../../src/kde/shells/caelestia.desktop/contents/lockscreen/components/GreetingPill.qml" line="+9"/>
+      <source>Good day</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+1"/>
+      <location line="+36"/>
+      <source>User</source>
+      <translation type="unfinished"/>
     </message>
   </context>
   <context>
@@ -4771,6 +5457,11 @@
       <source>Keyboard Layouts</source>
       <translation>Διατάξεις Πληκτρολογίου</translation>
     </message>
+    <message>
+      <location line="+64"/>
+      <source>XKB supports only 4 layouts at a time</source>
+      <translation type="unfinished"/>
+    </message>
   </context>
   <context>
     <name>KbLayoutModel</name>
@@ -4788,22 +5479,32 @@
   <context>
     <name>KeyCaptureDialog</name>
     <message>
-      <location filename="../modules/nexus/common/KeyCaptureDialog.qml" line="+85"/>
+      <location filename="../modules/nexus/common/KeyCaptureDialog.qml" line="+156"/>
       <source>Record Keybind</source>
       <translation>Εγγραφή Συντόμευσης</translation>
     </message>
     <message>
-      <location line="+68"/>
+      <location line="+69"/>
       <source>Press keys now...</source>
       <translation>Πατήστε τα πλήκτρα τώρα...</translation>
     </message>
     <message>
-      <location line="+12"/>
+      <location line="+50"/>
+      <source>Already used by %1</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+11"/>
       <source>Cancel</source>
       <translation>Ακύρωση</translation>
     </message>
     <message>
       <location line="+7"/>
+      <source>Replace</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+0"/>
       <source>Confirm</source>
       <translation>Επιβεβαίωση</translation>
     </message>
@@ -5081,7 +5782,7 @@
   <context>
     <name>Kwin</name>
     <message>
-      <location filename="../services/Kwin.qml" line="+483"/>
+      <location filename="../services/Kwin.qml" line="+484"/>
       <source>Caps lock enabled</source>
       <translation>Caps κλείδωμα ενεργοποιημένο</translation>
     </message>
@@ -5309,7 +6010,22 @@
   <context>
     <name>LauncherPanel</name>
     <message>
-      <location filename="../modules/nexus/pages/panels/LauncherPanel.qml" line="+15"/>
+      <location filename="../modules/nexus/pages/panels/LauncherPanel.qml" line="+20"/>
+      <source>Default</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+5"/>
+      <source>Simple</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+5"/>
+      <source>Compact</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+4"/>
       <source>Launcher</source>
       <translation>Εκκινητής</translation>
     </message>
@@ -5405,6 +6121,16 @@
     </message>
     <message>
       <location line="+6"/>
+      <source>App browser layout</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Default: a sidebar of categories next to the apps. Simple: full-width app grid with favourites on top. Compact: vertical list of apps like search results</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+7"/>
       <source>Show power menu</source>
       <translation>Εμφάνιση μενού ενεργοποίησης</translation>
     </message>
@@ -5824,6 +6550,29 @@
     </message>
   </context>
   <context>
+    <name>LockScreenUi</name>
+    <message>
+      <location filename="../../src/kde/shells/caelestia.desktop/contents/lockscreen/LockScreenUi.qml" line="+113"/>
+      <source>Good morning</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Good afternoon</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Good evening</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Good night</source>
+      <translation type="unfinished"/>
+    </message>
+  </context>
+  <context>
     <name>LockStatus</name>
     <message>
       <location filename="../modules/bar/popouts/LockStatus.qml" line="+21"/>
@@ -6028,6 +6777,19 @@
     </message>
   </context>
   <context>
+    <name>MediaCard</name>
+    <message>
+      <location filename="../../src/kde/shells/caelestia.desktop/contents/lockscreen/components/MediaCard.qml" line="+72"/>
+      <source>Nothing playing</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+9"/>
+      <source>Try playing some music!</source>
+      <translation type="unfinished"/>
+    </message>
+  </context>
+  <context>
     <name>MemoryCard</name>
     <message>
       <location filename="../modules/dashboard/performance/MemoryCard.qml" line="+42"/>
@@ -6076,7 +6838,7 @@
       <translation>Διεύθυνση MAC</translation>
     </message>
     <message>
-      <location line="+20"/>
+      <location line="+22"/>
       <source>Network</source>
       <translation>Δίκτυο</translation>
     </message>
@@ -6096,7 +6858,7 @@
       <translation>Επανασάρωση δικτύων</translation>
     </message>
     <message>
-      <location line="+29"/>
+      <location line="+26"/>
       <source>VPN</source>
       <translation type="unfinished"/>
     </message>
@@ -6106,7 +6868,7 @@
       <translation>Διαθέσιμα προφίλ %1</translation>
     </message>
     <message>
-      <location line="+85"/>
+      <location line="+133"/>
       <source>No VPN profiles found</source>
       <translation>Δεν βρέθηκαν προφίλ VPN</translation>
     </message>
@@ -6427,29 +7189,6 @@
     </message>
   </context>
   <context>
-    <name>Nexus</name>
-    <message>
-      <location filename="../modules/nexus/Nexus.qml" line="+162"/>
-      <source>Update in progress</source>
-      <translation>Ενημέρωση σε εξέλιξη</translation>
-    </message>
-    <message>
-      <location line="+8"/>
-      <source>Closing now will let the update keep running in the background, or you can cancel it first.</source>
-      <translation>Κλείσιμο τώρα θα αφήσει την ενημέρωση να συνεχίσει να εκτελείται στο παρασκήνιο, ή μπορείτε να την ακυρώσετε πρώτα.</translation>
-    </message>
-    <message>
-      <location line="+14"/>
-      <source>Cancel Update</source>
-      <translation>Ακύρωση Ενημέρωσης</translation>
-    </message>
-    <message>
-      <location line="+11"/>
-      <source>Keep Running</source>
-      <translation>Συνεχίστε Να Εκτελείται</translation>
-    </message>
-  </context>
-  <context>
     <name>NightLight</name>
     <message>
       <location filename="../modules/bar/popouts/NightLight.qml" line="+26"/>
@@ -6501,6 +7240,50 @@
     </message>
   </context>
   <context>
+    <name>NotesTab</name>
+    <message>
+      <location filename="../modules/dashboard/NotesTab.qml" line="+22"/>
+      <location line="+204"/>
+      <source>Untitled</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="-118"/>
+      <source>Notes</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+164"/>
+      <source>No additional text</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+37"/>
+      <source>No notes yet. Tap + to add one.</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+73"/>
+      <source>Title</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+45"/>
+      <source>Start writing...</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+20"/>
+      <source>Edited %1</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+42"/>
+      <source>Select a note or create one</source>
+      <translation type="unfinished"/>
+    </message>
+  </context>
+  <context>
     <name>Notif</name>
     <message>
       <location filename="../modules/sidebar/Notif.qml" line="+138"/>
@@ -6512,7 +7295,7 @@
     <name>NotifData</name>
     <message>
       <location filename="../services/NotifData.qml" line="+19"/>
-      <location line="+149"/>
+      <location line="+153"/>
       <source>now</source>
       <translation>τώρα</translation>
     </message>
@@ -6526,12 +7309,61 @@
     </message>
     <message>
       <location line="+0"/>
+      <location filename="../../src/kde/shells/caelestia.desktop/contents/lockscreen/components/NotifDock.qml" line="+68"/>
+      <location line="+56"/>
       <source>Notifications</source>
       <translation>Ειδοποιήσεις</translation>
     </message>
     <message>
       <location line="+112"/>
       <source>Caelestia Mode</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+7"/>
+      <source>Spinning kurukuru activated</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+0"/>
+      <source>Classic dinosaur character</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location filename="../../src/kde/shells/caelestia.desktop/contents/lockscreen/components/NotifDock.qml" line="-80"/>
+      <location line="+4"/>
+      <location line="+5"/>
+      <source>now</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="-4"/>
+      <source>m</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>h</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>d</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+70"/>
+      <source>Unlock for Notifications</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+2"/>
+      <source> notification</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+0"/>
+      <source> notifications</source>
       <translation type="unfinished"/>
     </message>
   </context>
@@ -6864,7 +7696,7 @@
       <translation>Οι αναδυόμενες ειδοποιήσεις είναι τώρα ενεργές</translation>
     </message>
     <message>
-      <location line="+97"/>
+      <location line="+107"/>
       <source>Clear all notifications</source>
       <translation>Εκκαθάριση όλων των ειδοποιήσεων</translation>
     </message>
@@ -7402,6 +8234,11 @@
     </message>
     <message>
       <location line="+1"/>
+      <source>App browser layout</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+1"/>
       <source>Sidebar</source>
       <translation type="unfinished"/>
     </message>
@@ -7782,6 +8619,11 @@
     </message>
     <message>
       <location line="+1"/>
+      <source>Visualiser Input</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+1"/>
       <source>Rich Presence</source>
       <translation type="unfinished"/>
     </message>
@@ -7867,7 +8709,12 @@
       <translation>Έκδοση Λειτουργικού Συστήματος</translation>
     </message>
     <message>
-      <location line="+7"/>
+      <location line="+1"/>
+      <source>Uninstall Caelestia</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+4"/>
       <source>AI Assistant</source>
       <translation>Βοηθός Τεχνικής Βοήθειας</translation>
     </message>
@@ -7993,6 +8840,24 @@
     </message>
   </context>
   <context>
+    <name>PasswordPill</name>
+    <message>
+      <location filename="../../src/kde/shells/caelestia.desktop/contents/lockscreen/components/PasswordPill.qml" line="+81"/>
+      <source>Loading...</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+0"/>
+      <source>Please wait...</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+0"/>
+      <source>Enter your password</source>
+      <translation type="unfinished"/>
+    </message>
+  </context>
+  <context>
     <name>PerfBattery</name>
     <message>
       <location filename="../modules/bar/components/performance/PerfBattery.qml" line="+12"/>
@@ -8055,6 +8920,16 @@
       <source>Stop media playback</source>
       <translation>Σταμάτημα αναπαραγωγής πολυμέσων</translation>
     </message>
+    <message>
+      <location line="+7"/>
+      <source>Invalid property</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+0"/>
+      <source>No active player</source>
+      <translation type="unfinished"/>
+    </message>
   </context>
   <context>
     <name>PluginSettingsPopup</name>
@@ -8070,9 +8945,48 @@
     </message>
   </context>
   <context>
+    <name>PluginStore</name>
+    <message>
+      <location filename="../services/PluginStore.qml" line="+67"/>
+      <source>Plugin update available</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+0"/>
+      <source>1 plugin can be updated</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+2"/>
+      <source>Plugin updates available</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+0"/>
+      <source>%1 plugins can be updated</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+153"/>
+      <source>Enter a valid git URL</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+6"/>
+      <source>Cloning plugin...</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+27"/>
+      <location line="+5"/>
+      <source>Install failed</source>
+      <translation type="unfinished"/>
+    </message>
+  </context>
+  <context>
     <name>PluginsPage</name>
     <message>
-      <location filename="../modules/nexus/pages/PluginsPage.qml" line="+59"/>
+      <location filename="../modules/nexus/pages/PluginsPage.qml" line="+86"/>
       <source>Plugins</source>
       <translation>Πρόσθετα</translation>
     </message>
@@ -8088,12 +9002,12 @@
     </message>
     <message>
       <location line="+34"/>
-      <location line="+333"/>
+      <location line="+371"/>
       <source>Installed</source>
       <translation>Εγκατεστημένο</translation>
     </message>
     <message>
-      <location line="-324"/>
+      <location line="-362"/>
       <source>Store</source>
       <translation>Κατάστημα</translation>
     </message>
@@ -8108,17 +9022,38 @@
       <translation>Πρόσθετα Κελύφους</translation>
     </message>
     <message>
-      <location line="+68"/>
+      <location line="+73"/>
       <source>User Installed</source>
       <translation>Εγκατεστημένος Χρήστης</translation>
     </message>
     <message>
-      <location line="+101"/>
+      <location line="+106"/>
       <source>No plugins installed</source>
       <translation>Δεν υπάρχουν εγκατεστημένα πρόσθετα</translation>
     </message>
     <message>
-      <location line="+38"/>
+      <location line="+8"/>
+      <source>Install from source</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+8"/>
+      <source>Git URL</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+21"/>
+      <source>The repository root must contain metadata.json</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+7"/>
+      <location line="+91"/>
+      <source>Install</source>
+      <translation>Εγκατάσταση</translation>
+    </message>
+    <message>
+      <location line="-52"/>
       <source>Loading store...</source>
       <translation>Φόρτωση καταστήματος...</translation>
     </message>
@@ -8127,21 +9062,11 @@
       <source>Available Plugins</source>
       <translation>Διαθέσιμα Πρόσθετα</translation>
     </message>
-    <message>
-      <location line="+60"/>
-      <source>Update</source>
-      <translation>Ενημέρωση</translation>
-    </message>
-    <message>
-      <location line="+0"/>
-      <source>Install</source>
-      <translation>Εγκατάσταση</translation>
-    </message>
   </context>
   <context>
     <name>Power</name>
     <message>
-      <location filename="../modules/bar/components/Power.qml" line="+22"/>
+      <location filename="../modules/bar/components/Power.qml" line="+25"/>
       <source>Power and session menu</source>
       <translation>Μενού ενεργοποίησης και συνεδρίας</translation>
     </message>
@@ -8242,96 +9167,44 @@
       <translation>Επανεκκίνηση Κελύφους</translation>
     </message>
     <message>
-      <location line="+3"/>
+      <location line="+36"/>
       <source>Quick toggles</source>
       <translation type="unfinished"/>
     </message>
     <message>
       <location line="+11"/>
+      <source>Custom order</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Rearrange toggles with drag handles</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+8"/>
+      <source>Toggles per page</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Entries shown on each page of the drawer</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+51"/>
       <source>Connectivity</source>
       <translation>Συνδεσιμότητα</translation>
     </message>
     <message>
-      <location line="+15"/>
+      <location line="+17"/>
       <source>Tools</source>
       <translation>Εργαλεία</translation>
     </message>
     <message>
-      <location line="+15"/>
+      <location line="+17"/>
       <source>System</source>
       <translation>Σύστημα</translation>
-    </message>
-  </context>
-  <context>
-    <name>Record</name>
-    <message>
-      <location filename="../modules/utilities/cards/Record.qml" line="+61"/>
-      <source>Screen Recorder</source>
-      <translation>Εγγραφή Οθόνης</translation>
-    </message>
-    <message>
-      <location line="+7"/>
-      <source>Paused</source>
-      <translation>Παύση</translation>
-    </message>
-    <message>
-      <location line="+0"/>
-      <source>Running...</source>
-      <translation>Εκτέλεση...</translation>
-    </message>
-    <message>
-      <location line="+0"/>
-      <source>Ready</source>
-      <translation>Έτοιμο</translation>
-    </message>
-    <message>
-      <location line="+17"/>
-      <source>Record</source>
-      <translation>Εγγραφή</translation>
-    </message>
-    <message>
-      <location line="+1"/>
-      <location line="+9"/>
-      <location line="+9"/>
-      <location line="+9"/>
-      <location line="+10"/>
-      <source>Start</source>
-      <translation>Έναρξη</translation>
-    </message>
-    <message>
-      <location line="-29"/>
-      <source>Record with Sound</source>
-      <translation>Εγγραφή με ήχο</translation>
-    </message>
-    <message>
-      <location line="+9"/>
-      <source>Record with Microphone</source>
-      <translation>Εγγραφή με Μικρόφωνο</translation>
-    </message>
-    <message>
-      <location line="+9"/>
-      <source>Both Sound &amp; Microphone</source>
-      <translation>Αμφότερα Μικρόφωνο Ήχου</translation>
-    </message>
-    <message>
-      <location line="+10"/>
-      <source>Record GIF</source>
-      <translation>Εγγραφή GIF</translation>
-    </message>
-    <message>
-      <location line="+9"/>
-      <source>Use Spectacle</source>
-      <translation>Χρήση Θεάματος</translation>
-    </message>
-    <message>
-      <location line="+1"/>
-      <source>Spectacle</source>
-      <translation>Γυαλιά</translation>
-    </message>
-    <message>
-      <location line="+124"/>
-      <source>Recording %1</source>
-      <translation>Εγγραφή %1</translation>
     </message>
   </context>
   <context>
@@ -8406,7 +9279,7 @@
   <context>
     <name>RegionSelection</name>
     <message>
-      <location filename="../modules/screenshot/regionSelector/RegionSelection.qml" line="+543"/>
+      <location filename="../modules/screenshot/regionSelector/RegionSelection.qml" line="+544"/>
       <source>Full Screen Screenshot</source>
       <translation>Στιγμιότυπο Πλήρους Οθόνης</translation>
     </message>
@@ -8488,6 +9361,39 @@
     </message>
   </context>
   <context>
+    <name>ScreenshotList</name>
+    <message>
+      <location filename="../modules/utilities/cards/ScreenshotList.qml" line="+46"/>
+      <source>Screenshots</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+57"/>
+      <source>Screenshot at %1</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+42"/>
+      <source>Delete this screenshot?</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+7"/>
+      <source>Cancel</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+7"/>
+      <source>Delete</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+100"/>
+      <source>No screenshots found</source>
+      <translation type="unfinished"/>
+    </message>
+  </context>
+  <context>
     <name>SearchResults</name>
     <message>
       <location filename="../modules/nexus/navpane/SearchResults.qml" line="+148"/>
@@ -8500,12 +9406,17 @@
     <message>
       <location filename="../modules/nexus/pages/ServicesPage.qml" line="+17"/>
       <location line="+15"/>
-      <location line="+105"/>
+      <location line="+117"/>
       <source>Auto</source>
       <translation>Αυτόματο</translation>
     </message>
     <message>
-      <location line="-99"/>
+      <location line="-129"/>
+      <source>Local</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+18"/>
       <source>Generic</source>
       <translation type="unfinished"/>
     </message>
@@ -8515,7 +9426,17 @@
       <translation>Κανένα</translation>
     </message>
     <message>
-      <location line="+17"/>
+      <location line="+9"/>
+      <source>Output</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+4"/>
+      <source>Input</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+16"/>
       <source>Services</source>
       <translation>Υπηρεσίες</translation>
     </message>
@@ -8640,7 +9561,17 @@
       <translation>Αριθμός των γραμμών στα οπτικά προγράμματα ήχου</translation>
     </message>
     <message>
-      <location line="+11"/>
+      <location line="+9"/>
+      <source>Visualiser input</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Audio the visualisers react to</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+9"/>
       <source>GPU</source>
       <translation type="unfinished"/>
     </message>
@@ -8653,6 +9584,39 @@
       <location line="+0"/>
       <source>Override for GPU type</source>
       <translation>Παράκαμψη για τον τύπο GPU</translation>
+    </message>
+  </context>
+  <context>
+    <name>Session</name>
+    <message>
+      <location filename="../../src/kde/shells/caelestia.desktop/contents/lockscreen/components/Session.qml" line="+55"/>
+      <source>Sleep</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+9"/>
+      <source>Hibernate</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+9"/>
+      <source>Switch User</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+9"/>
+      <source>Log Out</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+9"/>
+      <source>Restart</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+9"/>
+      <source>Shut Down</source>
+      <translation type="unfinished"/>
     </message>
   </context>
   <context>
@@ -8781,12 +9745,192 @@
   <context>
     <name>Shortcuts</name>
     <message>
-      <location filename="../modules/Shortcuts.qml" line="+28"/>
+      <location filename="../modules/Shortcuts.qml" line="+26"/>
+      <source>Focus the window above</source>
+      <translation>Εστίαση του παραπάνω παραθύρου</translation>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Focus the window below</source>
+      <translation>Εστίαση του παρακάτω παραθύρου</translation>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Focus the window to the left</source>
+      <translation>Εστίαση του παραθύρου στα αριστερά</translation>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Focus the window to the right</source>
+      <translation>Εστίαση του παραθύρου στα δεξιά</translation>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Move window up</source>
+      <translation>Μετακίνηση παραθύρου πάνω</translation>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Move window down</source>
+      <translation>Μετακίνηση παραθύρου κάτω</translation>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Move window left</source>
+      <translation>Μετακίνηση παραθύρου αριστερά</translation>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Move window right</source>
+      <translation>Μετακίνηση παραθύρου δεξιά</translation>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Close current window</source>
+      <translation>Κλείσιμο τρέχοντος παραθύρου</translation>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Focus next window</source>
+      <translation>Εστίαση στο επόμενο παράθυρο</translation>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Focus previous window</source>
+      <translation>Εστίαση προηγούμενου παραθύρου</translation>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Set active window as Master</source>
+      <translation>Ορισμός ενεργού παραθύρου ως Master</translation>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Switch to next layout</source>
+      <translation>Εναλλαγή στην επόμενη διάταξη</translation>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Switch to previous layout</source>
+      <translation>Εναλλαγή στην προηγούμενη διάταξη</translation>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Switch to BTree layout</source>
+      <translation>Εναλλαγή σε διάταξη BTree</translation>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Switch to Monocle layout</source>
+      <translation>Εναλλαγή σε διάταξη Monocle</translation>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Switch to Floating layout</source>
+      <translation>Εναλλαγή σε πλωτή διάταξη</translation>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Switch to Quarter layout</source>
+      <translation>Εναλλαγή σε διάταξη τετάρτου</translation>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Switch to Spread layout</source>
+      <translation>Εναλλαγή σε Διαδωμένη Διάταξη</translation>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Switch to Stacked layout</source>
+      <translation>Εναλλαγή σε στοιβαγμένη διάταξη</translation>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Switch to Stair layout</source>
+      <translation>Μετάβαση στη διάταξη σκαλοπατιού</translation>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Switch to Columns layout</source>
+      <translation>Εναλλαγή σε διάταξη στηλών</translation>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Switch to Three Column layout</source>
+      <translation>Εναλλαγή σε διάταξη τριών στηλών</translation>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Switch to Spiral layout</source>
+      <translation>Μετάβαση σε Σπειροειδή διάταξη</translation>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Switch to Tile layout</source>
+      <translation>Εναλλαγή σε διάταξη πλακιδίων</translation>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Increase window height</source>
+      <translation>Αύξηση ύψους παραθύρου</translation>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Decrease window height</source>
+      <translation>Μείωση ύψους παραθύρου</translation>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Increase window width</source>
+      <translation>Αύξηση πλάτους παραθύρου</translation>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Decrease window width</source>
+      <translation>Μείωση πλάτους παραθύρου</translation>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Increase master area size</source>
+      <translation>Αύξηση του μεγέθους της κύριας περιοχής</translation>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Decrease master area size</source>
+      <translation>Μείωση μεγέθους κύριας περιοχής</translation>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Toggle floating state</source>
+      <translation>Εναλλαγή κυμαινόμενης κατάστασης</translation>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Toggle floating state for all</source>
+      <translation>Εναλλαγή της κυμαινόμενης κατάστασης για όλους</translation>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Rotate the window layout</source>
+      <translation>Περιστροφή της διάταξης παραθύρου</translation>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Rotate windows within a part</source>
+      <translation>Περιστροφή παραθύρων μέσα σε ένα τμήμα</translation>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>Toggle dock support</source>
+      <translation>Εναλλαγή υποστήριξης προσάρτησης</translation>
+    </message>
+    <message>
+      <location line="+51"/>
       <source>Open nexus</source>
       <translation>Άνοιγμα σύνδεσης</translation>
     </message>
     <message>
-      <location line="+7"/>
+      <location line="+8"/>
       <source>Toggle launcher, dashboard and osd</source>
       <translation>Εναλλαγή εκκίνησης, ταμπλό και osd</translation>
     </message>
@@ -8806,7 +9950,7 @@
       <translation>Εναλλαγή επικάλυψης οθόνης</translation>
     </message>
     <message>
-      <location line="+9"/>
+      <location line="+10"/>
       <source>Toggle Google Lens search</source>
       <translation>Εναλλαγή αναζήτησης Google Lens</translation>
     </message>
@@ -8821,7 +9965,7 @@
       <translation>Εναλλαγή καταγραφής οθόνης</translation>
     </message>
     <message>
-      <location line="+31"/>
+      <location line="+18"/>
       <source>Toggle session menu</source>
       <translation>Εναλλαγή μενού συνεδρίας</translation>
     </message>
@@ -8961,190 +10105,100 @@
       <translation>Εναλλαγή στο χώρο εργασίας 10</translation>
     </message>
     <message>
-      <location line="+89"/>
-      <source>Focus the window above</source>
-      <translation>Εστίαση του παραπάνω παραθύρου</translation>
+      <location line="+116"/>
+      <source>Open dock entry 1</source>
+      <translation type="unfinished"/>
     </message>
     <message>
-      <location line="+11"/>
-      <source>Focus the window below</source>
-      <translation>Εστίαση του παρακάτω παραθύρου</translation>
+      <location line="+8"/>
+      <source>Open dock entry 2</source>
+      <translation type="unfinished"/>
     </message>
     <message>
-      <location line="+11"/>
-      <source>Focus the window to the left</source>
-      <translation>Εστίαση του παραθύρου στα αριστερά</translation>
+      <location line="+8"/>
+      <source>Open dock entry 3</source>
+      <translation type="unfinished"/>
     </message>
     <message>
-      <location line="+11"/>
-      <source>Focus the window to the right</source>
-      <translation>Εστίαση του παραθύρου στα δεξιά</translation>
+      <location line="+8"/>
+      <source>Open dock entry 4</source>
+      <translation type="unfinished"/>
     </message>
     <message>
-      <location line="+11"/>
-      <source>Move window up</source>
-      <translation>Μετακίνηση παραθύρου πάνω</translation>
+      <location line="+8"/>
+      <source>Open dock entry 5</source>
+      <translation type="unfinished"/>
     </message>
     <message>
-      <location line="+11"/>
-      <source>Move window down</source>
-      <translation>Μετακίνηση παραθύρου κάτω</translation>
+      <location line="+8"/>
+      <source>Open dock entry 6</source>
+      <translation type="unfinished"/>
     </message>
     <message>
-      <location line="+11"/>
-      <source>Move window left</source>
-      <translation>Μετακίνηση παραθύρου αριστερά</translation>
+      <location line="+8"/>
+      <source>Open dock entry 7</source>
+      <translation type="unfinished"/>
     </message>
     <message>
-      <location line="+11"/>
-      <source>Move window right</source>
-      <translation>Μετακίνηση παραθύρου δεξιά</translation>
+      <location line="+8"/>
+      <source>Open dock entry 8</source>
+      <translation type="unfinished"/>
     </message>
     <message>
-      <location line="+11"/>
-      <source>Close current window</source>
-      <translation>Κλείσιμο τρέχοντος παραθύρου</translation>
-    </message>
-    <message>
-      <location line="+11"/>
-      <source>Focus next window</source>
-      <translation>Εστίαση στο επόμενο παράθυρο</translation>
+      <location line="+8"/>
+      <source>Open dock entry 9</source>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+7"/>
-      <source>Focus previous window</source>
-      <translation>Εστίαση προηγούμενου παραθύρου</translation>
+      <source>Open new window of dock entry 1</source>
+      <translation type="unfinished"/>
     </message>
     <message>
-      <location line="+7"/>
-      <source>Set active window as Master</source>
-      <translation>Ορισμός ενεργού παραθύρου ως Master</translation>
+      <location line="+8"/>
+      <source>Open new window of dock entry 2</source>
+      <translation type="unfinished"/>
     </message>
     <message>
-      <location line="+7"/>
-      <source>Switch to next layout</source>
-      <translation>Εναλλαγή στην επόμενη διάταξη</translation>
+      <location line="+8"/>
+      <source>Open new window of dock entry 3</source>
+      <translation type="unfinished"/>
     </message>
     <message>
-      <location line="+7"/>
-      <source>Switch to previous layout</source>
-      <translation>Εναλλαγή στην προηγούμενη διάταξη</translation>
+      <location line="+8"/>
+      <source>Open new window of dock entry 4</source>
+      <translation type="unfinished"/>
     </message>
     <message>
-      <location line="+7"/>
-      <source>Switch to BTree layout</source>
-      <translation>Εναλλαγή σε διάταξη BTree</translation>
+      <location line="+8"/>
+      <source>Open new window of dock entry 5</source>
+      <translation type="unfinished"/>
     </message>
     <message>
-      <location line="+7"/>
-      <source>Switch to Monocle layout</source>
-      <translation>Εναλλαγή σε διάταξη Monocle</translation>
+      <location line="+8"/>
+      <source>Open new window of dock entry 6</source>
+      <translation type="unfinished"/>
     </message>
     <message>
-      <location line="+7"/>
-      <source>Switch to Floating layout</source>
-      <translation>Εναλλαγή σε πλωτή διάταξη</translation>
+      <location line="+8"/>
+      <source>Open new window of dock entry 7</source>
+      <translation type="unfinished"/>
     </message>
     <message>
-      <location line="+7"/>
-      <source>Switch to Quarter layout</source>
-      <translation>Εναλλαγή σε διάταξη τετάρτου</translation>
+      <location line="+8"/>
+      <source>Open new window of dock entry 8</source>
+      <translation type="unfinished"/>
     </message>
     <message>
-      <location line="+7"/>
-      <source>Switch to Spread layout</source>
-      <translation>Εναλλαγή σε Διαδωμένη Διάταξη</translation>
-    </message>
-    <message>
-      <location line="+7"/>
-      <source>Switch to Stacked layout</source>
-      <translation>Εναλλαγή σε στοιβαγμένη διάταξη</translation>
-    </message>
-    <message>
-      <location line="+7"/>
-      <source>Switch to Stair layout</source>
-      <translation>Μετάβαση στη διάταξη σκαλοπατιού</translation>
-    </message>
-    <message>
-      <location line="+7"/>
-      <source>Switch to Columns layout</source>
-      <translation>Εναλλαγή σε διάταξη στηλών</translation>
-    </message>
-    <message>
-      <location line="+7"/>
-      <source>Switch to Three Column layout</source>
-      <translation>Εναλλαγή σε διάταξη τριών στηλών</translation>
-    </message>
-    <message>
-      <location line="+7"/>
-      <source>Switch to Spiral layout</source>
-      <translation>Μετάβαση σε Σπειροειδή διάταξη</translation>
-    </message>
-    <message>
-      <location line="+7"/>
-      <source>Switch to Tile layout</source>
-      <translation>Εναλλαγή σε διάταξη πλακιδίων</translation>
-    </message>
-    <message>
-      <location line="+7"/>
-      <source>Increase window height</source>
-      <translation>Αύξηση ύψους παραθύρου</translation>
-    </message>
-    <message>
-      <location line="+7"/>
-      <source>Decrease window height</source>
-      <translation>Μείωση ύψους παραθύρου</translation>
-    </message>
-    <message>
-      <location line="+7"/>
-      <source>Increase window width</source>
-      <translation>Αύξηση πλάτους παραθύρου</translation>
-    </message>
-    <message>
-      <location line="+7"/>
-      <source>Decrease window width</source>
-      <translation>Μείωση πλάτους παραθύρου</translation>
-    </message>
-    <message>
-      <location line="+7"/>
-      <source>Increase master area size</source>
-      <translation>Αύξηση του μεγέθους της κύριας περιοχής</translation>
-    </message>
-    <message>
-      <location line="+7"/>
-      <source>Decrease master area size</source>
-      <translation>Μείωση μεγέθους κύριας περιοχής</translation>
-    </message>
-    <message>
-      <location line="+7"/>
-      <source>Toggle floating state</source>
-      <translation>Εναλλαγή κυμαινόμενης κατάστασης</translation>
-    </message>
-    <message>
-      <location line="+7"/>
-      <source>Toggle floating state for all</source>
-      <translation>Εναλλαγή της κυμαινόμενης κατάστασης για όλους</translation>
-    </message>
-    <message>
-      <location line="+7"/>
-      <source>Rotate the window layout</source>
-      <translation>Περιστροφή της διάταξης παραθύρου</translation>
-    </message>
-    <message>
-      <location line="+7"/>
-      <source>Rotate windows within a part</source>
-      <translation>Περιστροφή παραθύρων μέσα σε ένα τμήμα</translation>
-    </message>
-    <message>
-      <location line="+7"/>
-      <source>Toggle dock support</source>
-      <translation>Εναλλαγή υποστήριξης προσάρτησης</translation>
+      <location line="+8"/>
+      <source>Open new window of dock entry 9</source>
+      <translation type="unfinished"/>
     </message>
   </context>
   <context>
     <name>ShowDesktop</name>
     <message>
-      <location filename="../modules/bar/components/ShowDesktop.qml" line="+20"/>
+      <location filename="../modules/bar/components/ShowDesktop.qml" line="+23"/>
       <source>Show desktop</source>
       <translation>Εμφάνιση επιφάνειας εργασίας</translation>
     </message>
@@ -9354,14 +10408,6 @@
       <location line="+8"/>
       <source>Screen recording</source>
       <translation>Εγγραφή οθόνης</translation>
-    </message>
-  </context>
-  <context>
-    <name>StatusIconsContext</name>
-    <message>
-      <location filename="../modules/bar/popouts/StatusIconsContext.qml" line="+83"/>
-      <source>Status icons settings</source>
-      <translation type="unfinished"/>
     </message>
   </context>
   <context>
@@ -9975,8 +11021,16 @@
   <context>
     <name>Toggles</name>
     <message>
-      <location filename="../modules/utilities/cards/Toggles.qml" line="+102"/>
+      <location filename="../modules/utilities/cards/Toggles.qml" line="+279"/>
       <source>Quick Toggles</source>
+      <translation type="unfinished"/>
+    </message>
+  </context>
+  <context>
+    <name>ToolCard</name>
+    <message>
+      <location filename="../modules/sidebar/ai/ToolCard.qml" line="+169"/>
+      <source>+%1 earlier steps</source>
       <translation type="unfinished"/>
     </message>
   </context>
@@ -9999,6 +11053,46 @@
       <location filename="../modules/bar/popouts/TrayMenu.qml" line="+330"/>
       <source>Back</source>
       <translation>Πίσω</translation>
+    </message>
+  </context>
+  <context>
+    <name>UninstallDialog</name>
+    <message>
+      <location filename="../modules/nexus/common/UninstallDialog.qml" line="+75"/>
+      <source>Uninstall Caelestia?</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+10"/>
+      <source>Still looking for the uninstaller. Try again in a moment.</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+2"/>
+      <source>This opens the uninstaller in a terminal, where it asks for confirmation of its own. It removes the shell, its config files and its services, and can restore your pre-install configuration from a backup.</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+2"/>
+      <source>This install belongs to a package, so the package manager owns its files. Remove it with:
+
+%1</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+1"/>
+      <source>No uninstaller script was found and no known package manager owns this install. Remove it the same way you installed it.</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+15"/>
+      <source>Cancel</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+6"/>
+      <source>Uninstall</source>
+      <translation type="unfinished"/>
     </message>
   </context>
   <context>
@@ -10147,16 +11241,61 @@
       <comment>used / total amount</comment>
       <translation type="unfinished"/>
     </message>
+    <message>
+      <location line="+30"/>
+      <source>%1d</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+2"/>
+      <source>%1h</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+2"/>
+      <source>%1m</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+12"/>
+      <source>%1 day</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+0"/>
+      <source>%1 days</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+2"/>
+      <source>%1 hour</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+0"/>
+      <source>%1 hours</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+2"/>
+      <source>%1 minute</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+0"/>
+      <source>%1 minutes</source>
+      <translation type="unfinished"/>
+    </message>
   </context>
   <context>
     <name>UpdateChecker</name>
     <message>
-      <location filename="../services/UpdateChecker.qml" line="+363"/>
+      <location filename="../services/UpdateChecker.qml" line="+365"/>
       <source>Done!</source>
       <translation>Ολοκληρώθηκε!</translation>
     </message>
     <message>
-      <location line="+19"/>
+      <location line="+18"/>
       <source>Preparing shell build...</source>
       <translation>Προετοιμασία κτιρίου κελύφους...</translation>
     </message>
@@ -10167,12 +11306,11 @@
     </message>
     <message>
       <location line="+15"/>
-      <location line="+379"/>
       <source>Canceled</source>
       <translation>Ακυρώθηκε</translation>
     </message>
     <message>
-      <location line="-294"/>
+      <location line="+103"/>
       <location line="+21"/>
       <source>Release</source>
       <translation>Κυκλοφορία</translation>
@@ -10187,36 +11325,11 @@
       <source>Tag</source>
       <translation>Ετικέτα</translation>
     </message>
-    <message>
-      <location line="+275"/>
-      <source>Update Successful</source>
-      <translation>Επιτυχής Ενημέρωση</translation>
-    </message>
-    <message>
-      <location line="+0"/>
-      <source>The update is complete. Please log out to apply changes.</source>
-      <translation>Η ενημέρωση έχει ολοκληρωθεί. Παρακαλώ αποσυνδεθείτε για να εφαρμόσετε τις αλλαγές.</translation>
-    </message>
-    <message>
-      <location line="+3"/>
-      <source>Update failed (exit code %1)</source>
-      <translation>Η ενημέρωση απέτυχε (έξοδος κώδικα %1)</translation>
-    </message>
-    <message>
-      <location line="+1"/>
-      <source>Update Failed</source>
-      <translation>Η Ενημέρωση Απέτυχε</translation>
-    </message>
-    <message>
-      <location line="+0"/>
-      <source>The update script returned error code %1</source>
-      <translation>Το σενάριο ενημέρωσης επέστρεψε κωδικό σφάλματος %1</translation>
-    </message>
   </context>
   <context>
     <name>UpdateIndicator</name>
     <message>
-      <location filename="../modules/bar/components/UpdateIndicator.qml" line="+49"/>
+      <location filename="../modules/bar/components/UpdateIndicator.qml" line="+47"/>
       <source>Caelestia updates</source>
       <translation type="unfinished"/>
     </message>
@@ -10292,12 +11405,7 @@
   <context>
     <name>Updates</name>
     <message>
-      <location filename="../modules/bar/popouts/Updates.qml" line="+34"/>
-      <source>Updating…</source>
-      <translation type="unfinished"/>
-    </message>
-    <message>
-      <location line="+2"/>
+      <location filename="../modules/bar/popouts/Updates.qml" line="+32"/>
       <source>Checking for updates…</source>
       <translation type="unfinished"/>
     </message>
@@ -10327,7 +11435,7 @@
       <translation type="unfinished"/>
     </message>
     <message>
-      <location line="+69"/>
+      <location line="+70"/>
       <location line="+78"/>
       <source>Checking…</source>
       <translation type="unfinished"/>
@@ -10366,7 +11474,7 @@
   <context>
     <name>UpdatesPage</name>
     <message>
-      <location filename="../modules/nexus/pages/UpdatesPage.qml" line="+136"/>
+      <location filename="../modules/nexus/pages/UpdatesPage.qml" line="+138"/>
       <source>Updates</source>
       <translation>Ενημερώσεις</translation>
     </message>
@@ -10376,17 +11484,7 @@
       <translation>Βοήθεια</translation>
     </message>
     <message>
-      <location line="+97"/>
-      <source>Update complete - log out to apply</source>
-      <translation>Ολοκλήρωση ενημέρωσης - αποσύνδεση για εφαρμογή</translation>
-    </message>
-    <message>
-      <location line="+1"/>
-      <source>Updating…</source>
-      <translation type="unfinished"/>
-    </message>
-    <message>
-      <location line="+1"/>
+      <location line="+95"/>
       <source>Restore to %1?</source>
       <translation>Επαναφορά σε %1?</translation>
     </message>
@@ -10431,12 +11529,7 @@
       <translation>Κανάλι: %1</translation>
     </message>
     <message>
-      <location line="+22"/>
-      <source>Log Out</source>
-      <translation>Αποσύνδεση</translation>
-    </message>
-    <message>
-      <location line="+1"/>
+      <location line="+14"/>
       <source>Restore</source>
       <translation>Επαναφορά</translation>
     </message>
@@ -10456,12 +11549,7 @@
       <translation>Εγκατάσταση Ενημέρωσης</translation>
     </message>
     <message>
-      <location line="+40"/>
-      <source>Stop</source>
-      <translation>Διακοπή</translation>
-    </message>
-    <message>
-      <location line="+1"/>
+      <location line="+22"/>
       <source>Cancel</source>
       <translation>Ακύρωση</translation>
     </message>
@@ -10476,7 +11564,7 @@
       <translation>Έλεγχος</translation>
     </message>
     <message>
-      <location line="+31"/>
+      <location line="+29"/>
       <source>General</source>
       <translation>Γενικά</translation>
     </message>
@@ -10506,12 +11594,7 @@
       <translation>Εμφάνιση εικονιδίου ειδοποίησης στη γραμμή εργασιών όταν υπάρχουν διαθέσιμες ενημερώσεις</translation>
     </message>
     <message>
-      <location line="+63"/>
-      <source>Customize Installation</source>
-      <translation>Προσαρμογή Εγκατάστασης</translation>
-    </message>
-    <message>
-      <location line="+15"/>
+      <location line="+39"/>
       <source>Open Backup Folder</source>
       <translation>Άνοιγμα Φακέλου Αντιγράφων Ασφαλείας</translation>
     </message>
@@ -10521,27 +11604,7 @@
       <translation>Προβολή των προηγούμενων εφεδρικών αρχείων ρύθμισης παραμέτρων</translation>
     </message>
     <message>
-      <location line="+8"/>
-      <source>Deploy Configurations</source>
-      <translation>Ανάπτυξη Παραμέτρων</translation>
-    </message>
-    <message>
-      <location line="+1"/>
-      <source>Update your custom dotfiles in ~/.config</source>
-      <translation>Ενημερώστε τα προσαρμοσμένα αρχεία dotfiles σας στο ~/.config</translation>
-    </message>
-    <message>
-      <location line="+8"/>
-      <source>Build Shell UI</source>
-      <translation>Κατασκευάστηκε Κέλυφος UI</translation>
-    </message>
-    <message>
-      <location line="+1"/>
-      <source>Compile and install Quickshell UI updates</source>
-      <translation>Σύνταξη και εγκατάσταση ενημερώσεων UI Quickshell</translation>
-    </message>
-    <message>
-      <location line="+33"/>
+      <location line="+34"/>
       <source>Switching to %1…</source>
       <translation>Μετάβαση σε %1…</translation>
     </message>
@@ -10556,7 +11619,7 @@
       <translation>Ιστορικό Υποβολών</translation>
     </message>
     <message>
-      <location line="+54"/>
+      <location line="+53"/>
       <source>Loading…</source>
       <translation>Φόρτωση…</translation>
     </message>
@@ -10565,10 +11628,13 @@
       <source>Load 10 More</source>
       <translation>Φόρτωση 10 Περισσότερα</translation>
     </message>
+  </context>
+  <context>
+    <name>User</name>
     <message>
-      <location line="+11"/>
-      <source>Update Log</source>
-      <translation>Ενημέρωση Αρχείου Καταγραφής</translation>
+      <location filename="../modules/dashboard/dash/User.qml" line="+216"/>
+      <source>up %1</source>
+      <translation type="unfinished"/>
     </message>
   </context>
   <context>
@@ -10721,13 +11787,13 @@
     </message>
     <message>
       <location line="+6"/>
-      <source>Screen Recorder</source>
-      <translation>Εγγραφή Οθόνης</translation>
+      <source>Screen Capture</source>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+1"/>
-      <source>Show the Screen Recorder card</source>
-      <translation>Εμφάνιση της κάρτας εγγραφής οθόνης</translation>
+      <source>Show the screen capture card</source>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+6"/>
@@ -10753,7 +11819,7 @@
   <context>
     <name>VPN</name>
     <message>
-      <location filename="../services/VPN.qml" line="+174"/>
+      <location filename="../services/VPN.qml" line="+175"/>
       <source>VPN connection failed</source>
       <translation>Η σύνδεση VPN απέτυχε</translation>
     </message>
@@ -10763,7 +11829,29 @@
       <translation>Η αποσύνδεση VPN απέτυχε</translation>
     </message>
     <message>
-      <location line="+221"/>
+      <location line="+73"/>
+      <source>Login required</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+0"/>
+      <source>Machine authorization required</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+6"/>
+      <source>Tailscale may not be running</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+31"/>
+      <location line="+73"/>
+      <location line="+46"/>
+      <source>Authentication required</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="-6"/>
       <source>VPN connected</source>
       <translation>Το VPN συνδέθηκε</translation>
     </message>
@@ -10799,7 +11887,7 @@
       <translation>Σφάλμα VPN</translation>
     </message>
     <message>
-      <location line="+184"/>
+      <location line="+196"/>
       <location line="+68"/>
       <source>Could not start %1. Is it installed?</source>
       <translation>Αδυναμία εκκίνησης %1. Είναι εγκατεστημένο?</translation>
@@ -10924,7 +12012,7 @@
   <context>
     <name>Wallpaper</name>
     <message>
-      <location filename="../modules/background/Wallpaper.qml" line="+103"/>
+      <location filename="../modules/background/Wallpaper.qml" line="+109"/>
       <source>Wallpaper missing?</source>
       <translation>Λείπει ταπετσαρία?</translation>
     </message>
@@ -11185,9 +12273,22 @@
     </message>
   </context>
   <context>
+    <name>WeatherCard</name>
+    <message>
+      <location filename="../../src/kde/shells/caelestia.desktop/contents/lockscreen/components/WeatherCard.qml" line="+105"/>
+      <source>Feels like %1</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+14"/>
+      <source>High %1 • Low %2</source>
+      <translation type="unfinished"/>
+    </message>
+  </context>
+  <context>
     <name>WeatherTab</name>
     <message>
-      <location filename="../modules/dashboard/WeatherTab.qml" line="+31"/>
+      <location filename="../modules/dashboard/WeatherTab.qml" line="+58"/>
       <source>Loading...</source>
       <translation>Φόρτωση...</translation>
     </message>
@@ -11208,8 +12309,9 @@
     </message>
     <message>
       <location line="+6"/>
-      <source>Feels Like</source>
-      <translation>Αισθάνεται Σαν</translation>
+      <source>Feels like</source>
+      <comment>apparent temperature</comment>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+6"/>
@@ -11217,14 +12319,55 @@
       <translation>Άνεμος</translation>
     </message>
     <message>
-      <location line="+10"/>
-      <source>7-Day Forecast</source>
-      <translation>Πρόβλεψη 7 Ημερών</translation>
+      <location line="+1"/>
+      <source>%1 km/h</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+19"/>
+      <source>Hourly forecast</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+62"/>
+      <source>7-day forecast</source>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location line="+34"/>
       <source>Today</source>
-      <translation>Σήμερα</translation>
+      <comment>forecast column</comment>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+26"/>
+      <source>%1 / %2</source>
+      <comment>min/max temperature</comment>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+252"/>
+      <source>Now</source>
+      <comment>hourly forecast, current hour</comment>
+      <translation type="unfinished"/>
+    </message>
+  </context>
+  <context>
+    <name>WelcomeText</name>
+    <message>
+      <location filename="../../src/sddm/themes/full/widgets/WelcomeText.qml" line="+13"/>
+      <source>Good night</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+2"/>
+      <source>Good morning</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+2"/>
+      <source>Good afternoon</source>
+      <translation type="unfinished"/>
     </message>
   </context>
   <context>
@@ -11320,6 +12463,132 @@
       <location line="+1"/>
       <source>Image files</source>
       <translation>Αρχεία εικόνας</translation>
+    </message>
+    <message>
+      <location line="+4"/>
+      <source>Profile picture changed</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+0"/>
+      <source>Profile picture changed to %1</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+2"/>
+      <source>Unable to change profile picture</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+0"/>
+      <source>Failed to change profile picture to %1</source>
+      <translation type="unfinished"/>
+    </message>
+  </context>
+  <context>
+    <name>caelestia::services::SessionManager</name>
+    <message>
+      <location filename="../plugin/src/Caelestia/Services/sessionmanager.cpp" line="+121"/>
+      <source>Hibernate failed</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+0"/>
+      <source>Enable hibernation to use this feature.</source>
+      <translation type="unfinished"/>
+    </message>
+  </context>
+  <context>
+    <name>caelestia::services::Weather</name>
+    <message>
+      <location filename="../plugin/src/Caelestia/Services/weather.cpp" line="+93"/>
+      <source>No weather</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+153"/>
+      <source>Clear</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+2"/>
+      <source>Partly cloudy</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+2"/>
+      <source>Overcast</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+3"/>
+      <source>Fog</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+4"/>
+      <source>Drizzle</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+3"/>
+      <source>Freezing drizzle</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+4"/>
+      <source>Light rain</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+3"/>
+      <source>Rain</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+4"/>
+      <source>Heavy rain</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+2"/>
+      <source>Light snow</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+3"/>
+      <source>Snow</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+2"/>
+      <source>Heavy snow</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+2"/>
+      <source>Light snow showers</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+2"/>
+      <source>Heavy snow showers</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+2"/>
+      <source>Thunderstorm</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+3"/>
+      <source>Thunderstorm with hail</source>
+      <translation type="unfinished"/>
+    </message>
+    <message>
+      <location line="+2"/>
+      <source>Unknown</source>
+      <translation type="unfinished"/>
     </message>
   </context>
 </TS>
