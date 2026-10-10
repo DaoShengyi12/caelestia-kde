@@ -30,6 +30,7 @@ Item {
     readonly property real nonAnimHeight: (content.item as Content)?.nonAnimHeight ?? 0
     readonly property bool shouldBeActive: visibilities.dashboard && Config.dashboard.enabled && !visibilities.overview
     property real offsetScale: shouldBeActive ? 0 : 1
+    property bool keepAlive: false
 
     clip: Config.bar.position === "top"
     visible: offsetScale < 1
@@ -39,6 +40,13 @@ Item {
     implicitWidth: content.implicitWidth || 854
     opacity: 1 - offsetScale
 
+    Timer {
+        running: Config.dashboard.enabled && !root.keepAlive
+        interval: 2500
+
+        onTriggered: root.keepAlive = true
+    }
+
     Behavior on offsetScale {
         Anim {}
     }
@@ -47,7 +55,7 @@ Item {
 
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: parent.bottom
-        active: root.shouldBeActive || root.visible
+        active: root.shouldBeActive || root.visible || root.keepAlive
         sourceComponent: Content {
             visibilities: root.visibilities
             screenState: root.screenState
