@@ -20,10 +20,7 @@ Searcher {
     readonly property string current: showPreview ? previewPath : actualCurrent
     property string previewPath
     property string actualCurrent
-    property bool previewColourLock
-    property bool pendingPreviewClear
-    property string previewColourSource
-    property bool previewColoursStale
+    property alias previewColours: previewColoursState
     property var videoThumbs: ({})
     property var videoThumbsPending: ({})
 
@@ -148,29 +145,18 @@ Searcher {
         showPreview = true;
 
         if (Colours.scheme === "dynamic")
-            requestPreviewColours();
+            previewColourOf(path);
     }
 
-    // matugen cannot read a video, so a video is previewed through its first frame. Only one
-    // preview runs at a time; a request made while one is running is picked up when it ends.
-    function requestPreviewColours(): void {
-        const source = thumbFor(previewPath);
-        if (source === "")
-            return;
-        if (getPreviewColoursProc.running) {
-            previewColoursStale = true;
-            return;
-        }
-        previewColourSource = source;
-        getPreviewColoursProc.running = true;
+    // matugen cannot read a video, so a video is previewed through its first frame. While the
+    // frame is not ready the video stays highlighted and the preview runs once it is.
+    function previewColourOf(path: string): void {
+        previewColoursState.show(thumbFor(path));
     }
 
     function stopPreview(): void {
         showPreview = false;
-        if (previewColourLock)
-            pendingPreviewClear = true;
-        else
-            Colours.showPreview = false;
+        previewColoursState.stop();
     }
 
     function getThumbnailPath(path: string): string {
@@ -227,18 +213,13 @@ Searcher {
                 syncPlasmaWallpaper(out);
             }
             if (path === root.previewPath && root.showPreview && Colours.scheme === "dynamic")
-                root.requestPreviewColours();
+                root.previewColourOf(path);
         }
         const pending = root.videoThumbsPending;
         delete pending[path];
         root.videoThumbsPending = pending;
         if (proc)
             proc.destroy();
-    }
-
-    onPreviewColourLockChanged: {
-        if (!previewColourLock && pendingPreviewClear)
-            Colours.showPreview = false;
     }
 
     list: filteredList
@@ -279,13 +260,13 @@ Searcher {
                 return;
             }
             root.actualCurrent = wall;
-            root.previewColourLock = false;
+            previewColoursState.release();
             if (!Images.isVideo(wall))
                 syncPlasmaWallpaper(wall);
         }
         onLoadFailed: {
             root.actualCurrent = root.fallback;
-            root.previewColourLock = false;
+            previewColoursState.release();
             Quickshell.execDetached(["caelestia", "wallpaper", "-f", root.fallback, ...Colours.smartArg]);
             syncPlasmaWallpaper(root.fallback);
         }
@@ -300,26 +281,9 @@ Searcher {
         nameFilters: Images.validImageExtensions.concat(Images.validVideoExtensions).map(e => `*.${e}`)
     }
 
-    Process {
-        id: getPreviewColoursProc
+    PreviewColours {
+        id: previewColoursState
 
-        command: ["caelestia", "wallpaper", "-p", root.previewColourSource, ...Colours.smartArg]
-        stdout: StdioCollector {
-            onStreamFinished: {
-                // The result is for a wallpaper that is no longer highlighted.
-                if (root.previewColoursStale) {
-                    root.previewColoursStale = false;
-                    if (root.showPreview)
-                        Qt.callLater(root.requestPreviewColours);
-                    return;
-                }
-                // The preview ended and the chosen scheme has landed; showing this now would
-                // cover the real scheme until something else clears it.
-                if (!root.showPreview && !root.previewColourLock)
-                    return;
-                if (Colours.load(text, true))
-                    Colours.showPreview = true;
-            }
-        }
+        extraArgs: Colours.smartArg
     }
 }
